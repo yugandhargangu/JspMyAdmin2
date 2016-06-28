@@ -1,5 +1,6 @@
 <h1>JspMyAdmin 2.0 - A Java Web tool for MySql database administration</h1>
 
+<p>Website: <a href="http://jspmyadmin.com">http://jspmyadmin.com</a></p>
 <p>JspMyAdmin 2.0 is the software for MySql database administration over Web.
 It provides a user friendly design to manage most of the MySql database administration.
 Create and Manage database objects (Databse, Table, View etc..) with simple mouse clicks.
