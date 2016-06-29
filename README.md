@@ -33,8 +33,9 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 <h3>3rd Party Libraries</h3>
 1. Json Library <a href="http://www.json.org">Visit</a>
 2. Apache Common library <a href="https://commons.apache.org">Visit</a>
-2. CodeMirror <a href="https://codemirror.net">Visit</a>
-3. JQuery <a href="https://jquery.com/">Visit</a>
+3. Mysql Connector library <a href="https://dev.mysql.com/downloads/connector/j/">Visit</a>
+4. CodeMirror <a href="https://codemirror.net">Visit</a>
+5. JQuery <a href="https://jquery.com/">Visit</a>
 
 <h3>Versions</h3>
 1. version 1.0
