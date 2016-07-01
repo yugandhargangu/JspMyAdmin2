@@ -18,11 +18,11 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 5. User friendly design
 6. Privilese management
 7. Import and Export 
-8. Date management
+8. Data management
 9. Query Builder and Sql Editor
 
 <h3>Development</h3>
-1. Customised MVC framework.
+1. Customised MVC framework
 2. Annotation mapping
 3. Customised JSP tags
 4. Servlet as Front Controller

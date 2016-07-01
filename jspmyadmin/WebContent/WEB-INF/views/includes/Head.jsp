@@ -18,9 +18,7 @@
 	href="${pageContext.request.contextPath}/components/jma/jspmyadmin.css">
 <style type="text/css">
 html {
-	font-size: ${sessionScope.fontsize
-}
-%;
+	font-size: ${sessionScope.fontsize}%;
 }
 </style>
 <m:store name="lbl_new" key="lbl.new" />
@@ -57,3 +55,36 @@ html {
 	src="${pageContext.request.contextPath}/components/codemirror/sql.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/components/jma/jspmyadmin.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#right-menu-btn').click(function() {
+			var leftPosition = $('#header-menu li:first-child').position();
+			var left = leftPosition.left - $('#topbar').width();
+			var rightPosition = $('#header-menu li:last-child').position();
+			var right = rightPosition.left - $('#topbar').width();
+			if (right < $('#topbar').width()) {
+				left = left - right + $('#topbar').width() - ($('#header-menu li:last-child').width() * 2);
+			}
+			if (left < 0) {
+				$('#header-menu').animate({
+					'margin-left' : '' + parseInt(left, 10) + 'px',
+				});
+			}
+
+		});
+
+		$('#left-menu-btn').click(function() {
+			var position = $('#header-menu li:first-child').position();
+			var left = position.left + ($('#topbar').width() / 2);
+			if (left <= 0) {
+				$('#header-menu').animate({
+					'margin-left' : '' + parseInt(left, 10) + 'px'
+				});
+			} else {
+				$('#header-menu').animate({
+					'margin-left' : '0px'
+				});
+			}
+		});
+	});
+</script>

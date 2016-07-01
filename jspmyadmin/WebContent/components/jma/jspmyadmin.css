@@ -150,10 +150,14 @@ html, body {
 	color: #0072C6;
 }
 
+#header-menu-container {
+	overflow: hidden;
+	padding-left: 2em;
+	padding-right: 2em;
+}
+
 ul#header-menu {
-	overflow-x: hidden;
 	white-space: nowrap;
-	margin-left: 1em;
 }
 
 ul#header-menu li {
@@ -169,6 +173,18 @@ ul#header-menu li.active {
 	border-left-color: #0072C6;
 	border-right-color: #0072C6;
 	border-top-color: #0072C6;
+}
+
+#left-menu-btn {
+	position: absolute;
+	padding-top: 8px;
+}
+
+#right-menu-btn {
+	position: absolute;
+	right: 0;
+	padding-top: 8px;
+	padding-right: 15px;
 }
 
 .icon {

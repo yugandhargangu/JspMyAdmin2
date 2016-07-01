@@ -3,7 +3,7 @@
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages"%>
 <%@ taglib prefix="jma" uri="http://jspmyadmin.com/taglib/jsp/jma"%>
 <m:open />
-<div>
+<div id="header-menu-container">
 	<ul id="header-menu">
 		<li><a href="${pageContext.request.contextPath}/table_data"><img
 				alt="Data" class="icon"

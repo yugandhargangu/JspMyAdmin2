@@ -30,3 +30,11 @@
 		</div>
 	</jma:notEmpty>
 </div>
+<div id="left-menu-btn">
+	<img alt="Pervious" class="icon"
+		src="${pageContext.request.contextPath}/components/icons/arrow-88-24.png">
+</div>
+<div id="right-menu-btn">
+	<img alt="Next" class="icon"
+		src="${pageContext.request.contextPath}/components/icons/arrow-24-24.png">
+</div>
