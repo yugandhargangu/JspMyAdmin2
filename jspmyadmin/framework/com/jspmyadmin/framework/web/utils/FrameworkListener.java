@@ -4,6 +4,7 @@
 package com.jspmyadmin.framework.web.utils;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,9 +26,11 @@ public class FrameworkListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext context = null;
 		try {
+
 			context = event.getServletContext();
 			if (context != null) {
 				context.setAttribute(FrameworkConstants.APP_DATA_TYPES_INFO, FrameworkConstants.Utils.DATA_TYPES_INFO);
+				context.setAttribute(FrameworkConstants.HOSTNAME, InetAddress.getLocalHost().getHostName());
 				DefaultServlet.setContext(context);
 				ResourceServlet.setBasePath(context.getRealPath("/"));
 			}

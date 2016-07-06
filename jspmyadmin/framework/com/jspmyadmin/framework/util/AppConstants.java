@@ -38,6 +38,7 @@ public final class AppConstants {
 	public static final String JSP_SERVER_COMMON_STATUSLIST = "server/common/StatusList.jsp";
 	public static final String JSP_SERVER_COMMON_VARIABLELIST = "server/common/VariableList.jsp";
 	public static final String JSP_SERVER_DATABASE_DATABASELIST = "server/database/DatabaseList.jsp";
+	public static final String JSP_TABLE_COMMON_INFORMATION = "table/common/Information.jsp";
 	public static final String JSP_TABLE_STRUCTURE_ALTER_TABLE = "table/structure/AlterTable.jsp";
 	public static final String JSP_TABLE_STRUCTURE_STRUCTURE = "table/structure/Structure.jsp";
 	public static final String JSP_TABLE_DATA_DATA = "table/data/Data.jsp";

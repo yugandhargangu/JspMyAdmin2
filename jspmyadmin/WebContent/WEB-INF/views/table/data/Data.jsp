@@ -52,7 +52,9 @@ input[readonly] {
 			<div id="main-body">
 				<div style="padding: 0.2em 0.2em;">
 					<div class="page-head">
-						<h3>Table Data</h3>
+						<h3>
+							<m:print key="lbl.table_data" />
+						</h3>
 					</div>
 					<form action="#" accept-charset="utf-8" method="post"
 						id="data-form">
@@ -60,18 +62,24 @@ input[readonly] {
 							value="${requestScope.command.token}">
 
 						<div class="group">
-							<div class="group-widget group-header">Query (Execution
-								Time: ${requestScope.command.exec_time} seconds)</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.query_execution_time" />
+								${requestScope.command.exec_time}
+								<m:print key="lbl.seconds" />
+							</div>
 							<div class="group-widget group-content">
 								<textarea rows="5" cols="100" style="width: 100%;"
 									id="sql-editor">${requestScope.command.query};</textarea>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="go_to_console">Go
-									to console</button>
+								<button type="button" class="btn" id="go_to_console">
+									<m:print key="lbl.go_to_console" />
+								</button>
 								<a id="btn-refresh"
 									href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.reload_page}">
-									<button type="button" class="btn">Refresh</button>
+									<button type="button" class="btn">
+										<m:print key="lbl.refresh" />
+									</button>
 								</a>
 							</div>
 						</div>
@@ -79,17 +87,20 @@ input[readonly] {
 						<jma:empty name="#primary_key" scope="command">
 							<div class="group">
 								<div class="group-widget group-normal">
-									<p style="color: red;">This table does not contains Primary
-										Key, So Update and Delete operations can not be applicable.</p>
+									<p style="color: red;">
+										<m:print key="note.table_data" />
+									</p>
 								</div>
 							</div>
 						</jma:empty>
 
 						<div class="group">
 							<div class="group-widget group-header">
-								<b>Selected Rows (Page No:
-									${requestScope.command.current_page}, Displaying
-									${requestScope.command.total_data_count} rows)</b>
+								<b><m:print key="lbl.selected_rows" /> &#40;<m:print
+										key="lbl.page_no" />: ${requestScope.command.current_page}, <m:print
+										key="lbl.displaying" />
+									${requestScope.command.total_data_count} <m:print
+										key="lbl.rows" />&#41;</b>
 
 								<div
 									style="display: inline-block; float: right; margin-right: 25px; margin-top: -1px;">
@@ -111,13 +122,17 @@ input[readonly] {
 										</jma:notEmpty>
 										<jma:switch name="#limit" scope="command">
 											<jma:case value="0">
-												<option value="0" selected="selected">Show All</option>
+												<option value="0" selected="selected"><m:print
+														key="lbl.show_all" />
+												</option>
 											</jma:case>
 											<jma:default>
-												<option value="0">Show All</option>
+												<option value="0"><m:print key="lbl.show_all" />
+												</option>
 											</jma:default>
 										</jma:switch>
-									</select> Rows per page.
+									</select>
+									<m:print key="lbl.rows_per_page" />
 								</div>
 								<div
 									style="display: inline-block; float: right; margin-right: 20px;">
@@ -132,7 +147,7 @@ input[readonly] {
 												value="Yes">
 										</jma:default>
 									</jma:switch>
-									Display Search Criteria
+									<m:print key="lbl.display_search_criteria" />
 								</div>
 							</div>
 							<div class="group-widget group-content">
@@ -140,8 +155,10 @@ input[readonly] {
 									<jma:notEmpty name="#previous_page" scope="command">
 										<a
 											href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.previous_page}"><button
-												type="button" class="btn" style="float: left;">&lt;
-												Previous</button></a>
+												type="button" class="btn" style="float: left;">
+												&lt;
+												<m:print key="lbl.previous" />
+											</button></a>
 									</jma:notEmpty>
 									<jma:notEmpty name="#select_list" scope="command">
 										<jma:switch name="#limit" scope="command">
@@ -149,8 +166,10 @@ input[readonly] {
 											<jma:default>
 												<a
 													href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.next_page}"><button
-														type="button" class="btn" style="float: right;">Next
-														&gt;</button></a>
+														type="button" class="btn" style="float: right;">
+														<m:print key="lbl.next" />
+														&gt;
+													</button></a>
 											</jma:default>
 										</jma:switch>
 									</jma:notEmpty>
@@ -243,8 +262,14 @@ input[readonly] {
 																	value="${pkValue}">
 															</jma:notEmpty></td>
 														<td><jma:notEmpty name="#primary_key" scope="command">
-																<img alt="Delete" title="Delete" class="icon delete-btn"
+																<m:store name="lbl_delete" key="lbl.delete" />
+																<m:store name="lbl_edit" key="lbl.edit" />
+																<img alt="${lbl_delete}" title="${lbl_delete}"
+																	class="icon delete-btn"
 																	src="${pageContext.request.contextPath}/components/icons/minus-r.png">
+																<img alt="${lbl_edit}" title="${lbl_edit}"
+																	class="icon edit-btn"
+																	src="${pageContext.request.contextPath}/components/icons/edit-24.png">
 															</jma:notEmpty></td>
 														<jma:forLoop items="#rowData" name="item" scope="page">
 															<td class="edit-td">${item}</td>
@@ -255,8 +280,8 @@ input[readonly] {
 											</jma:notEmpty>
 											<jma:empty name="#select_list" scope="command">
 												<tr>
-													<td colspan="${requestScope.command.column_count + 2}">No
-														Records Found.</td>
+													<td colspan="${requestScope.command.column_count + 2}"><m:print
+															key="msg.no_records_found" /></td>
 												</tr>
 											</jma:empty>
 										</tbody>
@@ -266,20 +291,26 @@ input[readonly] {
 									<jma:notEmpty name="#previous_page" scope="command">
 										<a
 											href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.previous_page}"><button
-												type="button" class="btn" style="float: left;">&lt;
-												Previous</button></a>
+												type="button" class="btn" style="float: left;">
+												&lt;
+												<m:print key="lbl.previous" />
+											</button></a>
 									</jma:notEmpty>
 									<jma:notEmpty name="#select_list" scope="command">
 										<a
 											href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.next_page}"><button
-												type="button" class="btn" style="float: right;">Next
-												&gt;</button></a>
+												type="button" class="btn" style="float: right;">
+												<m:print key="lbl.next" />
+												&gt;
+											</button></a>
 									</jma:notEmpty>
 								</div>
 							</div>
 							<div class="group-widget group-footer">
 								<jma:notEmpty name="#primary_key" scope="command">
-									<button type="button" class="btn" id="btn-delete">Delete</button>
+									<button type="button" class="btn" id="btn-delete">
+										<m:print key="lbl.delete" />
+									</button>
 								</jma:notEmpty>
 							</div>
 						</div>
@@ -287,7 +318,7 @@ input[readonly] {
 				</div>
 			</div>
 			<div id="console">
-				<b style="color: #0072C6;">Console:</b>
+				<b style="color: #0072C6;"><m:print key="lbl.console" />:</b>
 				<textarea rows="50" cols="4" style="width: 100%;" id="console-text"></textarea>
 			</div>
 			<div id="footer">
@@ -328,8 +359,9 @@ input[readonly] {
 					<m:print key="lbl.alert" />
 				</div>
 				<div class="dialog-content">
-					<p id="confirm-content">The deleted row(s) can not be
-						recovered. Do you want to continue?</p>
+					<p id="confirm-content">
+						<m:print key="msg.delete_table_data_alert" />
+					</p>
 				</div>
 				<div class="dialog-footer">
 					<button type="button" class="btn" id="yes_btn">
@@ -363,16 +395,19 @@ input[readonly] {
 
 		$(function() {
 			$('#limit-list-select').change(function() {
+				showWaiting();
 				$('#data-form').prop('action', Server.root + "/table_data");
 				$('#data-form').submit();
 			});
 
 			$('#search-btn').click(function() {
+				showWaiting();
 				$('#data-form').prop('action', Server.root + "/table_data");
 				$('#data-form').submit();
 			});
 
 			$('#show_search').change(function() {
+				showWaiting();
 				if ($(this).is(':checked')) {
 
 				} else {
@@ -425,9 +460,12 @@ input[readonly] {
 	</script>
 
 	<jma:notEmpty name="#primary_key" scope="command">
+		<m:store name="msg_row_affected" key="msg.row_affected" />
+		<m:store name="msg_select_least_one_record"
+			key="msg.select_least_one_record" />
 		<script type="text/javascript">
-			var row_msg = ' row(s) affected';
-			var alert_msg = 'Please select at least one record to delete.';
+			var row_msg = '${msg_row_affected}';
+			var alert_msg = '${msg_select_least_one_record}';
 			var originalState = false;
 			var checkbox = null;
 			$(function() {
@@ -448,6 +486,10 @@ input[readonly] {
 					} else {
 						$('#confirm-dialog').show();
 					}
+				});
+
+				$('#edit-btn').click(function() {
+					// XXX
 				});
 
 				$('#yes_btn').click(function() {
@@ -493,6 +535,7 @@ input[readonly] {
 
 				$('#ok_btn').click(function() {
 					$('#info-dialog').hide();
+					showWaiting();
 					window.location.href = $('#btn-refresh').attr('href');
 				});
 
@@ -597,7 +640,7 @@ input[readonly] {
 				});
 
 				$('.edit-td').dblclick(function() {
-					if($(this).find('a').length > 0){
+					if ($(this).find('a').length > 0) {
 						return;
 					}
 					originalData = $(this).text();

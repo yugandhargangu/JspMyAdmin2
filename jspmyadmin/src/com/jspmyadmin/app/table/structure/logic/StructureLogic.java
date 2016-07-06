@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.jspmyadmin.app.database.structure.beans.CreateTableBean;
 import com.jspmyadmin.app.table.structure.beans.AlterColumnBean;
 import com.jspmyadmin.app.table.structure.beans.ColumnInfo;
 import com.jspmyadmin.app.table.structure.beans.ColumnListBean;
@@ -166,6 +165,47 @@ public class StructureLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 * @throws Exception
+	 */
+	public void dropKeys(Bean bean) throws SQLException, ClassNotFoundException, Exception {
+		ColumnListBean columnListBean = null;
+
+		ApiConnection apiConnection = null;
+		PreparedStatement statement = null;
+
+		StringBuilder builder = null;
+		try {
+			columnListBean = (ColumnListBean) bean;
+			if (columnListBean.getKeys() != null && columnListBean.getKeys().length > 0) {
+				builder = new StringBuilder();
+				builder.append("ALTER TABLE `");
+				builder.append(_table);
+				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(" DROP ");
+				for (int i = 0; i < columnListBean.getKeys().length; i++) {
+					if (i != 0) {
+						builder.append(FrameworkConstants.SYMBOL_COMMA);
+					}
+					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(columnListBean.getKeys()[i]);
+					builder.append(FrameworkConstants.SYMBOL_TEN);
+				}
+				apiConnection = getConnection(true);
+				statement = apiConnection.preparedStatement(builder.toString());
+				statement.execute();
+				apiConnection.commit();
+			}
+		} finally {
+			close(statement);
+			close(apiConnection);
+		}
+	}
+
+	/**
+	 * 
+	 * @param bean
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws Exception
@@ -189,6 +229,8 @@ public class StructureLogic extends AbstractLogic {
 		String[] pks = null;
 		String[] nns = null;
 		String[] uqs = null;
+		String[] uns = null;
+		String[] zfs = null;
 		String[] ais = null;
 		String[] comments = null;
 		try {
@@ -208,7 +250,7 @@ public class StructureLogic extends AbstractLogic {
 				alterColumnBean.setNew_comments(alterColumnBean.getOld_comments());
 			}
 
-			String uniqueQuery = "SHOW KEYS FROM m_spending WHERE key_name <> ? AND non_unique = ?";
+			String uniqueQuery = "SHOW KEYS FROM `" + _table + "` WHERE key_name <> ? AND non_unique = ?";
 			statement = apiConnection.preparedStatementSelect(uniqueQuery);
 			statement.setString(1, " PRIMARY");
 			statement.setInt(2, 0);
@@ -235,6 +277,8 @@ public class StructureLogic extends AbstractLogic {
 				pks = new String[size];
 				nns = new String[size];
 				uqs = new String[size];
+				uns = new String[size];
+				zfs = new String[size];
 				ais = new String[size];
 				comments = new String[size];
 
@@ -244,9 +288,32 @@ public class StructureLogic extends AbstractLogic {
 					old_columns[i] = resultSet.getString("field");
 					columns[i] = old_columns[i];
 					String temp = resultSet.getString("type");
-					int index = temp.indexOf(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-					datatypes[i] = temp.substring(0, index);
-					lengths[i] = temp.substring(index + 1, temp.length() - 2);
+					String[] tempType = temp.split(" ");
+					if (tempType.length > 1) {
+						int index = tempType[0].indexOf(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+						if (index != -1) {
+							datatypes[i] = tempType[0].substring(0, index);
+							lengths[i] = tempType[0].substring(index + 1, tempType[0].length() - 1);
+						} else {
+							datatypes[i] = temp;
+						}
+						for (int j = 1; j < tempType.length; j++) {
+							if ("unsigned".equalsIgnoreCase(tempType[j])) {
+								uns[i] = "1";
+							} else if ("zerofill".equalsIgnoreCase(tempType[j])) {
+								zfs[i] = "1";
+							}
+						}
+					} else {
+						int index = temp.indexOf(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+						if (index != -1) {
+							datatypes[i] = temp.substring(0, index);
+							lengths[i] = temp.substring(index + 1, temp.length() - 1);
+						} else {
+							datatypes[i] = temp;
+						}
+					}
+					datatypes[i] = datatypes[i].toUpperCase();
 					defaults[i] = resultSet.getString("default");
 					collations[i] = resultSet.getString("collation");
 					temp = resultSet.getString("Key");
@@ -265,6 +332,7 @@ public class StructureLogic extends AbstractLogic {
 						ais[i] = "1";
 					}
 					comments[i] = resultSet.getString("comment");
+					i++;
 				}
 				alterColumnBean.setOld_columns(old_columns);
 				alterColumnBean.setColumns(columns);
@@ -275,6 +343,8 @@ public class StructureLogic extends AbstractLogic {
 				alterColumnBean.setPks(pks);
 				alterColumnBean.setNns(nns);
 				alterColumnBean.setUqs(uqs);
+				alterColumnBean.setUns(uns);
+				alterColumnBean.setZfs(zfs);
 				alterColumnBean.setAis(ais);
 				alterColumnBean.setComments(comments);
 			}
@@ -328,6 +398,8 @@ public class StructureLogic extends AbstractLogic {
 			builder.append(_table);
 			builder.append(FrameworkConstants.SYMBOL_TEN);
 
+			String table_start = builder.toString();
+
 			if (!alterColumnBean.getOld_collation().equalsIgnoreCase(alterColumnBean.getNew_collation())) {
 				builder.append(" COLLATE = ");
 				builder.append(alterColumnBean.getNew_collation());
@@ -350,7 +422,8 @@ public class StructureLogic extends AbstractLogic {
 					// check for changes
 					if (FrameworkConstants.ONE.equals(alterColumnBean.getChanges()[i])) {
 
-						if (isEmpty(alterColumnBean.getOld_columns()[i])) {
+						if (isEmpty(alterColumnBean.getOld_columns()[i])
+								&& !FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])) {
 							// add new column
 							if (alreadyEntered) {
 								builder.append(FrameworkConstants.SYMBOL_COMMA);
@@ -433,14 +506,15 @@ public class StructureLogic extends AbstractLogic {
 							if (previous_column != null) {
 								builder.append(" AFTER ");
 								builder.append(FrameworkConstants.SYMBOL_TEN);
-								builder.append(alterColumnBean.getColumns()[i]);
+								builder.append(previous_column);
 								builder.append(FrameworkConstants.SYMBOL_TEN);
 							} else {
 								builder.append(" FIRST");
 							}
 
 							previous_column = alterColumnBean.getColumns()[i];
-						} else if (FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])) {
+						} else if (!isEmpty(alterColumnBean.getOld_columns()[i])
+								&& FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])) {
 							// drop column
 							if (alreadyEntered) {
 								builder.append(FrameworkConstants.SYMBOL_COMMA);
@@ -450,7 +524,7 @@ public class StructureLogic extends AbstractLogic {
 							}
 							builder.append(" DROP COLUMN ");
 							builder.append(FrameworkConstants.SYMBOL_TEN);
-							builder.append(alterColumnBean.getOld_columns());
+							builder.append(alterColumnBean.getOld_columns()[i]);
 							builder.append(FrameworkConstants.SYMBOL_TEN);
 						} else if (!isEmpty(alterColumnBean.getOld_columns()[i])) {
 							// alter column
@@ -461,8 +535,8 @@ public class StructureLogic extends AbstractLogic {
 								alreadyEntered = true;
 							}
 
-							if (alterColumnBean.getOld_columns()[i] != null && alterColumnBean.getOld_columns()[i]
-									.trim().equalsIgnoreCase(alterColumnBean.getColumns()[i].trim())) {
+							if (alterColumnBean.getOld_columns()[i] != null && !alterColumnBean.getOld_columns()[i]
+									.trim().equals(alterColumnBean.getColumns()[i].trim())) {
 								// change column
 								builder.append(" CHANGE COLUMN ");
 								builder.append(FrameworkConstants.SYMBOL_TEN);
@@ -549,7 +623,7 @@ public class StructureLogic extends AbstractLogic {
 							if (previous_column != null) {
 								builder.append(" AFTER ");
 								builder.append(FrameworkConstants.SYMBOL_TEN);
-								builder.append(alterColumnBean.getColumns()[i]);
+								builder.append(previous_column);
 								builder.append(FrameworkConstants.SYMBOL_TEN);
 							} else {
 								builder.append(" FIRST");
@@ -561,12 +635,18 @@ public class StructureLogic extends AbstractLogic {
 						}
 					} else {
 						previous_column = alterColumnBean.getColumns()[i];
+						if (FrameworkConstants.ONE.equals(alterColumnBean.getPks()[i])) {
+							primary_key = alterColumnBean.getColumns()[i].trim();
+						}
+						if (FrameworkConstants.ONE.equals(alterColumnBean.getUqs()[i])) {
+							uniqueList.add(alterColumnBean.getColumns()[i].trim());
+						}
 					}
 				}
 			}
 
 			apiConnection = getConnection(true);
-			String primaryQuery = "SHOW KEYS FROM m_spending WHERE key_name = ?";
+			String primaryQuery = "SHOW KEYS FROM `" + _table + "` WHERE key_name = ?";
 			statement = apiConnection.preparedStatementSelect(primaryQuery);
 			statement.setString(1, "PRIMARY");
 			resultSet = statement.executeQuery();
@@ -575,13 +655,41 @@ public class StructureLogic extends AbstractLogic {
 				old_primary_key = resultSet.getString("column_name");
 			}
 
-			if (old_primary_key != null && primary_key != null) {
-				if (!old_primary_key.equalsIgnoreCase(primary_key)) {
-					if (alreadyEntered) {
+			boolean oldPKStatus = false;
+			for (int i = 0; i < alterColumnBean.getOld_columns().length; i++) {
+				if (!isEmpty(alterColumnBean.getOld_columns()[i])
+						&& alterColumnBean.getOld_columns()[i].equalsIgnoreCase(old_primary_key)) {
+					oldPKStatus = true;
+				}
+			}
+
+			if (alreadyEntered) {
+				if (primary_key == null && oldPKStatus) {
+					// do nothing
+				} else if (old_primary_key != null && primary_key != null) {
+					if (!old_primary_key.equalsIgnoreCase(primary_key)) {
 						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(FrameworkConstants.SPACE);
+						builder.append(" DROP PRIMARY KEY");
+						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(" ADD PRIMARY KEY");
+						builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(primary_key);
+						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+						if (!alreadyEntered) {
+							alreadyEntered = true;
+						}
 					}
+				} else if (old_primary_key != null) {
+					builder.append(FrameworkConstants.SYMBOL_COMMA);
 					builder.append(FrameworkConstants.SPACE);
 					builder.append(" DROP PRIMARY KEY");
+					if (!alreadyEntered) {
+						alreadyEntered = true;
+					}
+				} else if (primary_key != null) {
 					builder.append(FrameworkConstants.SYMBOL_COMMA);
 					builder.append(" ADD PRIMARY KEY");
 					builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
@@ -593,33 +701,11 @@ public class StructureLogic extends AbstractLogic {
 						alreadyEntered = true;
 					}
 				}
-			} else if (old_primary_key != null) {
-				if (alreadyEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
-				}
-				builder.append(FrameworkConstants.SPACE);
-				builder.append(" DROP PRIMARY KEY");
-				if (!alreadyEntered) {
-					alreadyEntered = true;
-				}
-			} else if (primary_key != null) {
-				if (alreadyEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
-				}
-				builder.append(" ADD PRIMARY KEY");
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(primary_key);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
-				if (!alreadyEntered) {
-					alreadyEntered = true;
-				}
 			}
 
-			String uniqueQuery = "SHOW KEYS FROM m_spending WHERE key_name <> ? AND non_unique = ?";
+			String uniqueQuery = "SHOW KEYS FROM `" + _table + "` WHERE key_name <> ? AND non_unique = ?";
 			statement = apiConnection.preparedStatementSelect(uniqueQuery);
-			statement.setString(1, " PRIMARY");
+			statement.setString(1, "PRIMARY");
 			statement.setInt(2, 0);
 			resultSet = statement.executeQuery();
 			Map<String, String> oldUniqueList = new HashMap<String, String>();
@@ -686,11 +772,17 @@ public class StructureLogic extends AbstractLogic {
 			}
 
 			if (FrameworkConstants.YES.equalsIgnoreCase(alterColumnBean.getAction())) {
-				statement = apiConnection.preparedStatement(builder.toString());
-				statement.execute();
-				apiConnection.commit();
+				String temp = builder.toString();
+				if (!table_start.equals(temp)) {
+					statement = apiConnection.preparedStatement(builder.toString());
+					statement.execute();
+					apiConnection.commit();
+				}
 			} else {
 				result = builder.toString();
+				if (table_start.equals(result)) {
+					result = "// No Changes Found";
+				}
 			}
 		} finally
 
@@ -712,7 +804,7 @@ public class StructureLogic extends AbstractLogic {
 	public String validate(Bean bean) throws Exception {
 
 		String result = null;
-		CreateTableBean createTableBean = null;
+		AlterColumnBean alterColumnBean = null;
 		int count = 0;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
@@ -720,30 +812,32 @@ public class StructureLogic extends AbstractLogic {
 		String b = "b";
 		String[] tempArr = null;
 		try {
-			createTableBean = (CreateTableBean) bean;
+			alterColumnBean = (AlterColumnBean) bean;
 			jsonObject = new JSONObject(FrameworkConstants.Utils.DATA_TYPES_INFO);
-			for (int i = 0; i < createTableBean.getColumns().length; i++) {
-				if (!isEmpty(createTableBean.getColumns()[i])) {
+			for (int i = 0; i < alterColumnBean.getColumns().length; i++) {
+				if (!FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])
+						&& !isEmpty(alterColumnBean.getColumns()[i])) {
 					count++;
 					// check column is duplicate or not
-					if (!isColumnNameValid(createTableBean.getColumns(), createTableBean.getColumns()[i])) {
-						result = _messages.getMessage("msg.duplicate_columna_name") + createTableBean.getColumns()[i];
+					if (!isColumnNameValid(alterColumnBean.getColumns(), alterColumnBean.getDeletes(),
+							alterColumnBean.getColumns()[i])) {
+						result = _messages.getMessage("msg.duplicate_columna_name") + alterColumnBean.getColumns()[i];
 						break;
 					}
 
 					// get validation data
-					tempJsonObject = jsonObject.getJSONObject(createTableBean.getDatatypes()[i]);
+					tempJsonObject = jsonObject.getJSONObject(alterColumnBean.getDatatypes()[i]);
 					int aVal = tempJsonObject.getInt(a);
 					if (aVal > 0) {
 						// has list
-						if (isEmpty(createTableBean.getLengths()[i])) {
+						if (isEmpty(alterColumnBean.getLengths()[i])) {
 							result = _messages.getMessage("msg.length_value_blank_column")
-									+ createTableBean.getColumns()[i];
+									+ alterColumnBean.getColumns()[i];
 							break;
 						}
 
 						// validate list values
-						tempArr = createTableBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+						tempArr = alterColumnBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
 						boolean isInvalid = false;
 						for (int j = 0; j < tempArr.length; j++) {
 							if (!isValidSqlString(tempArr[j], true)) {
@@ -753,7 +847,7 @@ public class StructureLogic extends AbstractLogic {
 						}
 						if (isInvalid) {
 							result = _messages.getMessage("msg.length_value_blank_column")
-									+ createTableBean.getColumns()[i];
+									+ alterColumnBean.getColumns()[i];
 							break;
 						}
 					} else {
@@ -763,22 +857,22 @@ public class StructureLogic extends AbstractLogic {
 						switch (bVal) {
 						case 0:
 							// length = 1 and mandatory
-							if (isEmpty(createTableBean.getLengths()[i])) {
+							if (isEmpty(alterColumnBean.getLengths()[i])) {
 								isInvalid = true;
 								break;
 							}
-							if (!isInteger(createTableBean.getLengths()[i])) {
+							if (!isInteger(alterColumnBean.getLengths()[i])) {
 								isInvalid = true;
 								break;
 							}
 							break;
 						case 1:
 							// length = 2 and mandatory
-							if (isEmpty(createTableBean.getLengths()[i])) {
+							if (isEmpty(alterColumnBean.getLengths()[i])) {
 								isInvalid = true;
 								break;
 							}
-							tempArr = createTableBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+							tempArr = alterColumnBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
 							if (tempArr == null || tempArr.length != 2) {
 								isInvalid = true;
 								break;
@@ -789,16 +883,16 @@ public class StructureLogic extends AbstractLogic {
 							break;
 						case 2:
 							// length = 1 and not mandatory
-							if (!isEmpty(createTableBean.getLengths()[i])
-									&& !isInteger(createTableBean.getLengths()[i])) {
+							if (!isEmpty(alterColumnBean.getLengths()[i])
+									&& !isInteger(alterColumnBean.getLengths()[i])) {
 								isInvalid = true;
 								break;
 							}
 							break;
 						case 3:
 							// length = 2 and not mandatory
-							if (!isEmpty(createTableBean.getLengths()[i])) {
-								tempArr = createTableBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+							if (!isEmpty(alterColumnBean.getLengths()[i])) {
+								tempArr = alterColumnBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
 								if (tempArr == null || tempArr.length != 2) {
 									isInvalid = true;
 									break;
@@ -814,23 +908,23 @@ public class StructureLogic extends AbstractLogic {
 
 						if (isInvalid) {
 							result = _messages.getMessage("msg.length_value_blank_column")
-									+ createTableBean.getColumns()[i];
+									+ alterColumnBean.getColumns()[i];
 							break;
 						}
 					}
 
 					// validate default value
-					if (!isEmpty(createTableBean.getDefaults()[i])
-							&& !isValidSqlString(createTableBean.getDefaults()[i], false)) {
+					if (!isEmpty(alterColumnBean.getDefaults()[i])
+							&& !isValidSqlString(alterColumnBean.getDefaults()[i], false)) {
 						result = _messages.getMessage("msg.default_value_invalid_column")
-								+ createTableBean.getColumns()[i];
+								+ alterColumnBean.getColumns()[i];
 						break;
 					}
 
 					// validate comment value
-					if (!isEmpty(createTableBean.getComments()[i])
-							&& !isValidSqlString(createTableBean.getComments()[i], false)) {
-						result = _messages.getMessage("msg.comment_invalid_column") + createTableBean.getColumns()[i];
+					if (!isEmpty(alterColumnBean.getComments()[i])
+							&& !isValidSqlString(alterColumnBean.getComments()[i], false)) {
+						result = _messages.getMessage("msg.comment_invalid_column") + alterColumnBean.getColumns()[i];
 						break;
 					}
 				}
@@ -851,11 +945,12 @@ public class StructureLogic extends AbstractLogic {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean isColumnNameValid(String[] columns, String column) throws Exception {
+	public boolean isColumnNameValid(String[] columns, String[] deletes, String column) throws Exception {
 		int count = 0;
 		try {
 			for (int i = 0; i < columns.length; i++) {
-				if (!isEmpty(columns[i]) && columns[i].trim().equalsIgnoreCase(column.trim())) {
+				if (!isEmpty(columns[i]) && !FrameworkConstants.ONE.equals(deletes[i])
+						&& columns[i].trim().equalsIgnoreCase(column.trim())) {
 					count++;
 					if (count > 1) {
 						return false;
@@ -864,6 +959,7 @@ public class StructureLogic extends AbstractLogic {
 			}
 		} finally {
 			columns = null;
+			deletes = null;
 			column = null;
 		}
 		return true;

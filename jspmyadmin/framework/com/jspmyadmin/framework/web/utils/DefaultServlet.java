@@ -77,7 +77,6 @@ public class DefaultServlet extends HttpServlet {
 		request.setCharacterEncoding(FrameworkConstants.ENCODE_UTF8);
 		response.setCharacterEncoding(FrameworkConstants.ENCODE_UTF8);
 		String path = request.getRequestURI().substring(request.getContextPath().length());
-		System.out.println(path);
 		REQUEST_MAP.put(Thread.currentThread().getId(), request);
 		if (ControllerUtil.PATH_MAP.containsKey(path)) {
 			_checkSession(request);

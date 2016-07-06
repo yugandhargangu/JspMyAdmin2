@@ -63,7 +63,7 @@ html {
 			var rightPosition = $('#header-menu li:last-child').position();
 			var right = rightPosition.left - $('#topbar').width();
 			if (right < $('#topbar').width()) {
-				left = left - right + $('#topbar').width() - ($('#header-menu li:last-child').width() * 2);
+				left = left - right + $('#topbar').width() - ($('#header-menu li:last-child').width() * 3);
 			}
 			if (left < 0) {
 				$('#header-menu').animate({

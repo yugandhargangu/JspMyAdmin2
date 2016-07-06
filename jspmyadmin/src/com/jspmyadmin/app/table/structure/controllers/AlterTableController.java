@@ -28,10 +28,9 @@ public class AlterTableController extends Controller<AlterColumnBean> {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	@ValidateToken
 	protected void handleGet(AlterColumnBean bean, View view) throws Exception {
 		view.setType(ViewType.REDIRECT);
-		view.setPath(AppConstants.PATH_HOME);
+		view.setPath(AppConstants.JSP_COMMON_HOME);
 	}
 
 	@Override

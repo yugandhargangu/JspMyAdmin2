@@ -492,4 +492,88 @@ public class AlterColumnBean extends Bean {
 		return serialVersionUID;
 	}
 
+	// extra methods
+	public String columns(int i) {
+		if (i < columns.length) {
+			return columns[i];
+		}
+		return null;
+	}
+
+	public String datatypes(int i) {
+		if (i < datatypes.length) {
+			return datatypes[i];
+		}
+		return null;
+	}
+
+	public String lengths(int i) {
+		if (i < lengths.length) {
+			return lengths[i];
+		}
+		return null;
+	}
+
+	public String defaults(int i) {
+		if (i < defaults.length) {
+			return defaults[i];
+		}
+		return null;
+	}
+
+	public String collations(int i) {
+		if (i < collations.length) {
+			return collations[i];
+		}
+		return null;
+	}
+
+	public String pks(int i) {
+		if (i < pks.length) {
+			return pks[i];
+		}
+		return null;
+	}
+
+	public String nns(int i) {
+		if (i < nns.length) {
+			return nns[i];
+		}
+		return null;
+	}
+
+	public String uqs(int i) {
+		if (i < uqs.length) {
+			return uqs[i];
+		}
+		return null;
+	}
+
+	public String uns(int i) {
+		if (i < uns.length) {
+			return uns[i];
+		}
+		return null;
+	}
+
+	public String zfs(int i) {
+		if (i < zfs.length) {
+			return zfs[i];
+		}
+		return null;
+	}
+
+	public String ais(int i) {
+		if (i < ais.length) {
+			return ais[i];
+		}
+		return null;
+	}
+
+	public String comments(int i) {
+		if (i < comments.length) {
+			return comments[i];
+		}
+		return null;
+	}
 }

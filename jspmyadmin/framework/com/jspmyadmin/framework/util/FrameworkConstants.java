@@ -46,6 +46,7 @@ public final class FrameworkConstants {
 	public static final String EVENT = "event";
 	public static final String FK = "fk_";
 	public static final String GET = "get";
+	public static final String HOSTNAME = "hostname";
 	public static final String JSP_ROOT = "/WEB-INF/views/";
 	public static final String LIMIT = "limit";
 	public static final String MSG = "msg";

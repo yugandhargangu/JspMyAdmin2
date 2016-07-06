@@ -3,13 +3,15 @@
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages"%>
 <%@ taglib prefix="jma" uri="http://jspmyadmin.com/taglib/jsp/jma"%>
 <m:open />
-<div style="padding: 0.1em 1.5em;">
+<div style="padding: 0.2em 1.5em;">
 	<div style="display: inline-block; padding: 0.1em 1em;">
 		<img alt="Server" class="icon"
 			src="${pageContext.request.contextPath}/components/icons/server.png">
 		<m:print key="lbl.server" />
 		: <a href="${pageContext.request.contextPath}/home"
-			class="topbar-link"> ${pageContext.request.serverName} </a>
+			class="topbar-link">
+			${pageContext.request.serverName}:${pageContext.request.serverPort}
+			&#40;${applicationScope.hostname}&#41;</a>
 	</div>
 	<jma:notEmpty name="#session_db" scope="session">
 		<div style="display: inline-block;">

@@ -17,6 +17,7 @@ public class ColumnListBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private String[] columns = null;
+	private String[] keys = null;
 	private List<ColumnInfo> column_list = null;
 	private List<IndexInfo> index_list = null;
 
@@ -33,6 +34,21 @@ public class ColumnListBean extends Bean {
 	 */
 	public void setColumns(String[] columns) {
 		this.columns = columns;
+	}
+
+	/**
+	 * @return the keys
+	 */
+	public String[] getKeys() {
+		return keys;
+	}
+
+	/**
+	 * @param keys
+	 *            the keys to set
+	 */
+	public void setKeys(String[] keys) {
+		this.keys = keys;
 	}
 
 	/**

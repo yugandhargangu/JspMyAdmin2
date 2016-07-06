@@ -76,6 +76,7 @@ public class FetchTag extends AbstractSimpleTagSupport {
 		Object temp = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
 		temp = super.getReflectValue(temp, name, indexVal);
 		if (temp == null) {
+			pageContext.setAttribute(key, null, PageContext.PAGE_SCOPE);
 			return;
 		}
 		if (key == null || FrameworkConstants.BLANK.equals(key.trim())) {

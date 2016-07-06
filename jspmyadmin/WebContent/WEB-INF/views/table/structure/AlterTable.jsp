@@ -16,6 +16,17 @@
 input[readonly] {
 	background-color: #cccccc;
 }
+
+#new-table-id tr td {
+	text-align: center;
+}
+
+#new-table-id tr td .icon {
+	padding-left: 3px;
+	padding-right: 3px;
+	height: 20px;
+	width: 20px;
+}
 </style>
 </head>
 <body>
@@ -31,9 +42,16 @@ input[readonly] {
 			<div id="main-body">
 				<div style="padding: 0.2em 0.2em;">
 					<div class="page-head">
-						<h3>
-							<m:print key="lbl.create_table" />
-						</h3>
+						<form action="${pageContext.request.contextPath}/table_structure"
+							accept-charset="utf-8" method="get">
+							<h3>
+								<m:print key="lbl.alter_table" />
+								<button type="submit" class="btn" id="alter-btn"
+									style="float: right;">
+									<m:print key="lbl.go_back" />
+								</button>
+							</h3>
+						</form>
 					</div>
 					<form action="#" accept-charset="utf-8" method="post"
 						id="alter-table-form">
@@ -48,14 +66,18 @@ input[readonly] {
 
 								<div style="display: block;">
 									<div class="form-input">
-										<label><m:print key="lbl.table_name" /></label> <input
-											type="text" name="table_name" class="form-control"
+										<input type="hidden" name="old_table_name"
+											value="${requestScope.command.old_table_name}"> <label><m:print
+												key="lbl.table_name" /></label> <input type="text"
+											name="new_table_name" class="form-control"
 											id="table-name-input"
-											value="${requestScope.command.table_name}">
+											value="${requestScope.command.old_table_name}">
 									</div>
 									<div class="form-input">
-										<label><m:print key="lbl.collation" /></label> <select
-											name="collation" class="form-control">
+										<input type="hidden" name="old_collation"
+											value="${requestScope.command.old_collation}"> <label><m:print
+												key="lbl.collation" /></label> <select name="new_collation"
+											class="form-control">
 											<option value=""><m:print key="lbl.default" /></option>
 											<jma:notEmpty name="#collation_map" scope="command">
 												<jma:forLoop items="#collation_map" name="collationList"
@@ -63,7 +85,14 @@ input[readonly] {
 													<optgroup label="${collationKey}">
 														<jma:forLoop items="#collationList" name="collationValue"
 															scope="page">
-															<option value="${collationValue}">${collationValue}</option>
+															<jma:switch name="#collationValue" scope="page">
+																<jma:case value="#old_collation" scope="command">
+																	<option value="${collationValue}" selected="selected">${collationValue}</option>
+																</jma:case>
+																<jma:default>
+																	<option value="${collationValue}">${collationValue}</option>
+																</jma:default>
+															</jma:switch>
 														</jma:forLoop>
 													</optgroup>
 												</jma:forLoop>
@@ -71,27 +100,38 @@ input[readonly] {
 										</select>
 									</div>
 									<div class="form-input">
-										<label><m:print key="lbl.storage_engine" /></label> <select
-											name="engine" class="form-control">
+										<input type="hidden" name="old_engine"
+											value="${requestScope.command.old_engine}"> <label><m:print
+												key="lbl.storage_engine" /></label> <select name="new_engine"
+											class="form-control">
 											<jma:notEmpty name="#engine_list" scope="command">
 												<jma:forLoop items="#engine_list" name="engineValue"
 													scope="command">
-													<option value="${engineValue}">${engineValue}</option>
+													<jma:switch name="#engineValue" scope="page">
+														<jma:case value="#old_engine" scope="command">
+															<option value="${engineValue}" selected="selected">${engineValue}</option>
+														</jma:case>
+														<jma:default>
+															<option value="${engineValue}">${engineValue}</option>
+														</jma:default>
+													</jma:switch>
 												</jma:forLoop>
 											</jma:notEmpty>
 										</select>
 									</div>
 									<div class="form-input">
-										<label><m:print key="lbl.comment" /></label> <input
-											name="comment" type="text" class="form-control"
-											style="width: 350px;">
+										<input type="hidden" name="old_comments"
+											value="${requestScope.command.old_comments}"> <label><m:print
+												key="lbl.comment" /></label> <input name="new_comments" type="text"
+											value="${requestScope.command.old_comments}"
+											class="form-control" style="width: 350px;">
 									</div>
 								</div>
 
 								<table class="tbl" id="new-table-id">
 									<thead>
 										<tr>
-											<th></th>
+											<th style="min-width: 80px;">&nbsp;</th>
 											<th><m:print key="lbl.column_name" /></th>
 											<th><m:print key="lbl.datatype" /></th>
 											<th><m:print key="lbl.length_value" /></th>
@@ -118,89 +158,159 @@ input[readonly] {
 										</tr>
 									</tfoot>
 									<tbody>
-										<tr>
-											<td></td>
-											<td><input type="text" name="columns"
-												class="form-control" style="width: 150px;"></td>
-											<td><select name="datatypes" class="form-control"
-												onchange="callApplyDatatype(this);">
-													<jma:notEmpty name="#data_types_map" scope="command">
-														<jma:forLoop items="#data_types_map" name="dataTypeList"
-															scope="command" key="dataTypeKey">
-															<optgroup label="${dataTypeKey}">
-																<jma:forLoop items="#dataTypeList" name="dataTypeValue"
-																	scope="page">
-																	<option value="${dataTypeValue}">${dataTypeValue}</option>
-																</jma:forLoop>
-															</optgroup>
-														</jma:forLoop>
-													</jma:notEmpty>
-											</select></td>
-											<td><input type="text" name="lengths"
-												class="form-control" style="width: 80px;"></td>
-											<td><input type="text" name="defaults"
-												class="form-control"></td>
-											<td><select name="collations" class="form-control">
-													<option value=""><m:print key="lbl.default" /></option>
-													<jma:notEmpty name="#collation_map" scope="command">
-														<jma:forLoop items="#collation_map" name="collationList"
-															scope="command" key="collationKey">
-															<optgroup label="${collationKey}">
-																<jma:forLoop items="#collationList"
-																	name="collationValue" scope="page">
-																	<option value="${collationValue}" disabled="disabled">${collationValue}</option>
-																</jma:forLoop>
-															</optgroup>
-														</jma:forLoop>
-													</jma:notEmpty>
-											</select></td>
-											<td><input type="hidden" name="pks" value="0"> <input
-												type="checkbox"
-												onchange="callSetValue(this);callPrimaryKey(this);"></td>
-											<td><input type="hidden" name="nns" value="0"> <input
-												type="checkbox" onchange="callSetValue(this);"></td>
-											<td><input type="hidden" name="uqs" value="0"> <input
-												type="checkbox" onchange="callSetValue(this);"></td>
-											<td><input type="hidden" name="bins" value="0">
-												<input type="checkbox" onchange="callSetValue(this);"
-												disabled="disabled"></td>
-											<td><input type="hidden" name="uns" value="0"> <input
-												type="checkbox" onchange="callSetValue(this);"></td>
-											<td><input type="hidden" name="zfs" value="0"> <input
-												type="checkbox" onchange="callSetValue(this);"></td>
-											<td><input type="hidden" name="ais" value="0"> <input
-												type="checkbox"
-												onchange="callSetValue(this);applyAutoIncrement(this);"></td>
-											<td><input type="text" name="comments"
-												class="form-control"></td>
-										</tr>
+										<jma:forLoop items="#old_columns" name="column"
+											scope="command" index="_index">
+											<jma:fetch index="#_index" name="columns" key="column_name" />
+											<jma:fetch index="#_index" name="datatypes" key="datatype" />
+											<jma:fetch index="#_index" name="lengths" key="length" />
+											<jma:fetch index="#_index" name="defaults" key="default" />
+											<jma:fetch index="#_index" name="collations" key="collation" />
+											<jma:fetch index="#_index" name="pks" key="pk" />
+											<jma:fetch index="#_index" name="nns" key="nn" />
+											<jma:fetch index="#_index" name="uqs" key="uq" />
+											<jma:fetch index="#_index" name="uns" key="un" />
+											<jma:fetch index="#_index" name="zfs" key="zf" />
+											<jma:fetch index="#_index" name="ais" key="ai" />
+											<jma:fetch index="#_index" name="comments" key="comment" />
+											<tr>
+												<td><img alt="" class="icon" onclick="moveTrUp(this);"
+													src="${pageContext.request.contextPath}/components/icons/arrow-up-24.png"><img
+													alt="" class="icon" onclick="moveTrDown(this);"
+													src="${pageContext.request.contextPath}/components/icons/arrow-down-24.png"><img
+													alt="" class="icon" onclick="removeThisTr(this);"
+													src="${pageContext.request.contextPath}/components/icons/minus-r.png">
+													<input type="hidden" name="changes"> <input
+													type="hidden" name="deletes"> <input type="hidden"
+													name="old_columns" value="${column}"></td>
+												<td><input type="text" name="columns"
+													onchange="callColumnNameChange(this);"
+													value="${column_name}" class="form-control"
+													style="width: 150px;"></td>
+												<td><select name="datatypes" class="form-control"
+													onchange="callApplyDatatype(this, true);">
+														<jma:notEmpty name="#data_types_map" scope="command">
+															<jma:forLoop items="#data_types_map" name="dataTypeList"
+																scope="command" key="dataTypeKey">
+																<optgroup label="${dataTypeKey}">
+																	<jma:forLoop items="#dataTypeList" name="dataTypeValue"
+																		scope="page">
+																		<jma:switch name="#datatype" scope="page">
+																			<jma:case value="#dataTypeValue" scope="page">
+																				<option value="${dataTypeValue}" selected="selected">${dataTypeValue}</option>
+																			</jma:case>
+																			<jma:default>
+																				<option value="${dataTypeValue}">${dataTypeValue}</option>
+																			</jma:default>
+																		</jma:switch>
+
+																	</jma:forLoop>
+																</optgroup>
+															</jma:forLoop>
+														</jma:notEmpty>
+												</select></td>
+												<td><input type="text" name="lengths" value="${length}"
+													class="form-control" style="width: 80px;"></td>
+												<td><input type="text" name="defaults"
+													class="form-control" value="${default}"></td>
+												<td><select name="collations" class="form-control">
+														<option value=""><m:print key="lbl.default" /></option>
+														<jma:notEmpty name="#collation_map" scope="command">
+															<jma:forLoop items="#collation_map" name="collationList"
+																scope="command" key="collationKey">
+																<optgroup label="${collationKey}">
+																	<jma:forLoop items="#collationList"
+																		name="collationValue" scope="page">
+																		<jma:switch name="#collation" scope="page">
+																			<jma:case value="#collationValue" scope="page">
+																				<option value="${collationValue}"
+																					selected="selected">${collationValue}</option>
+																			</jma:case>
+																			<jma:default>
+																				<option value="${collationValue}">${collationValue}</option>
+																			</jma:default>
+																		</jma:switch>
+																	</jma:forLoop>
+																</optgroup>
+															</jma:forLoop>
+														</jma:notEmpty>
+												</select></td>
+												<td><jma:switch name="#pk" scope="page">
+														<jma:case value="1">
+															<input type="hidden" name="pks" value="1">
+															<input type="checkbox" checked="checked"
+																onchange="callSetValue(this);callPrimaryKey(this);">
+														</jma:case>
+														<jma:default>
+															<input type="hidden" name="pks" value="0">
+															<input type="checkbox"
+																onchange="callSetValue(this);callPrimaryKey(this);">
+														</jma:default>
+													</jma:switch></td>
+												<td><jma:switch name="#nn" scope="page">
+														<jma:case value="1">
+															<input type="hidden" name="nns" value="1">
+															<input type="checkbox" checked="checked"
+																onchange="callSetValue(this);">
+														</jma:case>
+														<jma:default>
+															<input type="hidden" name="nns" value="0">
+															<input type="checkbox" onchange="callSetValue(this);">
+														</jma:default>
+													</jma:switch></td>
+												<td><jma:switch name="#uq" scope="page">
+														<jma:case value="1">
+															<input type="hidden" name="uqs" value="1">
+															<input type="checkbox" checked="checked"
+																onchange="callSetValue(this);">
+														</jma:case>
+														<jma:default>
+															<input type="hidden" name="uqs" value="0">
+															<input type="checkbox" onchange="callSetValue(this);">
+														</jma:default>
+													</jma:switch></td>
+												<td><input type="hidden" name="bins" value="0">
+													<input type="checkbox" onchange="callSetValue(this);"
+													disabled="disabled"></td>
+												<td><jma:switch name="#un" scope="page">
+														<jma:case value="1">
+															<input type="hidden" name="uns" value="1">
+															<input type="checkbox" checked="checked"
+																onchange="callSetValue(this);">
+														</jma:case>
+														<jma:default>
+															<input type="hidden" name="uns" value="0">
+															<input type="checkbox" onchange="callSetValue(this);">
+														</jma:default>
+													</jma:switch></td>
+												<td><jma:switch name="#zf" scope="page">
+														<jma:case value="1">
+															<input type="hidden" name="zfs" value="1">
+															<input type="checkbox" checked="checked"
+																onchange="callSetValue(this);">
+														</jma:case>
+														<jma:default>
+															<input type="hidden" name="zfs" value="0">
+															<input type="checkbox" onchange="callSetValue(this);">
+														</jma:default>
+													</jma:switch></td>
+												<td><jma:switch name="#ai" scope="page">
+														<jma:case value="1">
+															<input type="hidden" name="ais" value="1">
+															<input type="checkbox" checked="checked"
+																onchange="callSetValue(this);applyAutoIncrement(this);">
+														</jma:case>
+														<jma:default>
+															<input type="hidden" name="ais" value="0">
+															<input type="checkbox"
+																onchange="callSetValue(this);applyAutoIncrement(this);">
+														</jma:default>
+													</jma:switch></td>
+												<td><input type="text" name="comments"
+													value="${comment}" class="form-control"></td>
+											</tr>
+										</jma:forLoop>
 									</tbody>
 								</table>
-								<jma:if name="#partition_support" value="true" scope="command,">
-									<div style="display: block;">
-										<div class="form-input">
-											<label><m:print key="lbl.partition" /></label> <select
-												name="partition" class="form-control">
-												<option value=""><m:print
-														key="lbl.select_partition" /></option>
-												<jma:notEmpty name="#partition_list" scope="command">
-													<jma:forLoop items="#partition_list" name="partitionValue"
-														scope="command">
-														<option value="${partitionValue}">${partitionValue}</option>
-													</jma:forLoop>
-												</jma:notEmpty>
-											</select>
-										</div>
-										<div class="form-input">
-											<label><m:print key="lbl.partition_value" /></label> <input
-												name="partition_val" type="text" class="form-control">
-										</div>
-										<div class="form-input">
-											<label><m:print key="lbl.partitions" /></label> <input
-												type="number" name="partitions" class="form-control">
-										</div>
-									</div>
-								</jma:if>
 							</div>
 							<div class="group-widget group-footer">
 								<input type="number" style="width: 50px;" maxlength="3" min="1"
@@ -245,7 +355,7 @@ input[readonly] {
 		</div>
 	</div>
 	<div style="display: none;">
-		<form action="${pageContext.request.contextPath}/database_structure"
+		<form action="${pageContext.request.contextPath}/table_structure"
 			id="success-form" method="get">
 			<input type="hidden" name="token" id="success-token">
 		</form>
@@ -256,7 +366,7 @@ input[readonly] {
 	<m:store name="msg_auto_increment_one_column_alert"
 		key="msg.auto_increment_one_column_alert" />
 	<script type="text/javascript">
-		$("#header-menu li:nth-child(1)").addClass('active');
+		$("#header-menu li:nth-child(2)").addClass('active');
 		// codemirror object
 		var id = document.getElementById('show-create-area');
 		var codeMirrorObj = CodeMirror.fromTextArea(id, {
@@ -274,11 +384,29 @@ input[readonly] {
 		});
 
 		var dataTypesJson = eval('(${applicationScope.data_types_info})');
-		var img = '<img alt="" class="icon" onclick="removeThisTr(this);" src="' + Server.root + '/components/icons/minus-r.png">';
+		var img = '<img alt="" class="icon" onclick="moveTrUp(this);" src="' + Server.root
+				+ '/components/icons/arrow-up-24.png"><img alt="" class="icon" onclick="moveTrDown(this);"src="' + Server.root
+				+ '/components/icons/arrow-down-24.png"><img alt="" class="icon" onclick="removeThisTr(this);" src="' + Server.root
+				+ '/components/icons/minus-r.png"><input type="hidden" name="changes" value="1">'
+				+ '<input type="hidden" name="deletes"> <input type="hidden" name="old_columns" value="">';
 		var columnInfo = '';
 		var validInfo = true;
 
+		function setChangeValueHidden(tr) {
+			$(tr).find('td input[name="changes"]').val('1');
+		}
+
+		function setDeleteValueHidden(tr) {
+			$(tr).find('td input[name="changes"]').val('1');
+			$(tr).find('td input[name="deletes"]').val('1');
+		}
+
+		function callColumnNameChange(selector) {
+			setChangeValueHidden($(selector).parent().parent());
+		}
+
 		function callSetValue(checkbox) {
+			setChangeValueHidden($(checkbox).parent().parent());
 			var td = $(checkbox).parent();
 			var input = $(td).find('input[type="hidden"]');
 			if ($(checkbox).is(':checked')) {
@@ -288,7 +416,10 @@ input[readonly] {
 			}
 		}
 
-		function callApplyDatatype(selector) {
+		function callApplyDatatype(selector, status) {
+			if (status) {
+				setChangeValueHidden($(selector).parent().parent());
+			}
 			var val = $(selector).val();
 			var tr = $(selector).parent().parent();
 			var props = dataTypesJson[val];
@@ -382,7 +513,7 @@ input[readonly] {
 		}
 
 		function callPrimaryKey(selector) {
-
+			setChangeValueHidden($(selector).parent().parent());
 			var chkLen = 0;
 			var trs = $('#new-table-id').find('tr');
 			$(trs).each(function(index, item) {
@@ -412,6 +543,7 @@ input[readonly] {
 
 		// to enable or disable AI checkbox values
 		function applyAutoIncrement(selector) {
+			setChangeValueHidden($(selector).parent().parent());
 			var chkLen = 0;
 			var trs = $('#new-table-id').find('tr');
 			$(trs).each(function(index, item) {
@@ -431,12 +563,35 @@ input[readonly] {
 			}
 		}
 
+		function moveTrUp(selector) {
+			var tr = $(selector).parent().parent();
+			var length = $('#new-table-id tr').length - 3;
+			if ($(tr).index() == 0) {
+				return;
+			}
+			setChangeValueHidden($(tr));
+			var row = $(selector).parents("tr:first");
+			row.insertBefore(row.prev());
+		}
+
+		function moveTrDown(selector) {
+			var tr = $(selector).parent().parent();
+			var tr = $(selector).parent().parent();
+			var length = $('#new-table-id tr').length - 3;
+			if ($(tr).index() == length) {
+				return;
+			}
+			setChangeValueHidden($(tr));
+			var row = $(selector).parents("tr:first");
+			row.insertAfter(row.next());
+		}
+
 		function removeThisTr(selector) {
+			setDeleteValueHidden($(selector).parent().parent());
 			$('#no-of-columns').prop('readonly', false);
 			$('#add-column-btn').prop('disabled', false);
 			var tr = $(selector).parent().parent();
-			$(tr).empty();
-			$(tr).remove();
+			$(tr).hide();
 		}
 
 		function fetchColumn() {
@@ -483,6 +638,9 @@ input[readonly] {
 
 			fetchColumn();
 			applyAutoIncrement();
+			$('#new-table-id tr td select[name="datatypes"]').each(function() {
+				callApplyDatatype($(this), false);
+			});
 			$('#add-column-btn').click(function() {
 				showWaiting();
 				setTimeout(function() {
@@ -518,7 +676,7 @@ input[readonly] {
 				showWaiting();
 				$('#action-input').val('Yes');
 				$.ajax({
-					url : Server.root + '/database_create_table_post.text',
+					url : Server.root + '/table_alter_post.text',
 					method : 'POST',
 					data : $('#alter-table-form').serialize(),
 					success : function(result) {
@@ -562,7 +720,7 @@ input[readonly] {
 				showWaiting();
 				$('#action-input').val('No');
 				$.ajax({
-					url : Server.root + '/database_create_table_post.text',
+					url : Server.root + '/table_alter_post.text',
 					method : 'POST',
 					data : $('#alter-table-form').serialize(),
 					success : function(result) {

@@ -18,7 +18,7 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/table_data")
-public class DataController extends Controller<DataSelectBean> {
+public class TableDataController extends Controller<DataSelectBean> {
 
 	private static final long serialVersionUID = 1L;
 

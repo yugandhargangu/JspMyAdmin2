@@ -25,9 +25,10 @@ public class StructureShowController extends Controller<ColumnListBean> {
 	@Override
 	protected void handleGet(ColumnListBean bean, View view) throws Exception {
 		String table_name = (String) session.getAttribute(FrameworkConstants.SESSION_TABLE);
+		super.fillBasics(bean);
 		StructureLogic structureLogic = new StructureLogic(table_name, messages);
 		structureLogic.fillStructureBean(bean);
-
+		super.generateToken(bean);
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_TABLE_STRUCTURE_STRUCTURE);
 	}

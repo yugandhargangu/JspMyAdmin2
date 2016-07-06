@@ -482,7 +482,6 @@ public class RoutineLogic extends AbstractLogic {
 					blodDataBuilder.append(result);
 				}
 				result = blodDataBuilder.toString();
-				System.out.println(result);
 			}
 		} finally {
 			close(resultSet);
