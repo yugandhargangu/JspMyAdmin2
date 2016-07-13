@@ -10,23 +10,17 @@
 	</listener>
 
 	<servlet>
-		<servlet-name>ResourceServlet</servlet-name>
-		<servlet-class>com.jspmyadmin.framework.web.utils.ResourceServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ResourceServlet</servlet-name>
-		<url-pattern>/components/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>DefaultServlet</servlet-name>
 		<servlet-class>com.jspmyadmin.framework.web.utils.DefaultServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>DefaultServlet</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DefaultServlet</servlet-name>
+		<url-pattern>*.text</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

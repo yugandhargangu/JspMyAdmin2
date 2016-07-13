@@ -42,7 +42,7 @@ input[readonly] {
 			<div id="main-body">
 				<div style="padding: 0.2em 0.2em;">
 					<div class="page-head">
-						<form action="${pageContext.request.contextPath}/table_structure"
+						<form action="${pageContext.request.contextPath}/table_structure.html"
 							accept-charset="utf-8" method="get">
 							<h3>
 								<m:print key="lbl.alter_table" />
@@ -355,7 +355,7 @@ input[readonly] {
 		</div>
 	</div>
 	<div style="display: none;">
-		<form action="${pageContext.request.contextPath}/table_structure"
+		<form action="${pageContext.request.contextPath}/table_structure.html"
 			id="success-form" method="get">
 			<input type="hidden" name="token" id="success-token">
 		</form>

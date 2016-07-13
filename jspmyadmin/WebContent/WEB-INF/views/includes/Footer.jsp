@@ -3,5 +3,5 @@
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages"%>
 <%@ taglib prefix="jma" uri="http://jspmyadmin.com/taglib/jsp/jma"%>
 <m:open />
-<div style="padding: 0.2em 2em;">JspMyAdmin Client. Mail to:
-	yugandhar.jspmyadmin@gmail.com</div>
+<div style="padding: 0.2em 2em;">JspMyAdmin | Mail
+	to:jspmyadmn@gmail.com</div>

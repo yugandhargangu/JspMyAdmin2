@@ -9,14 +9,14 @@
 	<display-name>JspMyadmin Message Tags</display-name>
 	<tag>
 		<name>open</name>
-		<tag-class>com.jspmyadmin.framework.tag.messages.MessageOpenTag
+		<tag-class>com.jspmyadmin.framework.taglib.messages.MessageOpenTag
 		</tag-class>
 		<body-content>empty</body-content>
 		<description>To load messages with locale.</description>
 	</tag>
 	<tag>
 		<name>print</name>
-		<tag-class>com.jspmyadmin.framework.tag.messages.PrintTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.messages.PrintTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>key</name>
@@ -39,7 +39,7 @@
 	</tag>
 	<tag>
 		<name>store</name>
-		<tag-class>com.jspmyadmin.framework.tag.messages.StoreTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.messages.StoreTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>key</name>

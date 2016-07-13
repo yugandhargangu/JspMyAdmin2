@@ -27,7 +27,7 @@
 						</h3>
 					</div>
 					<form method="post" accept-charset="UTF-8" id="create_db"
-						action="${pageContext.request.contextPath}/server_database_create">
+						action="${pageContext.request.contextPath}/server_database_create.html">
 						<input type="hidden" name="token"
 							value="${requestScope.command.token}">
 						<div class="group">
@@ -65,7 +65,7 @@
 						</div>
 					</form>
 					<form method="post" accept-charset="UTF-8" id="server_db"
-						action="${pageContext.request.contextPath}/server_databases">
+						action="${pageContext.request.contextPath}/server_databases.html">
 						<input type="hidden" name="token"
 							value="${requestScope.command.token}">
 						<div class="group">
@@ -82,7 +82,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.database}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.database}">
 																	<m:print key="lbl.database_name" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -90,7 +90,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.database}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.database}">
 																	<m:print key="lbl.database_name" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -100,7 +100,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.database}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.database}">
 															<m:print key="lbl.database_name" />
 														</a>
 													</jma:default>
@@ -110,7 +110,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.collation}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.collation}">
 																	<m:print key="lbl.collation" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -118,7 +118,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.collation}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.collation}">
 																	<m:print key="lbl.collation" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -128,7 +128,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.collation}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.collation}">
 															<m:print key="lbl.collation" />
 														</a>
 													</jma:default>
@@ -138,7 +138,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.tables}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.tables}">
 																	<m:print key="lbl.no_of_tables" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -146,7 +146,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.tables}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.tables}">
 																	<m:print key="lbl.no_of_tables" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -156,7 +156,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.tables}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.tables}">
 															<m:print key="lbl.no_of_tables" />
 														</a>
 													</jma:default>
@@ -166,7 +166,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.rows}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.rows}">
 																	<m:print key="lbl.no_of_rows" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -174,7 +174,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.rows}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.rows}">
 																	<m:print key="lbl.no_of_rows" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -184,7 +184,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.rows}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.rows}">
 															<m:print key="lbl.no_of_rows" />
 														</a>
 													</jma:default>
@@ -194,7 +194,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.data}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.data}">
 																	<m:print key="lbl.data_size" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -202,7 +202,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.data}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.data}">
 																	<m:print key="lbl.data_size" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -212,7 +212,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.data}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.data}">
 															<m:print key="lbl.data_size" />
 														</a>
 													</jma:default>
@@ -222,7 +222,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.indexes}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.indexes}">
 																	<m:print key="lbl.index_size" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -230,7 +230,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.indexes}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.indexes}">
 																	<m:print key="lbl.index_size" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -240,7 +240,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.indexes}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.indexes}">
 															<m:print key="lbl.index_size" />
 														</a>
 													</jma:default>
@@ -250,7 +250,7 @@
 														<jma:switch name="#type" scope="command">
 															<jma:case value="true">
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.total}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.total}">
 																	<m:print key="lbl.total_size" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-desc-w.png">
@@ -258,7 +258,7 @@
 															</jma:case>
 															<jma:default>
 																<a
-																	href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.total}">
+																	href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.total}">
 																	<m:print key="lbl.total_size" /> <img alt=""
 																	class="icon"
 																	src="${pageContext.request.contextPath}/components/icons/sort-asc-w.png">
@@ -268,7 +268,7 @@
 													</jma:case>
 													<jma:default>
 														<a
-															href="${pageContext.request.contextPath}/server_databases?token=${requestScope.command.sortInfo.total}">
+															href="${pageContext.request.contextPath}/server_databases.html?token=${requestScope.command.sortInfo.total}">
 															<m:print key="lbl.total_size" />
 														</a>
 													</jma:default>
@@ -296,7 +296,7 @@
 													<td><input type="checkbox" name="databases"
 														value="${databaseInfo.database}"></td>
 													<td><a
-														href="${pageContext.request.contextPath}/database_structure?token=${databaseInfo.action}">
+														href="${pageContext.request.contextPath}/database_structure.html?token=${databaseInfo.action}">
 															${databaseInfo.database} </a></td>
 													<td>${databaseInfo.collation}</td>
 													<td>${databaseInfo.tables}</td>
@@ -322,7 +322,7 @@
 									<m:print key="lbl.user_privileges" />
 								</button>
 								<button type="button" class="btn" id="drop_btn"
-									value="${pageContext.request.contextPath}/server_database_drop">
+									value="${pageContext.request.contextPath}/server_database_drop.html">
 									<img alt="" class="icon"
 										src="${pageContext.request.contextPath}/components/icons/delete-database.png">
 									<m:print key="lbl.drop" />

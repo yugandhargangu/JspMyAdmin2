@@ -32,7 +32,7 @@
 						</div>
 						<div class="group-widget group-content">
 							<form id="table-create-form"
-								action="${pageContext.request.contextPath}/database_create_table"
+								action="${pageContext.request.contextPath}/database_create_table.html"
 								method="post" accept-charset="utf-8">
 								<input type="hidden" name="token"
 									value="${requestScope.command.token}">
@@ -64,7 +64,7 @@
 										<tr>
 											<th><input type="checkbox" id="check_all"></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.name}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.name}">
 													<m:print key="lbl.table_name" /> <jma:if name="#sort"
 														value="1" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -80,7 +80,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.type}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.type}">
 													<m:print key="lbl.type" /> <jma:if name="#sort" value="2"
 														scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -96,7 +96,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.engine}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.engine}">
 													<m:print key="lbl.engine" /> <jma:if name="#sort"
 														value="3" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -112,7 +112,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.rows}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.rows}">
 													<m:print key="lbl.no_of_rows" /> <jma:if name="#sort"
 														value="4" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -128,7 +128,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.collation}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.collation}">
 													<m:print key="lbl.collation" /> <jma:if name="#sort"
 														value="5" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -144,7 +144,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.size}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.size}">
 													<m:print key="lbl.data_size" /> <jma:if name="#sort"
 														value="6" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -160,7 +160,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.auto_inr}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.auto_inr}">
 													<m:print key="lbl.auto_increment" /> <jma:if name="#sort"
 														value="7" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -176,7 +176,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.create_date}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.create_date}">
 													<m:print key="lbl.create_date" /> <jma:if name="#sort"
 														value="8" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -192,7 +192,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.update_date}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.update_date}">
 													<m:print key="lbl.update_date" /> <jma:if name="#sort"
 														value="9" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -208,7 +208,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_structure?token=${requestScope.command.sortInfo.comment}">
+												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.comment}">
 													<m:print key="lbl.comment" /> <jma:if name="#sort"
 														value="10" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -249,7 +249,7 @@
 													<td><input type="checkbox" name="tables"
 														value="${tableInfo.name}"></td>
 													<td><a
-														href="${pageContext.request.contextPath}/table_data?token=${tableInfo.action}">${tableInfo.name}</a></td>
+														href="${pageContext.request.contextPath}/table_data.html?token=${tableInfo.action}">${tableInfo.name}</a></td>
 													<td>${tableInfo.type}</td>
 													<td>${tableInfo.engine}</td>
 													<td>${tableInfo.rows}</td>
@@ -271,18 +271,6 @@
 								</table>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-browse">
-									<m:print key="lbl.browse" />
-								</button>
-								<button type="button" class="btn" id="btn-structure">
-									<m:print key="lbl.structure" />
-								</button>
-								<button type="button" class="btn" id="btn-search">
-									<m:print key="lbl.search" />
-								</button>
-								<button type="button" class="btn" id="btn-insert">
-									<m:print key="lbl.insert" />
-								</button>
 								<button type="button" class="btn" id="btn-prefix">
 									<m:print key="lbl.prefix" />
 								</button>
@@ -340,7 +328,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-duplicate-go"
-									value="${pageContext.request.contextPath}/database_structure_duplicate">
+									value="${pageContext.request.contextPath}/database_structure_duplicate.html">
 									<m:print key="btn.go" />
 								</button>
 							</div>
@@ -445,7 +433,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-prefix-go"
-									value="${pageContext.request.contextPath}/database_structure_prefix">
+									value="${pageContext.request.contextPath}/database_structure_prefix.html">
 									<m:print key="btn.go" />
 								</button>
 							</div>
@@ -512,7 +500,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-suffix-go"
-									value="${pageContext.request.contextPath}/database_structure_suffix">
+									value="${pageContext.request.contextPath}/database_structure_suffix.html">
 									<m:print key="btn.go" />
 								</button>
 							</div>
@@ -593,7 +581,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-copy-go"
-									value="${pageContext.request.contextPath}/database_structure_copy">
+									value="${pageContext.request.contextPath}/database_structure_copy.html">
 									<m:print key="btn.go" />
 								</button>
 							</div>
@@ -716,8 +704,8 @@
 		};
 		// action for each operation
 		var GoAction = {
-			drop : "/database_structure_drop",
-			truncate : "/database_structure_truncate"
+			drop : "/database_structure_drop.html",
+			truncate : "/database_structure_truncate.html"
 		};
 		// to specify action
 		var action = '#';

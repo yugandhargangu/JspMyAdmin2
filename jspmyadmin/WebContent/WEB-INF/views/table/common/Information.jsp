@@ -28,7 +28,7 @@
 			<div id="main-body">
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
-						<form action="${pageContext.request.contextPath}/table_alter"
+						<form action="${pageContext.request.contextPath}/table_alter.html"
 							accept-charset="utf-8" method="post">
 							<input type="hidden" name="token"
 								value="${requestScope.command.token}">

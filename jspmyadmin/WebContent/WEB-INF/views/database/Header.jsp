@@ -6,31 +6,32 @@
 <div id="header-menu-container">
 	<ul id="header-menu">
 		<li><a
-			href="${pageContext.request.contextPath}/database_structure"><img
+			href="${pageContext.request.contextPath}/database_structure.html"><img
 				alt="Tables" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-g.png">
 				Tables</a></li>
 		<li><a
-			href="${pageContext.request.contextPath}/database_view_list"><img
+			href="${pageContext.request.contextPath}/database_view_list.html"><img
 				alt="Views" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-g.png">
 				Views</a></li>
 		<li><a
-			href="${pageContext.request.contextPath}/database_procedures"><img
+			href="${pageContext.request.contextPath}/database_procedures.html"><img
 				alt="Procedures" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-config.png">
 				Procedures</a></li>
 		<li><a
-			href="${pageContext.request.contextPath}/database_functions"><img
+			href="${pageContext.request.contextPath}/database_functions.html"><img
 				alt="Functions" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-config.png">
 				Functions</a></li>
-		<li><a href="${pageContext.request.contextPath}/database_events"><img
+		<li><a
+			href="${pageContext.request.contextPath}/database_events.html"><img
 				alt="Plugins" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/puzzle-piece.png">
 				Events</a></li>
 		<li><a
-			href="${pageContext.request.contextPath}/database_triggers"><img
+			href="${pageContext.request.contextPath}/database_triggers.html"><img
 				alt="Triggers" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/puzzle-piece.png">
 				Triggers</a></li>

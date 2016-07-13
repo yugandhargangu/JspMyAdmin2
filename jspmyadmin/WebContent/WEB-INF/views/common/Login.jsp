@@ -33,7 +33,7 @@
 				<m:print key="lbl.language" />
 			</h3>
 		</div>
-		<form action="${pageContext.request.contextPath}/language"
+		<form action="${pageContext.request.contextPath}/language.html"
 			id="language-form" method="post" accept-charset="UTF-8">
 			<input type="hidden" name="token"
 				value="${requestScope.command.token}"> <input type="hidden"
@@ -52,8 +52,8 @@
 				<m:print key="lbl.login" />
 			</h3>
 		</div>
-		<form action="${pageContext.request.contextPath}/login" method="post"
-			id="login-form" accept-charset="UTF-8">
+		<form action="${pageContext.request.contextPath}/login.html"
+			method="post" id="login-form" accept-charset="UTF-8">
 			<input type="hidden" name="token"
 				value="${requestScope.command.token}">
 			<div class="group-widget group-content">

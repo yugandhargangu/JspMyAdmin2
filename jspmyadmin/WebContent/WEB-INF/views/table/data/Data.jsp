@@ -76,7 +76,7 @@ input[readonly] {
 									<m:print key="lbl.go_to_console" />
 								</button>
 								<a id="btn-refresh"
-									href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.reload_page}">
+									href="${pageContext.request.contextPath}/table_data.html?token=${requestScope.command.reload_page}">
 									<button type="button" class="btn">
 										<m:print key="lbl.refresh" />
 									</button>
@@ -154,7 +154,7 @@ input[readonly] {
 								<div style="width: 100%; float: left;">
 									<jma:notEmpty name="#previous_page" scope="command">
 										<a
-											href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.previous_page}"><button
+											href="${pageContext.request.contextPath}/table_data.html?token=${requestScope.command.previous_page}"><button
 												type="button" class="btn" style="float: left;">
 												&lt;
 												<m:print key="lbl.previous" />
@@ -165,7 +165,7 @@ input[readonly] {
 											<jma:case value="0"></jma:case>
 											<jma:default>
 												<a
-													href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.next_page}"><button
+													href="${pageContext.request.contextPath}/table_data.html?token=${requestScope.command.next_page}"><button
 														type="button" class="btn" style="float: right;">
 														<m:print key="lbl.next" />
 														&gt;
@@ -184,7 +184,7 @@ input[readonly] {
 												<jma:forLoop items="#column_name_map" name="sortInfo"
 													key="columnName" scope="command">
 													<th><a
-														href="${pageContext.request.contextPath}/table_data?token=${sortInfo}">
+														href="${pageContext.request.contextPath}/table_data.html?token=${sortInfo}">
 															${columnName} <jma:if name="#sort_by" value="#columnName"
 																scope="command,page">
 																<jma:switch name="#sort_type" scope="command">
@@ -231,7 +231,7 @@ input[readonly] {
 												<jma:forLoop items="#column_name_map" name="sortInfo"
 													key="columnName" scope="command">
 													<th><a
-														href="${pageContext.request.contextPath}/table_data?token=${sortInfo}">
+														href="${pageContext.request.contextPath}/table_data.html?token=${sortInfo}">
 															${columnName} <jma:if name="#sort_by" value="#columnName"
 																scope="command,page">
 																<jma:switch name="#sort_type" scope="command">
@@ -261,14 +261,18 @@ input[readonly] {
 																<input type="checkbox" name="ids" class="record-id"
 																	value="${pkValue}">
 															</jma:notEmpty></td>
-														<td><jma:notEmpty name="#primary_key" scope="command">
+														<td style="min-width: 50px;"><jma:notEmpty
+																name="#primary_key" scope="command">
 																<m:store name="lbl_delete" key="lbl.delete" />
 																<m:store name="lbl_edit" key="lbl.edit" />
+																<jma:fetch index="#rowIndex" name="primary_key_token"
+																	key="primary_key_token" />
 																<img alt="${lbl_delete}" title="${lbl_delete}"
 																	class="icon delete-btn"
 																	src="${pageContext.request.contextPath}/components/icons/minus-r.png">
-																<img alt="${lbl_edit}" title="${lbl_edit}"
-																	class="icon edit-btn"
+																<img alt="${lbl_edit}" class="icon edit-btn"
+																	title="${lbl_edit}"
+																	onclick="callTableUpdate('${primary_key_token}');"
 																	src="${pageContext.request.contextPath}/components/icons/edit-24.png">
 															</jma:notEmpty></td>
 														<jma:forLoop items="#rowData" name="item" scope="page">
@@ -290,7 +294,7 @@ input[readonly] {
 								<div style="width: 100%; float: left;">
 									<jma:notEmpty name="#previous_page" scope="command">
 										<a
-											href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.previous_page}"><button
+											href="${pageContext.request.contextPath}/table_data.html?token=${requestScope.command.previous_page}"><button
 												type="button" class="btn" style="float: left;">
 												&lt;
 												<m:print key="lbl.previous" />
@@ -298,7 +302,7 @@ input[readonly] {
 									</jma:notEmpty>
 									<jma:notEmpty name="#select_list" scope="command">
 										<a
-											href="${pageContext.request.contextPath}/table_data?token=${requestScope.command.next_page}"><button
+											href="${pageContext.request.contextPath}/table_data,html?token=${requestScope.command.next_page}"><button
 												type="button" class="btn" style="float: right;">
 												<m:print key="lbl.next" />
 												&gt;
@@ -317,10 +321,12 @@ input[readonly] {
 					</form>
 				</div>
 			</div>
-			<div id="console">
-				<b style="color: #0072C6;"><m:print key="lbl.console" />:</b>
-				<textarea rows="50" cols="4" style="width: 100%;" id="console-text"></textarea>
-			</div>
+			<jma:notEmpty name="#primary_key" scope="command">
+				<div id="console">
+					<b style="color: #0072C6;"><m:print key="lbl.console" />:</b>
+					<textarea rows="50" cols="4" style="width: 100%;" id="console-text"></textarea>
+				</div>
+			</jma:notEmpty>
 			<div id="footer">
 				<jsp:include page="../../includes/Footer.jsp" />
 			</div>
@@ -373,6 +379,13 @@ input[readonly] {
 				</div>
 			</div>
 		</div>
+		<div style="display: none;">
+			<form
+				action="${pageContext.request.contextPath}/table_insert_update.html"
+				method="get" id="update-form">
+				<input type="hidden" name="token" id="update-form-input">
+			</form>
+		</div>
 	</jma:notEmpty>
 
 	<script type="text/javascript">
@@ -387,22 +400,19 @@ input[readonly] {
 			lineNumbers : false,
 			lineWrapping : true,
 			matchBrackets : true,
-			extraKeys : {
-				"Ctrl-Space" : "autocomplete"
-			},
 			readOnly : true
 		});
 
 		$(function() {
 			$('#limit-list-select').change(function() {
 				showWaiting();
-				$('#data-form').prop('action', Server.root + "/table_data");
+				$('#data-form').prop('action', Server.root + "/table_data.html");
 				$('#data-form').submit();
 			});
 
 			$('#search-btn').click(function() {
 				showWaiting();
-				$('#data-form').prop('action', Server.root + "/table_data");
+				$('#data-form').prop('action', Server.root + "/table_data.html");
 				$('#data-form').submit();
 			});
 
@@ -413,7 +423,7 @@ input[readonly] {
 				} else {
 					$('#search-tr').remove();
 				}
-				$('#data-form').prop('action', Server.root + "/table_data");
+				$('#data-form').prop('action', Server.root + "/table_data.html");
 				$('#data-form').submit();
 			});
 
@@ -488,10 +498,6 @@ input[readonly] {
 					}
 				});
 
-				$('#edit-btn').click(function() {
-					// XXX
-				});
-
 				$('#yes_btn').click(function() {
 					$('#confirm-dialog').hide();
 					showWaiting();
@@ -556,6 +562,11 @@ input[readonly] {
 					$('#confirm-dialog').hide();
 				});
 			});
+
+			function callTableUpdate(pk_token) {
+				$('#update-form-input').val(pk_token);
+				$('#update-form').submit();
+			}
 		</script>
 
 		<script type="text/javascript">
@@ -640,7 +651,7 @@ input[readonly] {
 				});
 
 				$('.edit-td').dblclick(function() {
-					if ($(this).find('a').length > 0) {
+					if ($(this).find('b').length > 0) {
 						return;
 					}
 					originalData = $(this).text();
@@ -659,6 +670,12 @@ input[readonly] {
 							}
 						}
 					}).appendTo($this.empty()).focus();
+				});
+				$('.blob-download').each(function() {
+					$(this).prop('title', 'Download');
+				});
+				$('.blob-download').click(function() {
+					alert('Not yet Implemented.');
 				});
 			});
 

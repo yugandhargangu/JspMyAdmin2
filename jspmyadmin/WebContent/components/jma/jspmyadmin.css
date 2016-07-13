@@ -7,12 +7,14 @@
 
 html {
 	height: 100%;
+	overflow-y: hidden;
 }
 
 body {
 	height: 100%;
 	min-height: 100%;
 	background-color: #FFFFFF;
+	font-family: Arial, Arial, Helvetica, sans-serif;
 }
 
 html, body {
@@ -366,15 +368,34 @@ input[type="text"], input[type="password"], select, input[type="number"]
 	width: auto;
 }
 
+select option, select optgroup {
+	padding-left: 5px;
+}
+
+select optgroup option {
+	padding-left: 15px;
+}
+
+.div-inline {
+	display: inline-block;
+}
+
+.file-name {
+	max-width: 200px;
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 .btn {
 	background-color: #0072C6;
 	border: 1px solid #0072C6;
 	cursor: pointer;
-	padding: 0.2em 1em;
+	padding: 0.2em 1em 0.3em 1em;
 	color: #FFF;
 	text-shadow: 0px 1px 0px #FFF;
 	margin: 0.1em 1em;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 .form-input {
@@ -503,4 +524,9 @@ a {
 a:ACTIVE, a:AFTER, a:BEFORE, a:FOCUS, a:HOVER, a:LINK, a:VISITED {
 	color: #2086BF;
 	text-decoration: none;
+}
+
+.blob-download:HOVER {
+	color: #2086BF;
+	cursor: pointer;
 }

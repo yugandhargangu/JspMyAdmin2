@@ -269,7 +269,7 @@ input[readonly] {
 		</div>
 	</div>
 	<div style="display: none;">
-		<form action="${pageContext.request.contextPath}/database_events"
+		<form action="${pageContext.request.contextPath}/database_events.html"
 			id="success-form" method="get">
 			<input type="hidden" name="token" id="success-token">
 		</form>

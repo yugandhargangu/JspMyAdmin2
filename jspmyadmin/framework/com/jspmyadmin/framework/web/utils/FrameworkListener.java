@@ -12,7 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.jspmyadmin.framework.util.FrameworkConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 
 /**
  * @author Yugandhar Gangu
@@ -32,12 +32,35 @@ public class FrameworkListener implements ServletContextListener {
 				context.setAttribute(FrameworkConstants.APP_DATA_TYPES_INFO, FrameworkConstants.Utils.DATA_TYPES_INFO);
 				context.setAttribute(FrameworkConstants.HOSTNAME, InetAddress.getLocalHost().getHostName());
 				DefaultServlet.setContext(context);
-				ResourceServlet.setBasePath(context.getRealPath("/"));
 			}
-			ControllerUtil.scan();
-			MessageReader.read();
-		} catch (IOException e) {
-			_LOGGER.log(Level.WARNING, "Unable to Read Messages.", e);
+			// scan controllers
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						ControllerUtil.scan();
+						_LOGGER.log(Level.INFO, "Successfully Scanned Controllers. Controller Count: "
+								+ ControllerUtil.PATH_MAP.size());
+					} catch (Exception e) {
+						_LOGGER.log(Level.WARNING, "Unable to Scan Controllers.", e);
+					}
+				}
+			}.start();
+
+			// read messages
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						MessageReader.read();
+						_LOGGER.log(Level.INFO, "Successfully Read all Messages.");
+					} catch (IOException e) {
+						_LOGGER.log(Level.WARNING, "Unable to Read Messages.", e);
+					}
+				}
+			}.start();
+
+		} catch (Exception e) {
 		}
 	}
 

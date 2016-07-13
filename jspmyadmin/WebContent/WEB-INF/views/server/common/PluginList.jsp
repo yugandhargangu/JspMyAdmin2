@@ -33,7 +33,7 @@
 									<jma:forLoop items="#columnInfo" name="columnName"
 										scope="command" index="columnIndex">
 										<th><a
-											href="${pageContext.request.contextPath}/server_plugins?token=${requestScope.command.sortInfo[columnIndex]}">
+											href="${pageContext.request.contextPath}/server_plugins.html?token=${requestScope.command.sortInfo[columnIndex]}">
 												${columnName}<jma:if name="#field" value="#columnName"
 													scope="command,page">
 													<jma:switch name="#type" scope="command">
@@ -56,7 +56,7 @@
 									<jma:forLoop items="#columnInfo" name="columnName"
 										scope="command" index="columnIndex">
 										<th><a
-											href="${pageContext.request.contextPath}/server_plugins?token=${requestScope.command.sortInfo[columnIndex]}">
+											href="${pageContext.request.contextPath}/server_plugins.html?token=${requestScope.command.sortInfo[columnIndex]}">
 												${columnName} <jma:if name="#field" value="#columnName"
 													scope="command,page">
 													<jma:switch name="#type" scope="command">

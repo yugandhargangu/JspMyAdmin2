@@ -21,7 +21,7 @@
 			<div id="main-body">
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
-						<form action="${pageContext.request.contextPath}/table_alter"
+						<form action="${pageContext.request.contextPath}/table_alter.html"
 							accept-charset="utf-8" method="post">
 							<input type="hidden" name="token"
 								value="${requestScope.command.token}">
@@ -293,7 +293,7 @@
 			});
 			$('#yes_btn').click(function() {
 				showWaiting();
-				$('#column-list-form').attr('action', Server.root + '/table_column_drop');
+				$('#column-list-form').attr('action', Server.root + '/table_column_drop.html');
 				$('#column-list-form').submit();
 			});
 			$('#no_btn').click(function() {

@@ -183,7 +183,7 @@ input[readonly] {
 		</div>
 	</div>
 	<div style="display: none;">
-		<form action="${pageContext.request.contextPath}/database_view_list"
+		<form action="${pageContext.request.contextPath}/database_view_list.html"
 			id="success-form" method="get">
 			<input type="hidden" name="token" id="success-token">
 		</form>

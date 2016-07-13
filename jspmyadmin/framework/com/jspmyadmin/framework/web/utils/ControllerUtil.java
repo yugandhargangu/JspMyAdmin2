@@ -17,9 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jspmyadmin.framework.util.FrameworkConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.annotations.Download;
-import com.jspmyadmin.framework.web.annotations.Multipart;
 import com.jspmyadmin.framework.web.annotations.ResponseBody;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
@@ -43,19 +42,13 @@ class ControllerUtil {
 	private static ClassFileFilter _fileFilter = new ClassFileFilter();
 
 	/**
+	 * @throws Exception
+	 * @throws ClassNotFoundException
 	 * 
 	 */
-	static void scan() {
-		try {
-			_scanAllClasses();
-			_scanControllers();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	static void scan() throws ClassNotFoundException, Exception {
+		_scanAllClasses();
+		_scanControllers();
 	}
 
 	/**
@@ -151,7 +144,6 @@ class ControllerUtil {
 		WebController webController = null;
 		ValidateToken validateToken = null;
 		Download download = null;
-		Multipart multipart = null;
 		ResponseBody responseBody = null;
 		String bean = null;
 		Class<?> beanClass = null;
@@ -179,10 +171,6 @@ class ControllerUtil {
 							if (download != null) {
 								pathInfo.setGetDownload(true);
 							}
-							multipart = method.getAnnotation(Multipart.class);
-							if (multipart != null) {
-								pathInfo.setGetMultiPart(true);
-							}
 							responseBody = method.getAnnotation(ResponseBody.class);
 							if (responseBody != null) {
 								pathInfo.setGetResponseBody(true);
@@ -196,10 +184,6 @@ class ControllerUtil {
 							download = method.getAnnotation(Download.class);
 							if (download != null) {
 								pathInfo.setPostDownload(true);
-							}
-							multipart = method.getAnnotation(Multipart.class);
-							if (multipart != null) {
-								pathInfo.setPostMultiPart(true);
 							}
 							responseBody = method.getAnnotation(ResponseBody.class);
 							if (responseBody != null) {
@@ -218,7 +202,6 @@ class ControllerUtil {
 		} finally {
 			beanClass = null;
 			bean = null;
-			multipart = null;
 			download = null;
 			validateToken = null;
 			webController = null;

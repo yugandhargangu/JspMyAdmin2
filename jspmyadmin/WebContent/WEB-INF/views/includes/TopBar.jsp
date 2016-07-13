@@ -4,11 +4,11 @@
 <%@ taglib prefix="jma" uri="http://jspmyadmin.com/taglib/jsp/jma"%>
 <m:open />
 <div style="padding: 0.2em 1.5em;">
-	<div style="display: inline-block; padding: 0.1em 1em;">
+	<div style="display: inline-block; padding: 0.2em 1em;">
 		<img alt="Server" class="icon"
 			src="${pageContext.request.contextPath}/components/icons/server.png">
 		<m:print key="lbl.server" />
-		: <a href="${pageContext.request.contextPath}/home"
+		: <a href="${pageContext.request.contextPath}/home.html"
 			class="topbar-link">
 			${pageContext.request.serverName}:${pageContext.request.serverPort}
 			&#40;${applicationScope.hostname}&#41;</a>
@@ -18,7 +18,8 @@
 			<img alt="Database" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-g.png">
 			<m:print key="lbl.database" />
-			: <a href="${pageContext.request.contextPath}/database_structure"
+			: <a
+				href="${pageContext.request.contextPath}/database_structure.html"
 				class="topbar-link">${sessionScope.session_db}</a>
 		</div>
 	</jma:notEmpty>
@@ -27,7 +28,7 @@
 			<img alt="Server" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/newspaper.png">
 			<m:print key="lbl.table" />
-			: <a href="${pageContext.request.contextPath}/table_data"
+			: <a href="${pageContext.request.contextPath}/table_data.html"
 				class="topbar-link">${sessionScope.session_table}</a>
 		</div>
 	</jma:notEmpty>

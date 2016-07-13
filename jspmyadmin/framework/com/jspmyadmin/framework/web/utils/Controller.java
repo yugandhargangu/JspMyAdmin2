@@ -15,7 +15,8 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jspmyadmin.framework.util.FrameworkConstants;
+import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.logic.EncDecLogic;
 
 /**
@@ -220,6 +221,24 @@ public abstract class Controller<T extends Bean> implements Serializable {
 
 	/**
 	 * 
+	 * @param view
+	 */
+	protected void handleDefault(View view) {
+		view.setType(ViewType.REDIRECT);
+		view.setPath(AppConstants.PATH_HOME);
+	}
+
+	/**
+	 * 
+	 * @param view
+	 */
+	protected void handleException(View view) {
+		view.setType(ViewType.REDIRECT);
+		view.setPath(AppConstants.PATH_HOME);
+	}
+
+	/**
+	 * 
 	 * @param bean
 	 * @param view
 	 * @throws IOException
@@ -230,12 +249,8 @@ public abstract class Controller<T extends Bean> implements Serializable {
 		try {
 			if (_METHOD_GET.equals(request.getMethod().toUpperCase())) {
 				BeanUtil beanUtil = new BeanUtil();
-				if (pathInfo.isGetMultiPart()) {
-					beanUtil.populateMultipart(request, bean);
-				} else {
-					beanUtil.populate(request, bean);
-					beanUtil = null;
-				}
+				beanUtil.populate(request, bean);
+				beanUtil = null;
 
 				if (pathInfo.isGetValidateToken()) {
 					EncDecLogic encDecLogic = new EncDecLogic();
@@ -271,12 +286,13 @@ public abstract class Controller<T extends Bean> implements Serializable {
 				}
 			} else if (_METHOD_POST.equals(request.getMethod().toUpperCase())) {
 				BeanUtil beanUtil = new BeanUtil();
-				if (pathInfo.isPostMultiPart()) {
+				if (request.getContentType() != null && request.getContentType().toLowerCase()
+						.indexOf(FrameworkConstants.MULTIPART_FORM_DATA) > -1) {
 					beanUtil.populateMultipart(request, bean);
 				} else {
 					beanUtil.populate(request, bean);
-					beanUtil = null;
 				}
+				beanUtil = null;
 
 				if (pathInfo.isPostValidateToken()) {
 					EncDecLogic encDecLogic = new EncDecLogic();

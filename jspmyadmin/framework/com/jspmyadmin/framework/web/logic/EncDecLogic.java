@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.binary.Base64;
 
-import com.jspmyadmin.framework.util.FrameworkConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.utils.DefaultServlet;
 
 /**

@@ -10,7 +10,7 @@
 	
 	<tag>
 		<name>redirect</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.RedirectTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.RedirectTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>url</name>
@@ -24,7 +24,7 @@
 	
 	<tag>
 		<name>var</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.VarTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.VarTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>name</name>
@@ -52,7 +52,7 @@
 	
 	<tag>
 		<name>fetch</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.FetchTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.FetchTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>name</name>
@@ -76,7 +76,7 @@
 	
 	<tag>
 		<name>empty</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.EmptyTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.EmptyTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>name</name>
@@ -102,7 +102,7 @@
 	
 	<tag>
 		<name>notEmpty</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.NotEmptyTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.NotEmptyTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>name</name>
@@ -128,7 +128,7 @@
 	
 	<tag>
 		<name>if</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.IfTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.IfTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>name</name>
@@ -159,7 +159,7 @@
 	
 	<tag>
 		<name>switch</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.SwitchTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.SwitchTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>name</name>
@@ -172,7 +172,7 @@
 
 	<tag>
 		<name>case</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.CaseTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.CaseTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>name</name>
@@ -199,40 +199,10 @@
 			&lt;jma:case name="#test" value="#test" scope="request,page" /&gt; 
 		</description>
 	</tag>
-	
-	<tag>
-		<name>case</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.CaseTag</tag-class>
-		<body-content>JSP</body-content>
-		<attribute>
-			<name>name</name>
-		</attribute>
-		<attribute>
-			<name>value</name>
-			<required>true</required>
-		</attribute>
-		<attribute>
-			<name>scope</name>
-		</attribute>
-		<description>
-			Case Statement of Switch.
-			Examples:
-			Plain -
-			&lt;jma:case value="test" /&gt;,
-			PageContext -
-			&lt;jma:case value="#test" scope="page" /&gt;,
-			Session -
-			&lt;jma:case name="#test" value="#test" scope="session,page" /&gt;,
-			Command -
-			&lt;jma:case name="#test" value="test" scope="command," /&gt;,
-			Request -
-			&lt;jma:case name="#test" value="#test" scope="request,page" /&gt; 
-		</description>
-	</tag>
-	
+		
 	<tag>
 		<name>default</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.DefaultTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.DefaultTag</tag-class>
 		<body-content>JSP</body-content>
 		<description>
 			Default Statement of Switch.
@@ -242,7 +212,7 @@
 	
 	<tag>
 		<name>forLoop</name>
-		<tag-class>com.jspmyadmin.framework.tag.jma.ForLoopTag</tag-class>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.ForLoopTag</tag-class>
 		<body-content>JSP</body-content>
 		<attribute>
 			<name>items</name>

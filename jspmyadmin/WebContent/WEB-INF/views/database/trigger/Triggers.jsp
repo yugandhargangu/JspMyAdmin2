@@ -28,7 +28,7 @@
 						<div class="group-widget group-header">Create Trigger</div>
 						<div class="group-widget group-content">
 							<form id="trigger-create-form"
-								action="${pageContext.request.contextPath}/database_trigger_create"
+								action="${pageContext.request.contextPath}/database_trigger_create.html"
 								method="post" accept-charset="utf-8">
 								<input type="hidden" name="token"
 									value="${requestScope.command.token}">
@@ -220,7 +220,7 @@
 		};
 		// action for each operation
 		var GoAction = {
-			drop : "/database_trigger_drop",
+			drop : "/database_trigger_drop.html",
 		};
 		// to specify action
 		var action = '#';

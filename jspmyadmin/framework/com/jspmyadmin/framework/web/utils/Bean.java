@@ -5,7 +5,7 @@ package com.jspmyadmin.framework.web.utils;
 
 import java.io.Serializable;
 
-import com.jspmyadmin.framework.util.FrameworkConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 
 /**
  * @author Yugandhar Gangu

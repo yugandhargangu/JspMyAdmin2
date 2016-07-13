@@ -32,7 +32,7 @@
 						</div>
 						<div class="group-widget group-content">
 							<form id="event-create-form"
-								action="${pageContext.request.contextPath}/database_event_create"
+								action="${pageContext.request.contextPath}/database_event_create.html"
 								method="post" accept-charset="utf-8">
 								<input type="hidden" name="token"
 									value="${requestScope.command.token}">
@@ -268,10 +268,10 @@
 		};
 		// action for each operation
 		var GoAction = {
-			drop : "/database_event_drop",
-			rename : "/database_event_rename",
-			enable : "/database_event_enable",
-			disable : "/database_event_disable"
+			drop : "/database_event_drop.html",
+			rename : "/database_event_rename.html",
+			enable : "/database_event_enable.html",
+			disable : "/database_event_disable.html"
 		};
 		// to specify action
 		var action = '#';

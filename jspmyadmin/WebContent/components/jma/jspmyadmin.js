@@ -15,6 +15,8 @@ function decode(encryptedValue) {
 	return decryptedText;
 }
 
+var load_table = false;
+
 function callDatabase(element, name) {
 	var menu_link = $(element).parent();
 	var menu_table = $(menu_link).parent();
@@ -23,7 +25,7 @@ function callDatabase(element, name) {
 		var html = '<div class="menu-inner">';
 		html += '<div class="menu-items">';
 		html += '<div class="menu-link">';
-		html += '<span>-</span> <img alt="db" class="icon"';
+		html += '<span>-</span> <img alt="db" class="icon table-icon-img"';
 		html += ' onclick="callTable(';
 		html += "this,'";
 		html += name;
@@ -211,6 +213,10 @@ function callTable(element, token) {
 				$(menu_table).append(_callTable(text));
 				src = src.replace('plus-g', 'minus-g');
 				$(element).attr('src', src);
+				if (load_table) {
+					load_table = false;
+					expandTable($(menu_table));
+				}
 			},
 			error : function(result) {
 				$('#sidebar-error-msg').text(Msgs.errMsg);
@@ -236,7 +242,7 @@ function _callTable(text) {
 	html += '<span>-</span> &nbsp;<img alt="" class="icon" src="';
 	html += Server.root;
 	html += '/components/icons/blank.png"><div> ';
-	html += ' <a href="#"><img alt="" class="icon" src="';
+	html += ' <a href=""><img alt="" class="icon" src="';
 	html += Server.root;
 	html += '/components/icons/newspaper-b.png"><span> ';
 	html += Msgs.msgNew;
@@ -244,14 +250,14 @@ function _callTable(text) {
 	for ( var i in tables) {
 		html += '<div class="menu-table">';
 		html += '<div class="menu-link">';
-		html += '<span>-</span> <img alt="" class="icon" onclick="callColumn(';
+		html += '<span>-</span> <img alt="" class="icon icon-column-img" onclick="callColumn(';
 		html += "this,'";
 		html += tables[i].token;
 		html += "');"
 		html += '" src="';
 		html += Server.root;
 		html += '/components/icons/plus-g.png"> <div>';
-		html += '<a href="#"><img alt="db" class="icon" src="';
+		html += '<a href="' + Server.root + '/table_data.html?token=' + tables[i].token + '"><img alt="db" class="icon" src="';
 		html += Server.root;
 		html += '/components/icons/newspaper-b.png"><span> ';
 		html += tables[i].name;
@@ -574,8 +580,8 @@ function _callColumn(text) {
 		html += '<div class="menu-column">';
 		html += '<div class="menu-link">';
 		html += '<span>-</span> <div> ';
-		html += '<a href="';
-		html += columns[i].token;
+		html += '<a href="#';
+		// html += columns[i].token;
 		html += '"><img alt="column" class="icon" src="';
 		html += Server.root;
 		html += '/components/icons/column-view.png"><span> ';
@@ -602,6 +608,7 @@ function menubarMain() {
 			}
 			var text = decode(result);
 			_menubarMain(text);
+			expandDatabase();
 		},
 		error : function(result) {
 			$('#sidebar-error-msg').text(Msgs.errMsg);
@@ -627,7 +634,7 @@ function _menubarMain(text) {
 	for ( var i in databases) {
 		html += '<div class="menu-database">';
 		html += '<div class="menu-link">';
-		html += '<img alt="db" class="icon" onclick="callDatabase(';
+		html += '<img alt="db" class="icon db-icon-img" onclick="callDatabase(';
 		html += "this,'";
 		html += databases[i].token;
 		html += "');";
@@ -636,7 +643,7 @@ function _menubarMain(text) {
 		html += '/components/icons/plus-g.png"> ';
 		html += '<div><a href="';
 		html += Server.root;
-		html += '/database_structure?token=';
+		html += '/database_structure.html?token=';
 		html += databases[i].token;
 		html += '"><img alt="db" class="icon" src="';
 		html += Server.root;
@@ -682,6 +689,35 @@ function searchTable(table, columns, text) {
 			} else {
 				$(tr).hide();
 			}
+		}
+	});
+}
+
+function expandDatabase() {
+	if (Server.database != '') {
+		$('#menubar-main').find('.menu-database').each(function() {
+			var database_name = $(this).find('.menu-link').find('div').find('span').text().trim();
+			if (Server.database == database_name) {
+				$(this).find('.menu-link').find('.db-icon-img').click();
+				if (Server.table != '') {
+					$(this).find('.menu-inner').find('.menu-items').each(function() {
+						var itemNames = $(this).find('.menu-link').find('div').find('span').text().trim();
+						if ('Tables' == itemNames) {
+							load_table = true;
+							$(this).find('.menu-link').find('.table-icon-img').click();
+						}
+					});
+				}
+			}
+		});
+	}
+}
+
+function expandTable(element) {
+	$(element).find('.menu-inner').find('.menu-table').each(function() {
+		var tableItems = $(this).find('.menu-link').find('div').find('span').text().trim();
+		if (Server.table == tableItems) {
+			$(this).find('.menu-link').find('.icon-column-img').click();
 		}
 	});
 }

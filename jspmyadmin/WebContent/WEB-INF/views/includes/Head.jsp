@@ -27,7 +27,9 @@ html {
 <script type="text/javascript">
 	var Server = {
 		keyForJS : '${sessionScope.session_key}',
-		root : '${pageContext.request.contextPath}'
+		root : '${pageContext.request.contextPath}',
+		database : '${sessionScope.session_db}',
+		table : '${sessionScope.session_table}'
 	};
 	var Msgs = {
 		msgNew : '${lbl_new}',
@@ -55,7 +57,11 @@ html {
 	src="${pageContext.request.contextPath}/components/codemirror/sql.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/components/jma/jspmyadmin.js"></script>
+<m:store name="lbl_select_file" key="lbl.select_file" />
+<m:store name="msg_no_file_selected" key="msg.no_file_selected" />
 <script type="text/javascript">
+	var lbl_select_file = '${lbl_select_file}';
+	var msg_no_file_selected = '${msg_no_file_selected}';
 	$(document).ready(function() {
 		$('#right-menu-btn').click(function() {
 			var leftPosition = $('#header-menu li:first-child').position();
@@ -85,6 +91,23 @@ html {
 					'margin-left' : '0px'
 				});
 			}
+		});
+		$('input[type="file"]').each(function() {
+			$(this).hide();
+			$(this).wrap(function() {
+				return '<div class="div-inline"></div>';
+			});
+		});
+		$('.div-inline').each(function() {
+			$(this).append('<button type="button" class="btn btn-file-select">' + lbl_select_file + '</button>');
+			$(this).append('<div class="file-name">' + msg_no_file_selected + '</div>');
+		});
+		$('.btn-file-select').click(function() {
+			$(this).parent().find('input[type="file"]').click();
+		});
+		$('input[type="file"]').change(function() {
+			$(this).parent().find('.file-name').text($(this).val());
+			$(this).parent().find('.file-name').prop("title", $(this).val());
 		});
 	});
 </script>

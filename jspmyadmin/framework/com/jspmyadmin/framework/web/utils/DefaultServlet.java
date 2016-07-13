@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.jspmyadmin.framework.util.FrameworkConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.logic.EncDecLogic;
 
 /**
@@ -132,7 +132,11 @@ public class DefaultServlet extends HttpServlet {
 			httpSession.invalidate();
 			httpSession = request.getSession(true);
 		}
-		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_KEY);
+		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_FONTSIZE);
+		if (temp == null) {
+			httpSession.setAttribute(FrameworkConstants.SESSION_FONTSIZE, 80);
+		}
+		temp = httpSession.getAttribute(FrameworkConstants.SESSION_KEY);
 		if (temp == null) {
 			EncDecLogic encDecLogic = new EncDecLogic();
 			encDecLogic.generateKey(httpSession);

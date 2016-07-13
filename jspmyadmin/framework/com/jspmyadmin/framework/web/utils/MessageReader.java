@@ -46,7 +46,7 @@ public class MessageReader implements Messages{
 		URI uri = null;
 		try {
 			location = MessageReader.class.getClassLoader().getResource("");
-			uri = new URI(location.getPath() + "messages");
+			uri = new URI(location.getPath() + "com/jspmyadmin/messages");
 			directory = new File(uri.getPath());
 			filenameFilter = new FilenameFilter() {
 				public boolean accept(File dir, String name) {

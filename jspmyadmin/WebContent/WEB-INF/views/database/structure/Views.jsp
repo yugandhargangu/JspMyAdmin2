@@ -32,7 +32,7 @@
 						</div>
 						<div class="group-widget group-content">
 							<form id="view-create-form"
-								action="${pageContext.request.contextPath}/database_create_view"
+								action="${pageContext.request.contextPath}/database_create_view.html"
 								method="post" accept-charset="utf-8">
 								<input type="hidden" name="token"
 									value="${requestScope.command.token}">
@@ -64,7 +64,7 @@
 										<tr>
 											<th><input type="checkbox" id="check_all"></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_view_list?token=${requestScope.command.sortInfo.name}">
+												href="${pageContext.request.contextPath}/database_view_list.html?token=${requestScope.command.sortInfo.name}">
 													<m:print key="lbl.view_name" /> <jma:if name="#sort"
 														value="1" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -80,7 +80,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_view_list?token=${requestScope.command.sortInfo.type}">
+												href="${pageContext.request.contextPath}/database_view_list.html?token=${requestScope.command.sortInfo.type}">
 													<m:print key="lbl.type" /> <jma:if name="#sort" value="2"
 														scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -96,7 +96,7 @@
 													</jma:if>
 											</a></th>
 											<th><a
-												href="${pageContext.request.contextPath}/database_view_list?token=${requestScope.command.sortInfo.comment}">
+												href="${pageContext.request.contextPath}/database_view_list.html?token=${requestScope.command.sortInfo.comment}">
 													<m:print key="lbl.comment" /> <jma:if name="#sort"
 														value="10" scope="command,">
 														<jma:switch name="#type" scope="command">
@@ -249,7 +249,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-prefix-go"
-									value="${pageContext.request.contextPath}/database_structure_prefix">
+									value="${pageContext.request.contextPath}/database_structure_prefix.html">
 									<m:print key="btn.go" />
 								</button>
 							</div>
@@ -316,7 +316,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-suffix-go"
-									value="${pageContext.request.contextPath}/database_structure_suffix">
+									value="${pageContext.request.contextPath}/database_structure_suffix.html">
 									<m:print key="btn.go" />
 								</button>
 							</div>
@@ -468,7 +468,7 @@
 		};
 		// action for each operation
 		var GoAction = {
-			drop : "/database_structure_drop_view",
+			drop : "/database_structure_drop_view.html",
 		};
 		// to specify action
 		var action = '#';
