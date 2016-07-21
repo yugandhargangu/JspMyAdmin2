@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>jma</short-name>
+	<uri>http://jspmyadmin.com/taglib/jsp/jma</uri>
+	<display-name>JspMyadmin Core Tags</display-name>
+	
+	<tag>
+		<name>redirect</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.RedirectTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+		</attribute>
+		<description>
+			To add attribute to pageContext object.
+			Examples: &lt;jma:redirect url="test.html?param1=val1" /&gt;,
+		</description>
+	</tag>
+	
+	<tag>
+		<name>var</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.VarTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+		</attribute>
+		<description>
+			To add attribute to pageContext object.
+			Examples:
+			Plain - &lt;jma:var name="test" value="ones" /&gt;,
+			PageContext -
+			&lt;jma:var name="test" value="#ones" scope="page" /&gt;,
+			Command -
+			&lt;jma:var name="test" value="#ones" scope="command" /&gt;,
+			Request -
+			&lt;jma:var name="test" value="#ones" scope="request" /&gt; 
+		</description>
+	</tag>
+	
+	<tag>
+		<name>fetch</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.FetchTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>index</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>key</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>object</name>
+			<required>false</required>
+		</attribute>
+		<description>
+			get value from method with index.
+			Examples:
+			To print - &lt;jma:var name="test" index="#index" /&gt;,
+			To Store in pageContext - &lt;jma:var name="test" index="1" key="pageTest" /&gt;
+		</description>
+	</tag>
+	
+	<tag>
+		<name>empty</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.EmptyTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>true</required>
+		</attribute>
+		<description>
+			To check the variable is empty.
+			Examples:
+			PageContext -
+			&lt;jma:empty name="#test" scope="page" /&gt;,
+			Session -
+			&lt;jma:empty name="#test" scope="session" /&gt;,
+			Command -
+			&lt;jma:empty name="#test" scope="command" /&gt;,
+			Request -
+			&lt;jma:empty name="#test" scope="request" /&gt; 
+		</description>
+	</tag>
+	
+	<tag>
+		<name>notEmpty</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.NotEmptyTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>true</required>
+		</attribute>
+		<description>
+			To check the variable is not empty.
+			Examples:
+			PageContext -
+			&lt;jma:notEmpty name="#test" scope="page" /&gt;,
+			Session -
+			&lt;jma:notEmpty name="#test" scope="session" /&gt;,
+			Command -
+			&lt;jma:notEmpty name="#test" scope="command" /&gt;,
+			Request -
+			&lt;jma:notEmpty name="#test" scope="request" /&gt; 
+		</description>
+	</tag>
+	
+	<tag>
+		<name>if</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.IfTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+		</attribute>
+		<description>
+			If Condition.
+			Examples:
+			Plain -
+			&lt;jma:if name="test" value="test" /&gt;,
+			PageContext -
+			&lt;jma:if name="#test" value="true" scope="page," /&gt;,
+			Session -
+			&lt;jma:if name="#test" value="#test" scope="session,page" /&gt;,
+			Command -
+			&lt;jma:if name="#test" value="test" scope="command," /&gt;,
+			Request -
+			&lt;jma:if name="#test" value="#test" scope="request,page" /&gt; 
+		</description>
+	</tag>
+	
+	<tag>
+		<name>switch</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.SwitchTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>name</name>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+		</attribute>
+		<description>Switch Condition.</description>
+	</tag>
+
+	<tag>
+		<name>case</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.CaseTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>name</name>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+		</attribute>
+		<description>
+			Case Statement of Switch.
+			Examples:
+			Plain -
+			&lt;jma:case value="test" /&gt;,
+			PageContext -
+			&lt;jma:case value="#test" scope="page" /&gt;,
+			Session -
+			&lt;jma:case name="#test" value="#test" scope="session,page" /&gt;,
+			Command -
+			&lt;jma:case name="#test" value="test" scope="command," /&gt;,
+			Request -
+			&lt;jma:case name="#test" value="#test" scope="request,page" /&gt; 
+		</description>
+	</tag>
+		
+	<tag>
+		<name>default</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.DefaultTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Default Statement of Switch.
+			Examples: &lt;jma:default value="test" /&gt;,
+		</description>
+	</tag>
+	
+	<tag>
+		<name>forLoop</name>
+		<tag-class>com.jspmyadmin.framework.taglib.jma.ForLoopTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<name>items</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>index</name>
+		</attribute>
+				<attribute>
+			<name>key</name>
+		</attribute>
+		<description>
+			To check the variable is not empty.
+			Examples:
+			PageContext -
+			&lt;jma:forLoop items="#items" name="test" index="currentIndex" scope="page" /&gt;,
+			Session -
+			&lt;jma:forLoop items="#items" name="test" index="currentIndex" scope="session" /&gt;,
+			Command -
+			&lt;jma:forLoop items="#items" name="test" index="currentIndex" scope="command" /&gt;,
+			Request -
+			&lt;jma:forLoop items="#items" name="test" index="currentIndex" scope="request" /&gt; 
+		</description>
+	</tag>
+</taglib>
