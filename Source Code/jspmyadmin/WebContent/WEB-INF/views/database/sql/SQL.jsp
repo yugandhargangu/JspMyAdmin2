@@ -131,37 +131,68 @@
 		</div>
 	</div>
 
-	<script type="text/javascript">
-		var hintOptions = ${requestScope.command.hint_options};
+	<jma:notEmpty name="#hint_options" scope="command">
+		<script type="text/javascript">
+			var hintOptions = ${requestScope.command.hint_options};
+			var id = document.getElementById('sql-editor');
+			var codeMirrorObj = CodeMirror.fromTextArea(id, {
+				mode : 'text/x-mysql',
+				indentWithTabs : true,
+				smartIndent : true,
+				lineNumbers : true,
+				lineWrapping : true,
+				matchBrackets : true,
+				autofocus : true,
+				extraKeys : {
+					"Ctrl-Space" : "autocomplete"
+				},
+				hintOptions : hintOptions
+			});
+			codeMirrorObj.on('keyup', function(instance, event) {
+				if (!codeMirrorObj.state.completionActive && (event.keyCode > 64 && event.keyCode < 91)) {
+					if (timeout)
+						clearTimeout(timeout);
+					var timeout = setTimeout(function() {
+						CodeMirror.showHint(instance, CodeMirror.hint.clike, {
+							completeSingle : true
+						});
+					}, 40);
+				}
+			});
+		</script>
+	</jma:notEmpty>
+	<jma:empty name="#hint_options" scope="command">
+		<script type="text/javascript">
+			var id = document.getElementById('sql-editor');
+			var codeMirrorObj = CodeMirror.fromTextArea(id, {
+				mode : 'text/x-mysql',
+				indentWithTabs : true,
+				smartIndent : true,
+				lineNumbers : true,
+				lineWrapping : true,
+				matchBrackets : true,
+				autofocus : true,
+				extraKeys : {
+					"Ctrl-Space" : "autocomplete"
+				}
+			});
+			codeMirrorObj.on('keyup', function(instance, event) {
+				if (!codeMirrorObj.state.completionActive && (event.keyCode > 64 && event.keyCode < 91)) {
+					if (timeout)
+						clearTimeout(timeout);
+					var timeout = setTimeout(function() {
+						CodeMirror.showHint(instance, CodeMirror.hint.clike, {
+							completeSingle : true
+						});
+					}, 40);
+				}
+			});
+		</script>
+	</jma:empty>
 
+	<script type="text/javascript">
 		$("#header-menu li:nth-child(7)").addClass('active');
 		applyEvenOdd('#data-rows');
-
-		var id = document.getElementById('sql-editor');
-		var codeMirrorObj = CodeMirror.fromTextArea(id, {
-			mode : 'text/x-mysql',
-			indentWithTabs : true,
-			smartIndent : true,
-			lineNumbers : true,
-			lineWrapping : true,
-			matchBrackets : true,
-			autofocus : true,
-			extraKeys : {
-				"Ctrl-Space" : "autocomplete"
-			},
-			hintOptions : hintOptions
-		});
-		codeMirrorObj.on('keyup', function(instance, event) {
-			if (!codeMirrorObj.state.completionActive && (event.keyCode > 64 && event.keyCode < 91)) {
-				if (timeout)
-					clearTimeout(timeout);
-				var timeout = setTimeout(function() {
-					CodeMirror.showHint(instance, CodeMirror.hint.clike, {
-						completeSingle : true
-					});
-				}, 40);
-			}
-		});
 	</script>
 	<script type="text/javascript">
 		$(function() {

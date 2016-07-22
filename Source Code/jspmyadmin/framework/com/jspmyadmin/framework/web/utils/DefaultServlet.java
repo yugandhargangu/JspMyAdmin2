@@ -136,6 +136,15 @@ public class DefaultServlet extends HttpServlet {
 		if (temp == null) {
 			httpSession.setAttribute(FrameworkConstants.SESSION_FONTSIZE, 80);
 		}
+
+		temp = httpSession.getAttribute(FrameworkConstants.SESSION_LOCALE);
+		if (temp == null) {
+			if (FrameworkConstants.Utils.LANGUAGE_MAP.containsKey(request.getLocale().getLanguage())) {
+				httpSession.setAttribute(FrameworkConstants.SESSION_LOCALE, request.getLocale().getLanguage());
+			} else {
+				httpSession.setAttribute(FrameworkConstants.SESSION_LOCALE, FrameworkConstants.DEFAULT_LOCALE);
+			}
+		}
 		temp = httpSession.getAttribute(FrameworkConstants.SESSION_KEY);
 		if (temp == null) {
 			EncDecLogic encDecLogic = new EncDecLogic();
@@ -155,7 +164,7 @@ public class DefaultServlet extends HttpServlet {
 		Messages messages = null;
 		if (httpSession != null) {
 			Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_LOCALE);
-			if (temp != null) {
+			if (temp != null && !FrameworkConstants.DEFAULT_LOCALE.equals(temp)) {
 				messages = new MessageReader(temp.toString());
 			} else {
 				messages = new MessageReader(null);

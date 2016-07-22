@@ -748,7 +748,10 @@ $(function() {
 		$('#sidebar-success-msg').text('');
 	});
 
-	$('#header-menu li a, .breadcrumb li a').click(function() {
-		showWaiting();
+	$('#header-menu li a, .breadcrumb li a').click(function(e) {
+		if (e.ctrlKey) {
+		} else {
+			showWaiting();
+		}
 	});
 });

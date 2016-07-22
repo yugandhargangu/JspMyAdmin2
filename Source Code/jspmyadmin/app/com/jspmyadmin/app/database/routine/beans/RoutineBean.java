@@ -38,6 +38,7 @@ public class RoutineBean extends Bean {
 	private String sql_security = null;
 	private String body = null;
 	private String action = null;
+	private String alter = null;
 	private String new_column = null;
 
 	private List<String> definer_list = null;
@@ -318,6 +319,21 @@ public class RoutineBean extends Bean {
 	 */
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	/**
+	 * @return the alter
+	 */
+	public String getAlter() {
+		return alter;
+	}
+
+	/**
+	 * @param alter
+	 *            the alter to set
+	 */
+	public void setAlter(String alter) {
+		this.alter = alter;
 	}
 
 	/**

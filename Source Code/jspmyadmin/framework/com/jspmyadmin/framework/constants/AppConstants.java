@@ -73,6 +73,7 @@ public final class AppConstants {
 	public static final String PATH_DATABASE_PROCEDURES = "/database_procedures.html";
 	public static final String PATH_DATABASE_COLUMN_PRIVILEGES = "/database_column_privileges.html";
 	public static final String PATH_DATABASE_ROUTINE_PRIVILEGES = "/database_routine_privileges.html";
+	public static final String PATH_DATABASE_SQL = "/database_sql.html";
 	public static final String PATH_DATABASE_TABLE_PRIVILEGES = "/database_table_privileges.html";
 	public static final String PATH_DATABASE_TRIGGERS = "/database_triggers.html";
 	public static final String PATH_DATABASE_STRUCTURE = "/database_structure.html";
@@ -84,6 +85,7 @@ public final class AppConstants {
 	public static final String PATH_SERVER_USERS = "/server_users.html";
 	public static final String PATH_TABLE_DATA = "/table_data.html";
 	public static final String PATH_TABLE_FOREIGN_KEYS = "/table_foreign_keys.html";
+	public static final String PATH_TABLE_PARTITIONS = "/table_partitions.html";
 	public static final String PATH_TABLE_STRUCTURE = "/table_structure.html";
 
 }

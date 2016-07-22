@@ -109,79 +109,97 @@
 						</div>
 
 						<div class="group">
-							<div class="group-widget group-header">
-								<m:print key="lbl.settings" />
-							</div>
-							<div class="group-widget group-content">
-								<div class="form-input" style="display: block;">
-									<label><m:print key="lbl.server_collation" /></label> <select
-										name="collation" id="server_collation" class="form-control">
-										<jma:forLoop items="#collation_map" name="charset"
-											key="charsetKey" scope="command">
-											<optgroup label="${charsetKey}">
-												<jma:forLoop items="#charset" name="collationName"
-													scope="page">
-													<jma:switch name="#collationName" scope="page">
-														<jma:case value="#collation" scope="command">
-															<option value="${collationName}" selected="selected">${collationName}</option>
-														</jma:case>
-														<jma:default>
-															<option value="${collationName}">${collationName}</option>
-														</jma:default>
-													</jma:switch>
-												</jma:forLoop>
-											</optgroup>
-										</jma:forLoop>
-									</select>
+							<form action="${pageContext.request.contextPath}/home.html"
+								method="post" id="server-form">
+								<input type="hidden" name="token"
+									value="${requestScope.command.token}"> <input
+									type="hidden" name="action" id="action-input" value="">
+								<div class="group-widget group-header">
+									<m:print key="lbl.settings" />
 								</div>
+								<div class="group-widget group-content">
+									<div class="form-input" style="display: block;">
+										<label><m:print key="lbl.server_collation" /></label> <select
+											name="collation" id="server_collation" class="form-control">
+											<jma:forLoop items="#collation_map" name="charset"
+												key="charsetKey" scope="command">
+												<optgroup label="${charsetKey}">
+													<jma:forLoop items="#charset" name="collationName"
+														scope="page">
+														<jma:switch name="#collationName" scope="page">
+															<jma:case value="#collation" scope="command">
+																<option value="${collationName}" selected="selected">${collationName}</option>
+															</jma:case>
+															<jma:default>
+																<option value="${collationName}">${collationName}</option>
+															</jma:default>
+														</jma:switch>
+													</jma:forLoop>
+												</optgroup>
+											</jma:forLoop>
+										</select>
+									</div>
 
-								<div class="form-input" style="display: block;">
-									<label><m:print key="lbl.language" /></label> <select
-										name="language" id="server_language" class="form-control">
-										<jma:forLoop items="#language_map" name="language"
-											key="languageKey" scope="command">
-											<option value=""><m:print key="lbl.select_language" /></option>
-											<jma:switch name="#languageKey" scope="page">
-												<jma:case value="#language" scope="command">
-													<option value="${languageKey}" selected="selected">${language}</option>
-												</jma:case>
-												<jma:default>
-													<option value="${languageKey}">${language}</option>
-												</jma:default>
-											</jma:switch>
-										</jma:forLoop>
-									</select>
+									<div class="form-input" style="display: block;">
+										<label><m:print key="lbl.language" /></label> <select
+											name="language" id="server_language" class="form-control">
+											<jma:forLoop items="#language_map" name="language"
+												key="languageKey" scope="command">
+												<option value=""><m:print key="lbl.select_language" /></option>
+												<jma:switch name="#languageKey" scope="page">
+													<jma:case value="#language" scope="command">
+														<option value="${languageKey}" selected="selected">${language}</option>
+													</jma:case>
+													<jma:default>
+														<option value="${languageKey}">${language}</option>
+													</jma:default>
+												</jma:switch>
+											</jma:forLoop>
+										</select>
+									</div>
+
+									<div class="form-input">
+										<label><m:print key="lbl.font_size" /></label> <select
+											name="fontsize" id="fontsize" class="form-control">
+											<jma:forLoop items="#fontsize_map" name="fontsize"
+												key="fontsizeKey" scope="command">
+												<jma:switch name="#fontsizeKey" scope="page">
+													<jma:case value="#fontsize" scope="command">
+														<option value="${fontsizeKey}" selected="selected">${fontsize}</option>
+													</jma:case>
+													<jma:default>
+														<option value="${fontsizeKey}">${fontsize}</option>
+													</jma:default>
+												</jma:switch>
+											</jma:forLoop>
+										</select>
+									</div>
 								</div>
-
-								<div class="form-input">
-									<label><m:print key="lbl.font_size" /></label> <select
-										name="fontsize" id="fontsize" class="form-control">
-										<jma:forLoop items="#fontsize_map" name="fontsize"
-											key="fontsizeKey" scope="command">
-											<jma:switch name="#fontsizeKey" scope="page">
-												<jma:case value="#fontsize" scope="command">
-													<option value="${fontsizeKey}" selected="selected">${fontsize}</option>
-												</jma:case>
-												<jma:default>
-													<option value="${fontsizeKey}">${fontsize}</option>
-												</jma:default>
-											</jma:switch>
-										</jma:forLoop>
-									</select>
-								</div>
-
-							</div>
+							</form>
 						</div>
-
 					</div>
-
 				</div>
 			</div>
 			<div id="footer">
 				<jsp:include page="../includes/Footer.jsp" />
 			</div>
 		</div>
-
 	</div>
+	<script type="text/javascript">
+		$(function() {
+			$('#server_collation').change(function() {
+				$('#action-input').val('1');
+				$('#server-form').submit();
+			});
+			$('#server_language').change(function() {
+				$('#action-input').val('2');
+				$('#server-form').submit();
+			});
+			$('#fontsize').change(function() {
+				$('#action-input').val('3');
+				$('#server-form').submit();
+			});
+		});
+	</script>
 </body>
 </html>

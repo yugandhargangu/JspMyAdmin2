@@ -173,4 +173,44 @@ public class HomeLogic extends AbstractLogic {
 			close(apiConnection);
 		}
 	}
+
+	/**
+	 * 
+	 * @param collation
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void saveServerCollation(String collation) throws ClassNotFoundException, SQLException {
+		ApiConnection apiConnection = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		String charset = null;
+		try {
+			apiConnection = getConnection(false);
+			statement = apiConnection.getStmtSelect("SHOW COLLATION WHERE collation = ?");
+			statement.setString(1, collation);
+			resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				charset = resultSet.getString("charset");
+			}
+			close(resultSet);
+			close(statement);
+			if (charset != null) {
+				statement = apiConnection.getStmt("SET character_set_server = ?");
+				statement.setString(1, charset);
+				statement.execute();
+				close(statement);
+			}
+			statement = apiConnection.getStmt("SET collation_server = ?");
+			statement.setString(1, collation);
+			statement.execute();
+		} finally {
+			if (apiConnection != null) {
+				apiConnection.commit();
+			}
+			close(resultSet);
+			close(statement);
+			close(apiConnection);
+		}
+	}
 }

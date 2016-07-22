@@ -15,7 +15,6 @@ public class LanguageBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private String language = null;
-	private String url = null;
 
 	/**
 	 * @return the language
@@ -31,20 +30,4 @@ public class LanguageBean extends Bean {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-
-	/**
-	 * @return the url
-	 */
-	public String getUrl() {
-		return url;
-	}
-
-	/**
-	 * @param url
-	 *            the url to set
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 }

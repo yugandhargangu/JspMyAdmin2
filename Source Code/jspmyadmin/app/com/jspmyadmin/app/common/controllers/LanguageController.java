@@ -32,17 +32,12 @@ public class LanguageController extends Controller<LanguageBean> {
 	@Override
 	@ValidateToken
 	protected void handlePost(LanguageBean bean, View view) throws Exception {
-		view.setType(ViewType.REDIRECT);
-		if (bean.getUrl() != null) {
+		if (bean.getLanguage() != null && !FrameworkConstants.BLANK.equals(bean.getLanguage().trim())) {
 			HttpSession httpSession = request.getSession();
 			httpSession.setAttribute(FrameworkConstants.SESSION_LOCALE, bean.getLanguage());
-			view.setPath(bean.getUrl().substring(
-					bean.getUrl().lastIndexOf(request.getContextPath()) + request.getContextPath().length(),
-					bean.getUrl().length()));
-		} else {
-			view.setPath("/login.html");
 		}
-
+		view.setType(ViewType.REDIRECT);
+		view.setPath("/login.html");
 	}
 
 }

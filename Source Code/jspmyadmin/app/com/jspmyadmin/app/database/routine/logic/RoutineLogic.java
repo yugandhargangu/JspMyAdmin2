@@ -98,8 +98,7 @@ public class RoutineLogic extends AbstractLogic {
 		ResultSet resultSet = null;
 		try {
 			apiConnection = super.getConnection(true);
-			statement = apiConnection
-					.getStmtSelect("SHOW " + type + " STATUS WHERE Name LIKE ? AND Db LIKE ?");
+			statement = apiConnection.getStmtSelect("SHOW " + type + " STATUS WHERE Name LIKE ? AND Db LIKE ?");
 			statement.setString(1, name);
 			statement.setString(2, apiConnection.getDatabase());
 			resultSet = statement.executeQuery();
@@ -194,7 +193,9 @@ public class RoutineLogic extends AbstractLogic {
 			builder.append(FrameworkConstants.SPACE);
 			if (!isEmpty(routineBean.getComment())) {
 				builder.append("COMMENT ");
+				builder.append(FrameworkConstants.SYMBOL_QUOTE);
 				builder.append(routineBean.getComment());
+				builder.append(FrameworkConstants.SYMBOL_QUOTE);
 				builder.append(FrameworkConstants.SPACE);
 			}
 			if (!isEmpty(routineBean.getLang_sql())) {
@@ -321,7 +322,9 @@ public class RoutineLogic extends AbstractLogic {
 			builder.append(FrameworkConstants.SPACE);
 			if (!isEmpty(routineBean.getComment())) {
 				builder.append("COMMENT ");
+				builder.append(FrameworkConstants.SYMBOL_QUOTE);
 				builder.append(routineBean.getComment());
+				builder.append(FrameworkConstants.SYMBOL_QUOTE);
 				builder.append(FrameworkConstants.SPACE);
 			}
 			if (!isEmpty(routineBean.getLang_sql())) {
@@ -390,8 +393,8 @@ public class RoutineLogic extends AbstractLogic {
 					statement = apiConnection.getStmtSelect(
 							procedure + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
 				} else {
-					statement = apiConnection.getStmtSelect(
-							function + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
+					statement = apiConnection
+							.getStmtSelect(function + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
 				}
 				resultSet = statement.executeQuery();
 				if (resultSet.next()) {
@@ -426,11 +429,11 @@ public class RoutineLogic extends AbstractLogic {
 			apiConnection = super.getConnection(true);
 			for (int i = 0; i < routineListBean.getRoutines().length; i++) {
 				if (isProcedure) {
-					statement = apiConnection.getStmt(
-							procedure + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
+					statement = apiConnection
+							.getStmt(procedure + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
 				} else {
-					statement = apiConnection.getStmt(
-							function + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
+					statement = apiConnection
+							.getStmt(function + routineListBean.getRoutines()[i] + FrameworkConstants.SYMBOL_TEN);
 				}
 				statement.execute();
 			}
@@ -466,8 +469,8 @@ public class RoutineLogic extends AbstractLogic {
 		try {
 			routineListBean = (RoutineListBean) bean;
 			apiConnection = super.getConnection(true);
-			statement = apiConnection.getStmtSelect(
-					"SELECT param_list FROM mysql.proc WHERE type = ? AND db = ? AND name = ?");
+			statement = apiConnection
+					.getStmtSelect("SELECT param_list FROM mysql.proc WHERE type = ? AND db = ? AND name = ?");
 			statement.setString(1, routineType);
 			statement.setString(2, apiConnection.getDatabase());
 			statement.setString(3, routineListBean.getRoutines()[0]);

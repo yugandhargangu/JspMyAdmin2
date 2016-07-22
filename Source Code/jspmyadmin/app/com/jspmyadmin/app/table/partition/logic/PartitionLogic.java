@@ -61,16 +61,18 @@ public class PartitionLogic extends AbstractLogic {
 			while (resultSet.next()) {
 				partitionInfo = new PartitionInfo();
 				partitionInfo.setName(resultSet.getString(1));
-				partitionInfo.setSubname(resultSet.getString(2));
-				partitionInfo.setMethod(resultSet.getString(3));
-				partitionInfo.setSub_method(resultSet.getString(4));
-				partitionInfo.setExpression(resultSet.getString(5));
-				partitionInfo.setSub_expression(resultSet.getString(6));
-				partitionInfo.setDescription(resultSet.getString(7));
-				partitionInfo.setTable_rows(resultSet.getString(8));
-				partitionInfo.setAvg_row_length(resultSet.getString(9));
-				partitionInfo.setData_length(resultSet.getString(10));
-				partitionInfoList.add(partitionInfo);
+				if (!isEmpty(partitionInfo.getName())) {
+					partitionInfo.setSubname(resultSet.getString(2));
+					partitionInfo.setMethod(resultSet.getString(3));
+					partitionInfo.setSub_method(resultSet.getString(4));
+					partitionInfo.setExpression(resultSet.getString(5));
+					partitionInfo.setSub_expression(resultSet.getString(6));
+					partitionInfo.setDescription(resultSet.getString(7));
+					partitionInfo.setTable_rows(resultSet.getString(8));
+					partitionInfo.setAvg_row_length(resultSet.getString(9));
+					partitionInfo.setData_length(resultSet.getString(10));
+					partitionInfoList.add(partitionInfo);
+				}
 			}
 			partinitionBean.setPartition_list(partitionInfoList);
 		} finally {
@@ -97,17 +99,15 @@ public class PartitionLogic extends AbstractLogic {
 				StringBuilder builder = new StringBuilder();
 				builder.append("ALTER TABLE `");
 				builder.append(_table);
-				builder.append("` ADD PARTITION ");
-				builder.append(FrameworkConstants.SPACE);
-				builder.append("PARTITION BY");
-				builder.append(FrameworkConstants.SPACE);
+				builder.append("` PARTITION BY ");
 				builder.append(partinitionBean.getPartition());
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-				builder.append(partinitionBean.getPartition_val());
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
 				builder.append(FrameworkConstants.SPACE);
-				builder.append("PARTITIONS ");
-				builder.append(partinitionBean.getPartitions());
+				builder.append(partinitionBean.getPartition_val());
+				builder.append(FrameworkConstants.SPACE);
+				if (!isEmpty(partinitionBean.getPartitions())) {
+					builder.append("PARTITIONS ");
+					builder.append(partinitionBean.getPartitions());
+				}
 				statement = apiConnection.getStmtSelect(builder.toString());
 				statement.execute();
 				apiConnection.commit();

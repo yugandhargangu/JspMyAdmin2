@@ -24,8 +24,9 @@
 						<h3>Table Partitions</h3>
 					</div>
 
-					<form action="${pageContext.request.contextPath}/table_fk_add.html"
-						method="post">
+					<form
+						action="${pageContext.request.contextPath}/table_partition_add.html"
+						method="post" id="add-form">
 						<input type="hidden" name="token" id="token"
 							value="${requestScope.command.token}">
 
@@ -51,14 +52,15 @@
 								</div>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" id="add-btn" class="btn">
+								<button type="button" id="add-btn" class="btn">
 									<m:print key="btn.go" />
 								</button>
 							</div>
 						</div>
 					</form>
 
-					<form action="${pageContext.request.contextPath}/table_fk_drop.html"
+					<form
+						action="${pageContext.request.contextPath}/table_partition_drop.html"
 						method="post" id="drop-form">
 						<input type="hidden" name="token"
 							value="${requestScope.command.token}">
@@ -172,11 +174,11 @@
 			});
 			$('#check-all').change(function() {
 				var status = $(this).prop('checked');
-				$('input[name="keys"]').prop('checked', status);
+				$('input[name="names"]').prop('checked', status);
 			});
-			$('input[name="keys"]').change(function() {
-				var length1 = $('input[name="keys"]').length;
-				var length2 = $('input[name="keys"]:checked').length;
+			$('input[name="names"]').change(function() {
+				var length1 = $('input[name="names"]').length;
+				var length2 = $('input[name="names"]:checked').length;
 				if (length1 == length2) {
 					$('#check-all').prop('checked', true);
 					$('#check-all').prop('indeterminate', false);
@@ -188,12 +190,17 @@
 				}
 			});
 
-			$('#ref_table_name').change(function() {
-				fetchColumns();
+			$('#add-btn').click(function() {
+				if ($('#partition_val').val().trim() == '') {
+					$('#sidebar-error-msg').text('Partition Value is Blank.');
+					$('#sidebar-error-dialog').show();
+					return;
+				}
+				$('#add-form').submit();
 			});
 
 			$('#drop-btn').click(function() {
-				if ($('input[name="keys"]:checked').length < 1) {
+				if ($('input[name="names"]:checked').length < 1) {
 					$('#sidebar-error-msg').text('${msg_select_least_one_key}');
 					$('#sidebar-error-dialog').show();
 					return;

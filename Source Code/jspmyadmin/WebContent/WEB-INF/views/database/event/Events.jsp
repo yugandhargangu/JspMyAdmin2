@@ -248,6 +248,17 @@
 		</div>
 	</div>
 
+	<div style="display: none;">
+		<form
+			action="${pageContext.request.contextPath}/database_ext_sql.html"
+			method="post" id="sql-form">
+			<input type="hidden" name="token"
+				value="${requestScope.command.token}"> <input type="hidden"
+				name="edit_type" value="2"> <input type="hidden"
+				name="edit_name">
+		</form>
+	</div>
+
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(5)").addClass('active');
 		applyEvenOdd('#event-list');
@@ -522,6 +533,18 @@
 				showWaiting();
 				$('#event-list-form').attr('action', Server.root + GoAction.rename);
 				$('#event-list-form').submit();
+			});
+		});
+	</script>
+		<script type="text/javascript">
+		$(function() {
+			$('#btn-edit').click(function() {
+				if (!shouldContinue()) {
+					return;
+				}
+				$('#sql-form').find('input[name="edit_type"]').val('6');
+				$('#sql-form').find('input[name="edit_name"]').val($('input[name="tables"]:checked:first').val());
+				$('#sql-form').submit();
 			});
 		});
 	</script>

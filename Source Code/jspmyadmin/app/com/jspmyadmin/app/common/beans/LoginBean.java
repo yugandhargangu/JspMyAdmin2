@@ -3,6 +3,10 @@
  */
 package com.jspmyadmin.app.common.beans;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -18,6 +22,8 @@ public class LoginBean extends Bean {
 	private String portnumber = "3306";
 	private String username = "root";
 	private String password = "";
+
+	private Map<String, String> language_map = new LinkedHashMap<String, String>(FrameworkConstants.Utils.LANGUAGE_MAP);
 
 	/**
 	 * @return the hostname
@@ -77,6 +83,28 @@ public class LoginBean extends Bean {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	/**
+	 * @return the language_map
+	 */
+	public Map<String, String> getLanguage_map() {
+		return language_map;
+	}
+
+	/**
+	 * @param language_map
+	 *            the language_map to set
+	 */
+	public void setLanguage_map(Map<String, String> language_map) {
+		this.language_map = language_map;
+	}
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

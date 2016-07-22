@@ -26,8 +26,10 @@ html {
 </head>
 <body>
 	<div style="width: 100%; text-align: center; margin-top: 50px;">
-		<img alt="Logo" height="80"
-			src="${pageContext.request.contextPath}/components/images/jspmyadmin.jpg">
+		<div style="width: 400px; margin-left: auto; margin-right: auto;">
+			<img alt="Logo" id="site-logo"
+				src="${pageContext.request.contextPath}/components/images/logo.png">
+		</div>
 	</div>
 	<h2 align="center">
 		<m:print key="lbl.welcome_to_jspmyadmin" />
@@ -41,12 +43,21 @@ html {
 		<form action="${pageContext.request.contextPath}/language.html"
 			id="language-form" method="post" accept-charset="UTF-8">
 			<input type="hidden" name="token"
-				value="${requestScope.command.token}"> <input type="hidden"
-				name="url" value="${pageContext.request.requestURL}">
+				value="${requestScope.command.token}">
 			<div class="group-widget group-content">
 				<select name="language" id="language" style="width: 90%;">
-					<option value=""><m:print key="lbl.select_language" /></option>
-					<option value="en">English</option>
+					<jma:forLoop items="#language_map" name="language"
+						key="languageKey" scope="command">
+						<option value=""><m:print key="lbl.select_language" /></option>
+						<jma:switch name="#languageKey" scope="page">
+							<jma:case value="#session_locale" scope="session">
+								<option value="${languageKey}" selected="selected">${language}</option>
+							</jma:case>
+							<jma:default>
+								<option value="${languageKey}">${language}</option>
+							</jma:default>
+						</jma:switch>
+					</jma:forLoop>
 				</select>
 			</div>
 		</form>

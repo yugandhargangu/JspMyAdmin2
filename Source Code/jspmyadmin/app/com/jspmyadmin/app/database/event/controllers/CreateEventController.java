@@ -33,6 +33,7 @@ public class CreateEventController extends Controller<EventBean> {
 
 		bean.init();
 		EventLogic eventLogic = new EventLogic();
+		eventLogic.setMessages(messages);
 		bean.setStart_interval(eventLogic.getStartInterval(bean.getInterval_list()));
 		bean.setEnd_interval(eventLogic.getEndInterval(bean.getInterval_list()));
 		super.generateToken(bean);

@@ -25,7 +25,7 @@ public class HomeBean extends Bean {
 	private static final String _ADDON = " %";
 
 	private String collation = null;
-	private String language = "en";
+	private String language = FrameworkConstants.DEFAULT_LOCALE;
 	private String fontsize = "100";
 
 	private String db_server_name = null;
@@ -43,8 +43,10 @@ public class HomeBean extends Bean {
 
 	private String jma_version = "2.0";
 
+	private String action = null;
+
 	private Map<String, List<String>> collation_map = null;
-	private Map<String, String> language_map = null;
+	private Map<String, String> language_map = new LinkedHashMap<String, String>(FrameworkConstants.Utils.LANGUAGE_MAP);
 	private Map<String, String> fontsize_map = null;
 
 	public HomeBean() {
@@ -61,8 +63,6 @@ public class HomeBean extends Bean {
 		for (int i = 30; i <= 200; i++) {
 			fontsize_map.put(Integer.toString(i), i + _ADDON);
 		}
-		language_map = new LinkedHashMap<String, String>();
-		language_map.put("en", "English");
 
 		HttpSession httpSession = DefaultServlet.REQUEST_MAP.get(Thread.currentThread().getId()).getSession();
 		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_FONTSIZE);
@@ -294,6 +294,21 @@ public class HomeBean extends Bean {
 	 */
 	public void setJma_version(String jma_version) {
 		this.jma_version = jma_version;
+	}
+
+	/**
+	 * @return the action
+	 */
+	public String getAction() {
+		return action;
+	}
+
+	/**
+	 * @param action
+	 *            the action to set
+	 */
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 	/**

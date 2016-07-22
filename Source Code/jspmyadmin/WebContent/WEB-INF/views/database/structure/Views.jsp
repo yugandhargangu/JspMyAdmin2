@@ -144,18 +144,6 @@
 								</table>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-browse">
-									<m:print key="lbl.browse" />
-								</button>
-								<button type="button" class="btn" id="btn-structure">
-									<m:print key="lbl.structure" />
-								</button>
-								<button type="button" class="btn" id="btn-search">
-									<m:print key="lbl.search" />
-								</button>
-								<button type="button" class="btn" id="btn-insert">
-									<m:print key="lbl.insert" />
-								</button>
 								<button type="button" class="btn" id="btn-prefix">
 									<m:print key="lbl.prefix" />
 								</button>
@@ -164,6 +152,9 @@
 								</button>
 								<button type="button" class="btn" id="btn-show-create">
 									<m:print key="lbl.show_create" />
+								</button>
+								<button type="button" class="btn" id="btn-edit">
+									<m:print key="lbl.alter" />
 								</button>
 								<button type="button" class="btn" id="btn-export">
 									<m:print key="lbl.export" />
@@ -435,6 +426,17 @@
 				</button>
 			</div>
 		</div>
+	</div>
+
+	<div style="display: none;">
+		<form
+			action="${pageContext.request.contextPath}/database_ext_sql.html"
+			method="post" id="sql-form">
+			<input type="hidden" name="token"
+				value="${requestScope.command.token}"> <input type="hidden"
+				name="edit_type" value="2"> <input type="hidden"
+				name="edit_name">
+		</form>
 	</div>
 
 	<m:store name="msg_drop_view_alert" key="msg.drop_view_alert" />
@@ -843,6 +845,18 @@
 				goClean = 'suffix-group';
 				makeEmpty();
 				$('#table-list-form').submit();
+			});
+		});
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			$('#btn-edit').click(function() {
+				if (!shouldContinue()) {
+					return;
+				}
+				$('#sql-form').find('input[name="edit_type"]').val('1');
+				$('#sql-form').find('input[name="edit_name"]').val($('input[name="tables"]:checked:first').val());
+				$('#sql-form').submit();
 			});
 		});
 	</script>

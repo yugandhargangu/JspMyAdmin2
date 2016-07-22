@@ -57,7 +57,7 @@ public class SqlLogic extends AbstractLogic {
 			Iterator<String> iterator = tableList.iterator();
 			StringBuilder mainBuilder = new StringBuilder();
 			mainBuilder.append("{");
-			mainBuilder.append("tables:{");
+			mainBuilder.append("tables: {");
 			boolean mainEnter = false;
 			while (iterator.hasNext()) {
 				if (mainEnter) {
@@ -66,10 +66,11 @@ public class SqlLogic extends AbstractLogic {
 					mainEnter = true;
 				}
 				String table = iterator.next();
-				mainBuilder.append(table);
-				mainBuilder.append(":{");
-				statement = apiConnection
-						.getStmtSelect("SHOW COLUMNS FROM `" + table + FrameworkConstants.SYMBOL_TEN);
+				mainBuilder.append("\"");
+				mainBuilder.append(table.replaceAll("\"", "\\\\\""));
+				mainBuilder.append("\"");
+				mainBuilder.append(": {");
+				statement = apiConnection.getStmtSelect("SHOW COLUMNS FROM `" + table + FrameworkConstants.SYMBOL_TEN);
 				resultSet = statement.executeQuery();
 				boolean subEnter = false;
 				while (resultSet.next()) {
@@ -78,8 +79,10 @@ public class SqlLogic extends AbstractLogic {
 					} else {
 						subEnter = true;
 					}
-					mainBuilder.append(resultSet.getString(1));
-					mainBuilder.append(":null");
+					mainBuilder.append("\"");
+					mainBuilder.append(resultSet.getString(1).replaceAll("\"", "\\\\\""));
+					mainBuilder.append("\"");
+					mainBuilder.append(": null");
 				}
 				mainBuilder.append("}");
 				close(resultSet);
@@ -87,7 +90,7 @@ public class SqlLogic extends AbstractLogic {
 			}
 			mainBuilder.append("}}");
 			String hintOptions = mainBuilder.toString();
-			sqlBean.setHint_options(hintOptions.replaceAll("'", "\'"));
+			sqlBean.setHint_options(hintOptions);
 
 			if (!isEmpty(sqlBean.getQuery())) {
 				if (FrameworkConstants.ONE.equals(sqlBean.getDisable_fks())) {

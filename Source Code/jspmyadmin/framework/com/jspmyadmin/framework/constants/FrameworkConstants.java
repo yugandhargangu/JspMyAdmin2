@@ -40,6 +40,7 @@ public final class FrameworkConstants {
 	public static final String DATABASE_NULL = "(null)";
 	public static final String DATABASE_BLOB = "[BLOB] - ";
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
+	public static final String DEFAULT_LOCALE = "en";
 	public static final String ENCODE_UTF8 = "UTF-8";
 	public static final String ERR = "err";
 	public static final String ERR_KEY = "err_key";
@@ -62,6 +63,7 @@ public final class FrameworkConstants {
 	public static final String PAGE_CONTEXT_MESSAGES = "messages";
 	public static final String PK_VAL = "pk_val";
 	public static final String PROXY = "PROXY";
+	public static final String QUERY = "query";
 	public static final String REMOVE = "remove";
 	public static final String REPLACE = "replace";
 	public static final String REQUEST = "request";
@@ -624,13 +626,19 @@ public final class FrameworkConstants {
 			CHECKSUM_OP_LIST.add("QUICK");
 			CHECKSUM_OP_LIST.add("EXTENDED");
 		}
-		
+
 		public static final List<String> REPAIR_OP_LIST = new ArrayList<String>(3);
 
 		static {
 			REPAIR_OP_LIST.add("QUICK");
 			REPAIR_OP_LIST.add("EXTENDED");
 			REPAIR_OP_LIST.add("USE_FRM");
+		}
+
+		public static final Map<String, String> LANGUAGE_MAP = Collections.synchronizedMap(new LinkedHashMap<String, String>(1));
+
+		static {
+			LANGUAGE_MAP.put("en", "English");
 		}
 	}
 

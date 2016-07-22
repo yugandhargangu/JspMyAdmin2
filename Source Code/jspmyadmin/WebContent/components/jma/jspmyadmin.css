@@ -103,6 +103,11 @@ html, body {
 	overflow-y: hidden;
 }
 
+#site-logo {
+	width: 100%;
+	height: auto;
+}
+
 #menubar-main {
 	padding-bottom: 3em;
 	width: 95%;

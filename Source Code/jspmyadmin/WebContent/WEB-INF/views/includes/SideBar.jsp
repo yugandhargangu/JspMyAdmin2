@@ -5,14 +5,14 @@
 <m:open />
 <div style="padding: 1em 0.5em;">
 	<div style="width: 100%; text-align: center;">
-		<img alt="Logo" height="80"
+		<img alt="Logo" id="site-logo"
 			src="${pageContext.request.contextPath}/components/images/logo.png">
 	</div>
 	<div style="width: 100%; text-align: center; margin-top: 0.5em;">
 		<div
 			style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">
-			<a href="${pageContext.request.contextPath}/home.html"><img alt="Home"
-				class="icon-l"
+			<a href="${pageContext.request.contextPath}/home.html"><img
+				alt="Home" class="icon-l"
 				src="${pageContext.request.contextPath}/components/icons/home.png"></a>
 		</div>
 		<div
@@ -26,11 +26,6 @@
 			<a href="https://dev.mysql.com/doc/" target="_blank"><img
 				class="icon-l" alt="MySql documentation" title="MySql documentation"
 				src="${pageContext.request.contextPath}/components/icons/mysql.png"></a>
-		</div>
-		<div
-			style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">
-			<a href="#"><img alt="Settings" class="icon-l" title="Settings"
-				src="${pageContext.request.contextPath}/components/icons/settings.png"></a>
 		</div>
 		<div
 			style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">

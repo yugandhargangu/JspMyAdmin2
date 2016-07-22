@@ -224,6 +224,16 @@
 		</div>
 	</div>
 
+	<div style="display: none;">
+		<form
+			action="${pageContext.request.contextPath}/database_ext_sql.html"
+			method="post" id="sql-form">
+			<input type="hidden" name="token"
+				value="${requestScope.command.token}"> <input type="hidden"
+				name="edit_type"> <input type="hidden" name="edit_name">
+		</form>
+	</div>
+
 	<m:store name="msg_drop_function_alert" key="msg.drop_function_alert" />
 	<m:store name="msg_select_least_one_function"
 		key="msg.select_least_one_function" />
@@ -427,47 +437,27 @@
 		});
 	</script>
 	<script type="text/javascript">
-		// drop
+		// execute
 		$(function() {
 			$('#btn-execute').click(function() {
 				if (!shouldContinue()) {
 					return;
 				}
-				var url = Server.root + '/database_procedure_params.text';
-				$.ajax({
-					url : url,
-					data : $('#function-list-form').serialize(),
-					method : 'POST',
-					success : function(res) {
-						if (res == '') {
-							$('#sidebar-error-msg').text(Msgs.errMsg);
-							$('#sidebar-error-dialog').show();
-							return;
-						}
-						var data = decode(res);
-						var jsonData = $.parseJSON(data);
-						if (jsonData.err != '') {
-							$('#sidebar-error-msg').text(jsonData.err);
-							$('#sidebar-error-dialog').show();
-						} else {
-							var actData = jsonData.data;
-							if (actData != '') {
-								var params = actData.split(",");
-								for (var i = 0; params.length; i++) {
-									var types = params[i].split(" ");
-									if (types[0] == 'IN' || types[0] == 'INOUT') {
-										// TODO
-									}
-								}
-							}
-						}
-
-					},
-					error : function(res) {
-						$('#sidebar-error-msg').text(Msgs.errMsg);
-						$('#sidebar-error-dialog').show();
-					}
-				});
+				$('#sql-form').find('input[name="edit_type"]').val('5');
+				$('#sql-form').find('input[name="edit_name"]').val($('input[name="routines"]:checked:first').val());
+				$('#sql-form').submit();
+			});
+		});
+	</script>
+	<script type="text/javascript">
+		$(function() {
+			$('#btn-edit').click(function() {
+				if (!shouldContinue()) {
+					return;
+				}
+				$('#sql-form').find('input[name="edit_type"]').val('4');
+				$('#sql-form').find('input[name="edit_name"]').val($('input[name="routines"]:checked:first').val());
+				$('#sql-form').submit();
 			});
 		});
 	</script>

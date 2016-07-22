@@ -130,27 +130,46 @@
 			</div>
 		</div>
 	</div>
-
+	<jma:notEmpty name="#hint_options" scope="command">
+		<script type="text/javascript">
+			var hintOptions = ${requestScope.command.hint_options};
+			var id = document.getElementById('sql-editor');
+			var codeMirrorObj = CodeMirror.fromTextArea(id, {
+				mode : 'text/x-mysql',
+				indentWithTabs : true,
+				smartIndent : true,
+				lineNumbers : true,
+				lineWrapping : true,
+				matchBrackets : true,
+				autofocus : true,
+				extraKeys : {
+					"Ctrl-Space" : "autocomplete"
+				},
+				hintOptions : hintOptions
+			});
+		</script>
+	</jma:notEmpty>
+	<jma:empty name="#hint_options" scope="command">
+		<script type="text/javascript">
+			var id = document.getElementById('sql-editor');
+			var codeMirrorObj = CodeMirror.fromTextArea(id, {
+				mode : 'text/x-mysql',
+				indentWithTabs : true,
+				smartIndent : true,
+				lineNumbers : true,
+				lineWrapping : true,
+				matchBrackets : true,
+				autofocus : true,
+				extraKeys : {
+					"Ctrl-Space" : "autocomplete"
+				}
+			});
+		</script>
+	</jma:empty>
 	<script type="text/javascript">
-		var hintOptions = ${requestScope.command.hint_options};
-
 		$("#header-menu li:nth-child(5)").addClass('active');
 		applyEvenOdd('#data-rows');
 
-		var id = document.getElementById('sql-editor');
-		var codeMirrorObj = CodeMirror.fromTextArea(id, {
-			mode : 'text/x-mysql',
-			indentWithTabs : true,
-			smartIndent : true,
-			lineNumbers : true,
-			lineWrapping : true,
-			matchBrackets : true,
-			autofocus : true,
-			extraKeys : {
-				"Ctrl-Space" : "autocomplete"
-			},
-			hintOptions : hintOptions
-		});
 		codeMirrorObj.on('keyup', function(instance, event) {
 			if (!codeMirrorObj.state.completionActive && (event.keyCode > 64 && event.keyCode < 91)) {
 				if (timeout)
