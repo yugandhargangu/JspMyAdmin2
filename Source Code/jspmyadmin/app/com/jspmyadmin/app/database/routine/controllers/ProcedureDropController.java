@@ -40,7 +40,7 @@ public class ProcedureDropController extends Controller<RoutineListBean> {
 		try {
 			routineLogic = new RoutineLogic();
 			routineLogic.dropRoutines(bean, true);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.procedure_drop_success");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_PROCEDURE_DROP_SUCCESS);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

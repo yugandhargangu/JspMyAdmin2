@@ -38,7 +38,9 @@
 						</form>
 					</div>
 					<div class="group">
-						<div class="group-widget group-header">Information</div>
+						<div class="group-widget group-header">
+							<m:print key="lbl.information" />
+						</div>
 						<div class="group-widget group-content">
 							<table class="tbl" id="info-table" style="display: inline-block;">
 								<thead>

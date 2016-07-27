@@ -128,7 +128,11 @@ public class StructureLogic extends AbstractLogic {
 				tableInfo.setUpdate_date(resultSet.getString(9));
 				tableInfo.setComment(resultSet.getString(10));
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.TABLE, tableInfo.getName());
+				if (onlyTables) {
+					jsonObject.put(FrameworkConstants.TABLE, tableInfo.getName());
+				} else {
+					jsonObject.put(FrameworkConstants.VIEW, tableInfo.getName());
+				}
 				tableInfo.setAction(encDecLogic.encode(jsonObject.toString()));
 				tableInfoList.add(tableInfo);
 				count++;

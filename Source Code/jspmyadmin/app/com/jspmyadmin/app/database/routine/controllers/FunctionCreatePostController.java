@@ -44,8 +44,8 @@ public class FunctionCreatePostController extends Controller<RoutineBean> {
 		JSONObject jsonObject = new JSONObject();
 		try {
 			routineLogic = new RoutineLogic();
-			if (routineLogic.isExisted(bean.getName(), "FUNCTION")) {
-				jsonObject.put(FrameworkConstants.ERR, messages.getMessage("msg.function_already_existed"));
+			if (routineLogic.isExisted(bean.getName(), FrameworkConstants.FUNCTION)) {
+				jsonObject.put(FrameworkConstants.ERR, messages.getMessage(AppConstants.MSG_FUNCTION_ALREADY_EXISTED));
 			} else {
 				String result = routineLogic.saveFunction(bean);
 				jsonObject.append(FrameworkConstants.ERR, FrameworkConstants.BLANK);
@@ -53,7 +53,7 @@ public class FunctionCreatePostController extends Controller<RoutineBean> {
 					jsonObject.append(FrameworkConstants.DATA, result);
 				} else {
 					JSONObject msg = new JSONObject();
-					msg.put(FrameworkConstants.MSG_KEY, "msg.function_save_success");
+					msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_FUNCTION_SAVE_SUCCESS);
 					jsonObject.append(FrameworkConstants.MSG, super.encode(msg));
 				}
 			}

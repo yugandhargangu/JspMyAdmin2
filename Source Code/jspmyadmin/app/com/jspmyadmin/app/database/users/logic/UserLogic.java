@@ -849,7 +849,7 @@ public class UserLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			List<String> procedureList = new ArrayList<String>();
 			while (resultSet.next()) {
-				procedureList.add(resultSet.getString("name"));
+				procedureList.add(resultSet.getString(FrameworkConstants.NAME));
 			}
 			close(resultSet);
 			close(statement);
@@ -860,7 +860,7 @@ public class UserLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			List<String> functionList = new ArrayList<String>();
 			while (resultSet.next()) {
-				functionList.add(resultSet.getString("name"));
+				functionList.add(resultSet.getString(FrameworkConstants.NAME));
 			}
 			close(resultSet);
 			close(statement);
@@ -930,7 +930,6 @@ public class UserLogic extends AbstractLogic {
 							builder.append(FrameworkConstants.SYMBOL_TEN);
 							builder.append(" TO ");
 							builder.append(routinePrivilegeBean.getUser());
-							System.out.println(builder.toString());
 							statement = apiConnection.getStmt(builder.toString());
 							statement.execute();
 							close(statement);

@@ -44,8 +44,8 @@ public class ProcedureCreatePostController extends Controller<RoutineBean> {
 		JSONObject jsonObject = new JSONObject();
 		try {
 			routineLogic = new RoutineLogic();
-			if (routineLogic.isExisted(bean.getName(), "PROCEDURE")) {
-				jsonObject.put(FrameworkConstants.ERR, messages.getMessage("msg.procedure_already_existed"));
+			if (routineLogic.isExisted(bean.getName(), FrameworkConstants.PROCEDURE)) {
+				jsonObject.put(FrameworkConstants.ERR, messages.getMessage(AppConstants.MSG_PROCEDURE_ALREADY_EXISTED));
 			} else {
 				String result = routineLogic.saveProcedure(bean);
 				jsonObject.append(FrameworkConstants.ERR, FrameworkConstants.BLANK);
@@ -53,7 +53,7 @@ public class ProcedureCreatePostController extends Controller<RoutineBean> {
 					jsonObject.append(FrameworkConstants.DATA, result);
 				} else {
 					JSONObject msg = new JSONObject();
-					msg.put(FrameworkConstants.MSG_KEY, "msg.procedure_save_success");
+					msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_PROCEDURE_SAVE_SUCCESS);
 					jsonObject.append(FrameworkConstants.MSG, super.encode(msg));
 				}
 			}

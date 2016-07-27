@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
 import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.logic.EncDecLogic;
 
@@ -95,6 +97,7 @@ public class DefaultServlet extends HttpServlet {
 				Bean bean = (Bean) pathInfo.getBean().newInstance();
 				View view = new ActualView(request);
 				controller.service(bean, view, pathInfo);
+				_setNewAdd(request);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
@@ -173,5 +176,19 @@ public class DefaultServlet extends HttpServlet {
 			messages = new MessageReader(null);
 		}
 		return messages;
+	}
+
+	/**
+	 * 
+	 * @param request
+	 */
+	private void _setNewAdd(HttpServletRequest request) {
+		EncDecLogic encDecLogic = new EncDecLogic();
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put(FrameworkConstants.NEW_ADD, FrameworkConstants.NEW_ADD);
+			request.setAttribute(FrameworkConstants.NEW_ADD, encDecLogic.encode(jsonObject.toString()));
+		} catch (Exception e) {
+		}
 	}
 }

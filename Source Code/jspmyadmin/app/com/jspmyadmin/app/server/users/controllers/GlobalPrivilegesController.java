@@ -29,6 +29,7 @@ public class GlobalPrivilegesController extends Controller<GlobalPrivilegeBean> 
 	protected void handleGet(GlobalPrivilegeBean bean, View view) throws Exception {
 		UserLogic userLogic = null;
 		try {
+			super.fillBasics(bean);
 			userLogic = new UserLogic();
 			userLogic.fillGlobalPrivileges(bean);
 			super.generateToken(bean);
@@ -53,6 +54,7 @@ public class GlobalPrivilegesController extends Controller<GlobalPrivilegeBean> 
 			userLogic.saveGlobalPrivileges(bean);
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(FrameworkConstants.USER, bean.getUser());
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_SAVE_SUCCESS);
 			view.setToken(super.encode(jsonObject));
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_SERVER_GLOBAL_PRIVILEGES);

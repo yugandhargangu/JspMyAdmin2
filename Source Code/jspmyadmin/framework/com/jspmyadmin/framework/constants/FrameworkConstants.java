@@ -25,10 +25,16 @@ public final class FrameworkConstants {
 
 	public static final String ADD = "add";
 	public static final String APP_DATA_TYPES_INFO = "data_types_info";
+	public static final String AT = "AT";
+	public static final String AUTO_INCREMENT = "auto_increment";
 	public static final String BLANK = "";
 	public static final String BASE_TABLE = "BASE TABLE";
 	public static final String BYTE_TYPE = byte[].class.getName();
+	public static final String CHARSET = "charset";
+	public static final String CHARACTER_SET_SERVER = "character_set_server";
+	public static final String COLLATION_SERVER = "collation_server";
 	public static final String COLUMN = "column";
+	public static final String COLUMN_NAME = "COLUMN_NAME";
 	public static final String COMMAND = "command";
 	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
 	public static final String COPY = "copy";
@@ -40,21 +46,27 @@ public final class FrameworkConstants {
 	public static final String DATABASE_NULL = "(null)";
 	public static final String DATABASE_BLOB = "[BLOB] - ";
 	public static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
+	public static final String DELIMITER_$$ = "DELIMITER $$";
+	public static final String DELIMITER_COMMA = "DELIMITER ;";
 	public static final String DEFAULT_LOCALE = "en";
 	public static final String ENCODE_UTF8 = "UTF-8";
 	public static final String ERR = "err";
 	public static final String ERR_KEY = "err_key";
 	public static final String EVENT = "event";
+	public static final String EVERY = "EVERY";
+	public static final String FIELD = "field";
 	public static final String FK = "fk_";
+	public static final String FUNCTION = "FUNCTION";
 	public static final String GET = "get";
 	public static final String GRANT_OPTION = "GRANT OPTION";
 	public static final String HOSTNAME = "hostname";
 	public static final String JSP_ROOT = "/WEB-INF/views/";
-	public static final String LIMIT = "limit";
+	public static final String LIMIT = "25";
 	public static final String MSG = "msg";
 	public static final String MSG_KEY = "msg_key";
 	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 	public static final String NAME = "name";
+	public static final String NEW_ADD = "new_add";
 	public static final String NEW_LINE = "\\n";
 	public static final String NO = "No";
 	public static final String NON_ALPHA_NUM = "[^A-Za-z0-9 ]";
@@ -62,8 +74,12 @@ public final class FrameworkConstants {
 	public static final String PAGE = "page";
 	public static final String PAGE_CONTEXT_MESSAGES = "messages";
 	public static final String PK_VAL = "pk_val";
+	public static final String PROCEDURE = "PROCEDURE";
+	public static final String PROTOCOL_VERSION = "protocol_version";
 	public static final String PROXY = "PROXY";
 	public static final String QUERY = "query";
+	public static final String REGEX_$$ = "\\$\\$";
+	public static final String REGEX_NEW_LINE = "\\r\\n";
 	public static final String REMOVE = "remove";
 	public static final String REPLACE = "replace";
 	public static final String REQUEST = "request";
@@ -80,7 +96,10 @@ public final class FrameworkConstants {
 	public static final String SESSION_TABLE = "session_table";
 	public static final String SESSION_TOKEN = "session_token";
 	public static final String SESSION_USER = "session_user";
+	public static final String SESSION_VIEW = "session_view";
 	public static final String SET = "set";
+	public static final String FETCH_LIMIT = "25";
+	public static final String SHOW_SEARCH = "show_search";
 	public static final String SPACE = " ";
 	public static final String SORT_BY = "sort_by";
 	public static final String SYMBOL_AT = "@";
@@ -94,20 +113,27 @@ public final class FrameworkConstants {
 	public static final String SYMBOL_DOT_EXPR = "\\.";
 	public static final String SYMBOL_HASH = "#";
 	public static final String SYMBOL_HIFEN = "-";
+	public static final String SYMBOL_HIFEN_HIFEN = "--";
 	public static final String SYMBOL_QUOTE = "'";
 	public static final String SYMBOL_QUOTE_ESCAPE = "\'";
 	public static final String SYMBOL_SEMI_COLON = ";";
+	public static final String SYMBOL_SQL_MULTI_START = "/*";
+	public static final String SYMBOL_SQL_MULTI_END = "*/";
 	public static final String SYMBOL_TEN = "`";
 	public static final String SYMBOL_TOKEN = "?token=";
 	public static final String SYMBOL_UNDERSCORE = "_";
 	public static final String TABLE = "table";
 	public static final String TEMP_DIR = System.getProperty("java.io.tmpdir") + "/jspmyadmin/temp/";
 	public static final String THREE = "3";
+	public static final String TRIGGER = "trigger";
 	public static final String TWO = "2";
 	public static final String TYPE = "type";
 	public static final String TOKEN = "token";
 	public static final String USER = "user";
+	public static final String VERSION = "version";
+	public static final String VERSION_COMMENT = "version_comment";
 	public static final String VIEW = "view";
+	public static final String VIEW_UPPER_CASE = "VIEW";
 	public static final String YES = "Yes";
 	public static final String ZERO = "0";
 
@@ -635,10 +661,101 @@ public final class FrameworkConstants {
 			REPAIR_OP_LIST.add("USE_FRM");
 		}
 
-		public static final Map<String, String> LANGUAGE_MAP = Collections.synchronizedMap(new LinkedHashMap<String, String>(1));
+		public static final Map<String, String> LANGUAGE_MAP = Collections
+				.synchronizedMap(new LinkedHashMap<String, String>(1));
 
 		static {
 			LANGUAGE_MAP.put("en", "English");
+		}
+
+		public static final List<String> EVENT_INTERVAL_LIST = new ArrayList<String>(15);
+
+		static {
+			EVENT_INTERVAL_LIST.add("DAY");
+			EVENT_INTERVAL_LIST.add("DAY_HOUR");
+			EVENT_INTERVAL_LIST.add("DAY_MINUTE");
+			EVENT_INTERVAL_LIST.add("DAY_SECOND");
+			EVENT_INTERVAL_LIST.add("HOUR");
+			EVENT_INTERVAL_LIST.add("HOUR_MINUTE");
+			EVENT_INTERVAL_LIST.add("HOUR_SECOND");
+			EVENT_INTERVAL_LIST.add("MINUTE");
+			EVENT_INTERVAL_LIST.add("MINUTE_SECOND");
+			EVENT_INTERVAL_LIST.add("MONTH");
+			EVENT_INTERVAL_LIST.add("QUARTER");
+			EVENT_INTERVAL_LIST.add("SECOND");
+			EVENT_INTERVAL_LIST.add("WEEK");
+			EVENT_INTERVAL_LIST.add("YEAR ");
+			EVENT_INTERVAL_LIST.add("YEAR_MONTH");
+		}
+
+		public static final List<String> DEFINER_LIST = new ArrayList<String>(2);
+
+		static {
+			DEFINER_LIST.add(FrameworkConstants.CURRENT_USER);
+			DEFINER_LIST.add("OTHER");
+		}
+
+		public static final List<String> SQL_TYPE_LIST = new ArrayList<String>(4);
+
+		static {
+			SQL_TYPE_LIST.add("CONTAINS SQL");
+			SQL_TYPE_LIST.add("NO SQL");
+			SQL_TYPE_LIST.add("READS SQL DATA");
+			SQL_TYPE_LIST.add("MODIFIES SQL DATA");
+		}
+
+		public static final List<String> SECURITY_TYPE_LIST = new ArrayList<String>(2);
+
+		static {
+			SECURITY_TYPE_LIST.add("DEFINER");
+			SECURITY_TYPE_LIST.add("INVOKER");
+		}
+
+		public static final List<String> ALGORITHM_LIST = new ArrayList<String>(3);
+
+		static {
+			ALGORITHM_LIST.add("UNDEFINED");
+			ALGORITHM_LIST.add("MERGE");
+			ALGORITHM_LIST.add("TEMPTABLE");
+		}
+
+		public static final List<String> VIEW_CHECK_LIST = new ArrayList<String>(2);
+
+		static {
+			VIEW_CHECK_LIST.add("CASCADED");
+			VIEW_CHECK_LIST.add("LOCAL");
+		}
+
+		public static final List<String> TRIGGER_TIME_LIST = new ArrayList<String>(2);
+
+		static {
+			TRIGGER_TIME_LIST.add("BEFORE");
+			TRIGGER_TIME_LIST.add("AFTER");
+		}
+
+		public static final List<String> TRIGGER_EVENT_LIST = new ArrayList<String>(3);
+
+		static {
+			TRIGGER_EVENT_LIST.add("INSERT");
+			TRIGGER_EVENT_LIST.add("UPDATE");
+			TRIGGER_EVENT_LIST.add("DELETE");
+		}
+
+		public static final List<String> TRIGGER_ORDER_LIST = new ArrayList<String>(2);
+
+		static {
+			TRIGGER_ORDER_LIST.add("FOLLOWS");
+			TRIGGER_ORDER_LIST.add("PRECEDES");
+		}
+
+		public static final List<String> LIMIT_LIST = new ArrayList<String>(5);
+
+		static {
+			LIMIT_LIST.add("25");
+			LIMIT_LIST.add("50");
+			LIMIT_LIST.add("100");
+			LIMIT_LIST.add("500");
+			LIMIT_LIST.add("1000");
 		}
 	}
 

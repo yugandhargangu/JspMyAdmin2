@@ -29,6 +29,7 @@ public class EventListController extends Controller<EventListBean> {
 	@Override
 	protected void handlePost(EventListBean bean, View view) throws Exception {
 		super.fillBasics(bean);
+		super.checkForDb(bean);
 		EventLogic eventLogic = new EventLogic();
 		eventLogic.fillListBean(bean);
 		super.generateToken(bean);

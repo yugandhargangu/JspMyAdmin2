@@ -57,7 +57,7 @@
 										<tr>
 											<td>
 												<button type="button" class="btn" onclick="callEdit(this);">
-													<m:print key="btn.edit" />
+													<m:print key="lbl.edit" />
 												</button>
 											</td>
 											<jma:forLoop items="#variableInfo" name="variableData"
@@ -83,9 +83,9 @@
 		</div>
 
 	</div>
-	<m:store name="btn_edit" key="btn.edit" />
-	<m:store name="btn_cancel" key="btn.cancel" />
-	<m:store name="btn_save" key="btn.save" />
+	<m:store name="btn_edit" key="lbl.edit" />
+	<m:store name="btn_cancel" key="lbl.cancel" />
+	<m:store name="btn_save" key="lbl.save" />
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(7)").addClass('active');
 		applyEvenOdd('#variable-list');

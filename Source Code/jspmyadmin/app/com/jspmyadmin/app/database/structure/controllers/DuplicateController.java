@@ -40,7 +40,7 @@ public class DuplicateController extends Controller<StructureBean> {
 		try {
 			structureLogic = new StructureLogic();
 			structureLogic.duplicateTable(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.duplicate_table_successfully");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_DUPLICATE_TABLE_SUCCESSFULLY);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

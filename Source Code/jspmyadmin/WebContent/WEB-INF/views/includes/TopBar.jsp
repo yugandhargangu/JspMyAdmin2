@@ -4,6 +4,7 @@
 <%@ taglib prefix="jma" uri="http://jspmyadmin.com/taglib/jsp/jma"%>
 <m:open />
 <div style="padding: 2px 1.5em;">
+
 	<ul class="breadcrumb">
 		<li><a href="${pageContext.request.contextPath}/home.html">
 				${pageContext.request.serverName}:${pageContext.request.serverPort}
@@ -16,7 +17,11 @@
 		<jma:notEmpty name="#session_table" scope="session">
 			<li><a href="${pageContext.request.contextPath}/table_data.html">${sessionScope.session_table}</a></li>
 		</jma:notEmpty>
+		<jma:notEmpty name="#session_view" scope="session">
+			<li><a href="${pageContext.request.contextPath}/view_data.html">${sessionScope.session_view}</a></li>
+		</jma:notEmpty>
 	</ul>
+	
 	<!-- 
 	<div style="display: inline-block; padding: 0.2em 1em;">
 		<img alt="Server" class="icon"

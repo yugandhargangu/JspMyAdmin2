@@ -20,6 +20,7 @@ import com.jspmyadmin.app.table.structure.beans.ColumnListBean;
 import com.jspmyadmin.app.table.structure.beans.IndexInfo;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
+import com.jspmyadmin.framework.constants.AppConstants;
 import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.utils.Bean;
 import com.jspmyadmin.framework.web.utils.Messages;
@@ -781,7 +782,7 @@ public class StructureLogic extends AbstractLogic {
 			} else {
 				result = builder.toString();
 				if (table_start.equals(result)) {
-					result = "// No Changes Found";
+					result = _messages.getMessage(AppConstants.MSG_NO_CHANGES_FOUND);
 				}
 			}
 		} finally

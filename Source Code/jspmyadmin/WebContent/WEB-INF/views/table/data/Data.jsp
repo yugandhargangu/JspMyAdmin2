@@ -63,9 +63,12 @@ input[readonly] {
 
 						<div class="group">
 							<div class="group-widget group-header">
-								<m:print key="lbl.query_execution_time" />
-								${requestScope.command.exec_time}
+								<m:print key="lbl.query" />
+								&#40;
+								<m:print key="lbl.execution_time" />
+								: ${requestScope.command.exec_time}
 								<m:print key="lbl.seconds" />
+								&#41;
 							</div>
 							<div class="group-widget group-content">
 								<textarea rows="5" cols="100" style="width: 100%;"
@@ -371,10 +374,10 @@ input[readonly] {
 				</div>
 				<div class="dialog-footer">
 					<button type="button" class="btn" id="yes_btn">
-						<m:print key="btn.yes" />
+						<m:print key="lbl.yes" />
 					</button>
 					<button type="button" class="btn" id="no_btn">
-						<m:print key="btn.no" />
+						<m:print key="lbl.no" />
 					</button>
 				</div>
 			</div>
@@ -569,6 +572,7 @@ input[readonly] {
 			}
 		</script>
 
+		<m:store name="lbl_download" key="lbl.download" />
 		<script type="text/javascript">
 			var originalData = '';
 			var columns = [];
@@ -672,7 +676,7 @@ input[readonly] {
 					}).appendTo($this.empty()).focus();
 				});
 				$('.blob-download').each(function() {
-					$(this).prop('title', 'Download');
+					$(this).prop('title', '${lbl_download}');
 				});
 				$('.blob-download').click(function() {
 					alert('Not yet Implemented.');

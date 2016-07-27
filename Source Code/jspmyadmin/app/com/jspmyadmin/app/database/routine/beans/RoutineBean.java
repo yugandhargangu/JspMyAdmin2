@@ -41,25 +41,14 @@ public class RoutineBean extends Bean {
 	private String alter = null;
 	private String new_column = null;
 
-	private List<String> definer_list = null;
-	private Map<String, List<String>> data_types_map = null;
-	private List<String> sql_type_list = null;
-	private List<String> security_type_list = null;
+	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
+	private Map<String, List<String>> data_types_map = new LinkedHashMap<String, List<String>>(
+			FrameworkConstants.Utils.DATA_TYPES_MAP);
+	private List<String> sql_type_list = new ArrayList<String>(FrameworkConstants.Utils.SQL_TYPE_LIST);
+	private List<String> security_type_list = new ArrayList<String>(FrameworkConstants.Utils.SECURITY_TYPE_LIST);
 
 	@Override
 	public void init() {
-		definer_list = new ArrayList<String>(2);
-		definer_list.add(FrameworkConstants.CURRENT_USER);
-		definer_list.add("OTHER");
-		data_types_map = new LinkedHashMap<String, List<String>>(FrameworkConstants.Utils.DATA_TYPES_MAP);
-		sql_type_list = new ArrayList<String>(4);
-		sql_type_list.add("CONTAINS SQL");
-		sql_type_list.add("NO SQL");
-		sql_type_list.add("READS SQL DATA");
-		sql_type_list.add("MODIFIES SQL DATA");
-		security_type_list = new ArrayList<String>(2);
-		security_type_list.add("DEFINER");
-		security_type_list.add("INVOKER");
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("<tr><td class=\"no-display\">");

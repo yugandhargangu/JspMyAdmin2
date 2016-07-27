@@ -5,56 +5,66 @@
 <m:open />
 <div id="header-menu-container">
 	<ul id="header-menu">
+		<m:store name="lbl_databases" key="lbl.databases" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_databases.html">
-				<img alt="Databases" class="icon"
+				<img alt="${lbl_databases}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-g.png">
-				<m:print key="lbl.databases" />
+				${lbl_databases}
 		</a></li>
+		<m:store name="lbl_query_editor" key="lbl.query_editor" />
 		<li><a href="${pageContext.request.contextPath}/server_sql.html"><img
-				alt="SQL" class="icon"
+				alt="${lbl_query_editor}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/text-file.png">
-				<m:print key="lbl.sql" /></a></li>
+				${lbl_query_editor} </a></li>
+		<m:store name="lbl_server_status" key="lbl.server_status" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_status.html"> <img
-				alt="Status" class="icon"
+				alt="${lbl_server_status}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/statistics.png">
-				<m:print key="lbl.status" />
+				${lbl_server_status}
 		</a></li>
+		<m:store name="lbl_users_privileges" key="lbl.users_privileges" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_users.html"><img
-				alt="Users" class="icon"
+				alt="${lbl_users_privileges}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/users.png">
-				<m:print key="lbl.users" /></a></li>
-		<li><a href="#"><img alt="Export" class="icon"
+				${lbl_users_privileges} </a></li>
+		<m:store name="lbl_export" key="lbl.export" />
+		<li><a href="#"><img alt="${lbl_export}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/send-file-g.png">
-				<m:print key="lbl.export" /></a></li>
-		<li><a href="#"><img alt="Import" class="icon"
+				${lbl_export} </a></li>
+		<m:store name="lbl_import" key="lbl.import" />
+		<li><a href="#"><img alt="${lbl_import}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/import-g.png">
-				<m:print key="lbl.import" /></a></li>
+				${lbl_import} </a></li>
+		<m:store name="lbl_variables" key="lbl.variables" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_variables.html">
-				<img alt="Variables" class="icon"
+				<img alt="${lbl_variables}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/code.png">
-				<m:print key="lbl.variables" />
+				${lbl_variables}
 		</a></li>
+		<m:store name="lbl_charsets" key="lbl.charsets" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_charsets.html"> <img
-				alt="Charsets" class="icon"
+				alt="${lbl_charsets}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/text-justify.png">
-				<m:print key="lbl.charsets" />
+				${lbl_charsets}
 		</a></li>
+		<m:store name="lbl_engines" key="lbl.engines" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_engines.html"> <img
-				alt="Engines" class="icon"
+				alt="${lbl_engines}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/database-config.png">
-				<m:print key="lbl.engines" />
+				${lbl_engines}
 		</a></li>
+		<m:store name="lbl_plugins" key="lbl.plugins" />
 		<li><a
 			href="${pageContext.request.contextPath}/server_plugins.html"> <img
-				alt="Plugins" class="icon"
+				alt="${lbl_plugins}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/puzzle-piece.png">
-				<m:print key="lbl.plugins" />
+				${lbl_plugins}
 		</a></li>
 	</ul>
 </div>

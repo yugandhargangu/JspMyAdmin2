@@ -22,10 +22,14 @@
 			<div id="main-body">
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
-						<h3>Triggers</h3>
+						<h3>
+							<m:print key="lbl.triggers" />
+						</h3>
 					</div>
 					<div class="group">
-						<div class="group-widget group-header">Create Trigger</div>
+						<div class="group-widget group-header">
+							<m:print key="lbl.create_trigger" />
+						</div>
 						<div class="group-widget group-content">
 							<form id="trigger-create-form"
 								action="${pageContext.request.contextPath}/database_trigger_create.html"
@@ -33,15 +37,15 @@
 								<input type="hidden" name="token"
 									value="${requestScope.command.token}">
 								<div class="form-input">
-									<label>Trigger Name</label> <input type="text"
-										name="trigger_name" id="trigger-create-name"
+									<label><m:print key="lbl.trigger_name" /></label> <input
+										type="text" name="trigger_name" id="trigger-create-name"
 										class="form-control">
 								</div>
 							</form>
 						</div>
 						<div class="group-widget group-footer">
 							<button type="button" class="btn" id="btn-go">
-								<m:print key="btn.go" />
+								<m:print key="lbl.run" />
 							</button>
 						</div>
 					</div>
@@ -50,18 +54,20 @@
 						<input type="hidden" name="token"
 							value="${requestScope.command.token}">
 						<div class="group">
-							<div class="group-widget group-header">Trigger List</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.trigger_list" />
+							</div>
 							<div class="group-widget group-content">
 
 								<table class="tbl" id="trigger-list">
 									<thead>
 										<tr>
 											<th><input type="checkbox" id="check_all"></th>
-											<th>Trigger Name</th>
-											<th>Event Type</th>
-											<th>Table Name</th>
-											<th>Event Time</th>
-											<th>Definer</th>
+											<th><m:print key="lbl.trigger_name" /></th>
+											<th><m:print key="lbl.event_type" /></th>
+											<th><m:print key="lbl.table_name" /></th>
+											<th><m:print key="lbl.event_time" /></th>
+											<th><m:print key="lbl.definer" /></th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -92,7 +98,7 @@
 										</jma:notEmpty>
 										<jma:empty name="#trigger_list" scope="command">
 											<tr class="even">
-												<td colspan="6">No Triggers Found.</td>
+												<td colspan="6"><m:print key="msg.no_trigger_found" /></td>
 											</tr>
 										</jma:empty>
 									</tbody>
@@ -195,15 +201,19 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>
 	</div>
 
+	<m:store name="msg_drop_trigger_alert" key="msg.drop_trigger_alert" />
+	<m:store name="msg_select_least_one_trigger"
+		key="msg.select_least_one_trigger" />
+	<m:store name="msg_trigger_name_blank" key="msg.trigger_name_blank" />
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(6)").addClass('active');
 		applyEvenOdd('#trigger-list');
@@ -215,8 +225,8 @@
 		};
 		// confirm text of each operation
 		var GoText = {
-			drop : "Do You Really Want to Drop Trigger(s)?",
-			select : "Please Select at least One Trigger",
+			drop : "${msg_drop_trigger_alert}",
+			select : "${msg_select_least_one_trigger}",
 		};
 		// action for each operation
 		var GoAction = {
@@ -271,7 +281,7 @@
 		$(function() {
 			$('#btn-go').click(function() {
 				if ($('#trigger-create-name').val().trim() == '') {
-					$('#error-content').text('Trigger Name is Required.');
+					$('#error-content').text('${msg_trigger_name_blank}');
 					$('#error-dialog').show();
 					return;
 				}
@@ -327,6 +337,7 @@
 		});
 	</script>
 
+	<m:store name="msg_trigger_create" key="msg.trigger_create" />
 	<script type="text/javascript">
 		// show-create
 		function showCreateApply(res) {
@@ -346,7 +357,7 @@
 				var keys = Object.keys(actJsonData);
 				var result = '';
 				for (key in actJsonData) {
-					result += '\n#------------- Create Trigger: ';
+					result += '\n#------------- ${msg_trigger_create}: ';
 					result += key;
 					result += ' ------------- \n\n';
 					result += actJsonData[key];

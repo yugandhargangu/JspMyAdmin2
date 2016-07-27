@@ -29,7 +29,8 @@ html {
 		keyForJS : '${sessionScope.session_key}',
 		root : '${pageContext.request.contextPath}',
 		database : '${sessionScope.session_db}',
-		table : '${sessionScope.session_table}'
+		table : '${sessionScope.session_table}',
+	    new_add : '${requestScope.new_add}'
 	};
 	var Msgs = {
 		msgNew : '${lbl_new}',

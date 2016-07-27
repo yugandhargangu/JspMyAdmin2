@@ -45,7 +45,7 @@
 						</div>
 						<div class="group-widget group-footer">
 							<button type="button" class="btn" id="btn-go">
-								<m:print key="btn.go" />
+								<m:print key="lbl.run" />
 							</button>
 						</div>
 					</div>
@@ -161,7 +161,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-rename-go">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -239,10 +239,10 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>
@@ -259,6 +259,13 @@
 		</form>
 	</div>
 
+	<m:store name="msg_drop_event_alert" key="msg.drop_event_alert" />
+	<m:store name="msg_select_least_one_event"
+		key="msg.select_least_one_event" />
+	<m:store name="msg_select_least_one_event_only"
+		key="msg.select_least_one_event_only" />
+	<m:store name="msg_event_name_blank" key="msg.event_name_blank" />
+	<m:store name="msg_event_create" key="msg.event_create" />
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(5)").addClass('active');
 		applyEvenOdd('#event-list');
@@ -273,9 +280,9 @@
 		};
 		// confirm text of each operation
 		var GoText = {
-			drop : "Do You Really Want to Drop Event(s)?",
-			select : "Please Select at least One Event",
-			rename : "Please Select only One Event to Rename"
+			drop : "${msg_drop_event_alert}",
+			select : "${msg_select_least_one_event}",
+			rename : "${msg_select_least_one_event_only}"
 		};
 		// action for each operation
 		var GoAction = {
@@ -344,7 +351,7 @@
 		$(function() {
 			$('#btn-go').click(function() {
 				if ($('#event-create-name').val().trim() == '') {
-					$('#error-content').text('Event Name is Required.');
+					$('#error-content').text('${msg_event_name_blank}');
 					$('#error-dialog').show();
 					return;
 				}
@@ -419,7 +426,7 @@
 				var keys = Object.keys(actJsonData);
 				var result = '';
 				for (key in actJsonData) {
-					result += '\n#------------- Create Event: ';
+					result += '\n#------------- ${msg_event_create}: ';
 					result += key;
 					result += ' ------------- \n\n';
 					result += actJsonData[key];
@@ -509,6 +516,7 @@
 		});
 	</script>
 
+	<m:store name="msg_event_name_new_blank" key="msg.event_name_new_blank" />
 	<script type="text/javascript">
 		// rename
 		$(function() {
@@ -526,7 +534,7 @@
 					return;
 				}
 				if ($('#new-event-name').val().trim() == '') {
-					$('#sidebar-error-msg').text('New Event Name is Blank.');
+					$('#sidebar-error-msg').text('${msg_event_name_new_blank}');
 					$('#sidebar-error-dialog').show();
 					return;
 				}
@@ -536,7 +544,7 @@
 			});
 		});
 	</script>
-		<script type="text/javascript">
+	<script type="text/javascript">
 		$(function() {
 			$('#btn-edit').click(function() {
 				if (!shouldContinue()) {

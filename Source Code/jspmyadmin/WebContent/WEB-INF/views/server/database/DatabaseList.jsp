@@ -58,7 +58,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="create_btn">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -405,10 +405,10 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>

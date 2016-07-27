@@ -66,7 +66,7 @@ public class DatabaseLogic extends AbstractLogic {
 			builder.append("SUM(TABLE_ROWS) AS db_rows_count, SUM(DATA_LENGTH) AS db_data, ");
 			builder.append("SUM(INDEX_LENGTH) AS db_index, SUM(DATA_LENGTH + INDEX_LENGTH) ");
 			builder.append("AS db_total ,TABLE_SCHEMA AS db_name FROM information_schema.TABLES ");
-			builder.append("GROUP BY db_name) AS b ON a.db_name = b.db_name GROUP BY a.db_name");
+			builder.append("GROUP BY TABLE_SCHEMA) AS b ON a.db_name = b.db_name GROUP BY a.db_name");
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			databaseInfoList = new ArrayList<DatabaseInfo>();

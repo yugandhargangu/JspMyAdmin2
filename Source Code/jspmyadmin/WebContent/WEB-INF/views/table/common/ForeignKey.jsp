@@ -83,7 +83,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="submit" id="add-btn" class="btn">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>

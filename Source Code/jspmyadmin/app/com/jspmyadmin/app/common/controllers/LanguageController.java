@@ -6,6 +6,7 @@ package com.jspmyadmin.app.common.controllers;
 import javax.servlet.http.HttpSession;
 
 import com.jspmyadmin.app.common.beans.LanguageBean;
+import com.jspmyadmin.framework.constants.AppConstants;
 import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
@@ -26,7 +27,7 @@ public class LanguageController extends Controller<LanguageBean> {
 	@Override
 	protected void handleGet(LanguageBean bean, View view) throws Exception {
 		view.setType(ViewType.REDIRECT);
-		view.setPath("/login.html");
+		view.setPath(AppConstants.PATH_LOGIN);
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class LanguageController extends Controller<LanguageBean> {
 			httpSession.setAttribute(FrameworkConstants.SESSION_LOCALE, bean.getLanguage());
 		}
 		view.setType(ViewType.REDIRECT);
-		view.setPath("/login.html");
+		view.setPath(AppConstants.PATH_LOGIN);
 	}
 
 }

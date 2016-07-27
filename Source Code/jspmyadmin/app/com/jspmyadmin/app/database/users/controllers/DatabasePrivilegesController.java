@@ -46,6 +46,9 @@ public class DatabasePrivilegesController extends Controller<UserListBean> {
 		try {
 			UserLogic userLogic = new UserLogic();
 			userLogic.saveSchemaPrivileges(bean);
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_SAVE_SUCCESS);
+			view.setToken(super.encode(jsonObject));
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSONObject jsonObject = new JSONObject();

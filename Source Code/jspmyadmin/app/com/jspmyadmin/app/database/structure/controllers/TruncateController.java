@@ -40,7 +40,7 @@ public class TruncateController extends Controller<StructureBean> {
 		try {
 			structureLogic = new StructureLogic();
 			structureLogic.truncateTables(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.tables_truncate_successfully");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_TABLES_TRUNCATE_SUCCESSFULLY);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

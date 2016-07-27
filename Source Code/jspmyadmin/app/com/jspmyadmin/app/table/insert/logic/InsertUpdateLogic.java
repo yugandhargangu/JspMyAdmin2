@@ -61,7 +61,7 @@ public class InsertUpdateLogic extends AbstractLogic {
 			DatabaseMetaData databaseMetaData = apiConnection.getDatabaseMetaData();
 			resultSet = databaseMetaData.getPrimaryKeys(null, null, _table);
 			if (resultSet.next()) {
-				insertUpdateBean.setPk_column(resultSet.getString("COLUMN_NAME"));
+				insertUpdateBean.setPk_column(resultSet.getString(FrameworkConstants.COLUMN_NAME));
 				insertUpdateBean.setPk_status(FrameworkConstants.ONE);
 			}
 			close(resultSet);
@@ -91,7 +91,7 @@ public class InsertUpdateLogic extends AbstractLogic {
 				insertInfo.setDataType(resultSet.getString(2));
 				insertInfo.setCanBeNull(resultSet.getString(4));
 				insertInfo.setExtra(resultSet.getString(7));
-				if ("auto_increment".equalsIgnoreCase(insertInfo.getExtra())) {
+				if (FrameworkConstants.AUTO_INCREMENT.equalsIgnoreCase(insertInfo.getExtra())) {
 					insertInfo.setValue(FrameworkConstants.ZERO);
 				} else {
 					insertInfo.setValue(resultSet.getString(6));

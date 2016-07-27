@@ -34,11 +34,11 @@ public class FunctionCreateController extends Controller<RoutineBean> {
 	@ValidateToken
 	protected void handlePost(RoutineBean bean, View view) throws Exception {
 		RoutineLogic routineLogic = new RoutineLogic();
-		if (routineLogic.isExisted(bean.getName(), "FUNCTION")) {
+		if (routineLogic.isExisted(bean.getName(), FrameworkConstants.FUNCTION)) {
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_DATABASE_FUNCTIONS);
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.ERR_KEY, "msg.function_already_existed");
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_FUNCTION_ALREADY_EXISTED);
 			view.setToken(encode(jsonObject));
 			return;
 		}

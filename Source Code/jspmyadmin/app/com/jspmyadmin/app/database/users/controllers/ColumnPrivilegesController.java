@@ -49,6 +49,7 @@ public class ColumnPrivilegesController extends Controller<ColumnPrivilegeBean> 
 			userLogic.saveColumnPrivileges(bean);
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(FrameworkConstants.USER, bean.getUser());
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_SAVE_SUCCESS);
 			if (bean.getTable() != null) {
 				jsonObject.put(FrameworkConstants.TABLE, bean.getTable());
 			}

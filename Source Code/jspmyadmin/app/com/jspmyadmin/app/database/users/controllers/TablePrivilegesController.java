@@ -56,6 +56,7 @@ public class TablePrivilegesController extends Controller<TablePrivilegeBean> {
 			if (bean.getTable() != null) {
 				jsonObject.put(FrameworkConstants.TABLE, bean.getTable());
 			}
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_SAVE_SUCCESS);
 			view.setToken(super.encode(jsonObject));
 		} catch (Exception e) {
 			e.printStackTrace();

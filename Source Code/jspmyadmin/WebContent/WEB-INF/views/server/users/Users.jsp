@@ -41,10 +41,12 @@
 				<div style="padding: 0.1em 0.2em;">
 					<div class="page-head">
 						<h3>
-							User and Privileges
+							<m:print key="lbl.users_privileges" />
 							<jma:empty name="#error" scope="command">
 								<button type="button" class="btn" style="float: right;"
-									onclick="callUserInfo('');">Add User</button>
+									onclick="callUserInfo('');">
+									<m:print key="lbl.add_user" />
+								</button>
 							</jma:empty>
 						</h3>
 
@@ -52,11 +54,14 @@
 
 					<jma:notEmpty name="#error" scope="command">
 						<div class="group">
-							<div class="group-widget group-header">MySql Error:</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.mysql_error" />
+								:
+							</div>
 							<div class="group-widget group-normal">
-								<p style="color: red;">The account you are currently using
-									does not have sufficient privileges to make changes to MySql
-									users and privileges.</p>
+								<p style="color: red;">
+									<m:print key="err.user_not_have_access" />
+								</p>
 							</div>
 						</div>
 					</jma:notEmpty>
@@ -75,29 +80,29 @@
 										<table class="tbl">
 											<thead>
 												<tr>
-													<th>Item</th>
-													<th>value</th>
+													<th><m:print key="lbl.item" /></th>
+													<th><m:print key="lbl.value" /></th>
 												</tr>
 											</thead>
 											<tbody>
 												<tr>
-													<td>Max Questions</td>
+													<td><m:print key="lbl.max_questions" /></td>
 													<td>${userInfo.max_questions}</td>
 												</tr>
 												<tr>
-													<td>Max Updates</td>
+													<td><m:print key="lbl.max_updates" /></td>
 													<td>${userInfo.max_updates}</td>
 												</tr>
 												<tr>
-													<td>Max Connections</td>
+													<td><m:print key="lbl.max_connections" /></td>
 													<td>${userInfo.max_connections}</td>
 												</tr>
 												<tr>
-													<td>Max User Connections</td>
+													<td><m:print key="lbl.max_user_connections" /></td>
 													<td>${userInfo.max_user_connections}</td>
 												</tr>
 												<tr>
-													<td>Plugin</td>
+													<td><m:print key="lbl.plugin" /></td>
 													<td>${userInfo.plugin}</td>
 												</tr>
 											</tbody>
@@ -108,7 +113,8 @@
 											<table class="tbl">
 												<thead>
 													<tr>
-														<th>Grants for ${userInfo.user}</th>
+														<th><m:print key="lbl.grants_for" />
+															${userInfo.user}</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -125,17 +131,21 @@
 								</div>
 								<div class="group-widget group-footer">
 									<button type="button" class="btn"
-										onclick="callSchemaPrivileges('${userInfo.token}');">Schema
-										Privileges</button>
+										onclick="callSchemaPrivileges('${userInfo.token}');">
+										<m:print key="lbl.schema_privileges" />
+									</button>
 									<button type="button" class="btn"
-										onclick="callGlobalPrivileges('${userInfo.token}');s">Global
-										Privileges</button>
+										onclick="callGlobalPrivileges('${userInfo.token}');">
+										<m:print key="lbl.global_privileges" />
+									</button>
 									<button type="button" class="btn"
-										onclick="callUserInfo('${userInfo.token}');">Alter
-										User</button>
+										onclick="callUserInfo('${userInfo.token}');">
+										<m:print key="lbl.alter_user" />
+									</button>
 									<button type="button" class="btn"
-										onclick="callDropUser('${userInfo.token}');">Drop
-										User</button>
+										onclick="callDropUser('${userInfo.token}');">
+										<m:print key="lbl.drop_user" />
+									</button>
 								</div>
 							</div>
 						</jma:forLoop>
@@ -197,15 +207,16 @@
 				<m:print key="lbl.alert" />
 			</div>
 			<div class="dialog-content">
-				<p id="confirm-content">You are about drop user. Are you really
-					want drop user?</p>
+				<p id="confirm-content">
+					<m:print key="msg.drop_user_alert" />
+				</p>
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>

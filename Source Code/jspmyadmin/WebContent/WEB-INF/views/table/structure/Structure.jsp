@@ -119,7 +119,7 @@
 									<tr>
 										<th><m:print key="lbl.column_name" /></th>
 										<th><m:print key="lbl.key_name" /></th>
-										<th><m:print key="lnl.non_unique" /></th>
+										<th><m:print key="lbl.non_unique" /></th>
 										<th><m:print key="lbl.null" /></th>
 										<th><m:print key="lbl.index_type" /></th>
 										<th><m:print key="lbl.collation" /></th>
@@ -237,10 +237,10 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>

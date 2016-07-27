@@ -31,7 +31,9 @@
 			<div id="main-body">
 				<div style="padding: 0.1em 0.2em;">
 					<div class="page-head">
-						<h3>SQL Query Editor</h3>
+						<h3>
+							<m:print key="lbl.query_editor" />
+						</h3>
 					</div>
 					<form action="${pageContext.request.contextPath}/table_sql.html"
 						accept-charset="utf-8" method="post" id="sql-form">
@@ -40,11 +42,11 @@
 
 						<div class="group">
 							<div class="group-widget group-header">
-								Query
+								<m:print key="lbl.query" />
 								<jma:notEmpty name="#exec_time" scope="command">
-								(Execution Time: 
+								&#40;<m:print key="lbl.execution_time" />: 
 								${requestScope.command.exec_time}
-								<m:print key="lbl.seconds" />
+								<m:print key="lbl.seconds" />&#41;
 								</jma:notEmpty>
 							</div>
 							<div class="group-widget group-content">
@@ -53,12 +55,17 @@
 									id="sql-editor">${requestScope.command.query}</textarea>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-run">Run</button>
+								<button type="button" class="btn" id="btn-run">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</div>
 						<jma:notEmpty name="#error" scope="command">
 							<div class="group">
-								<div class="group-widget group-header">MySql Error:</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.mysql_error" />
+									:
+								</div>
 								<div class="group-widget group-normal">
 									<p style="color: red;">${requestScope.command.error}</p>
 								</div>
@@ -67,9 +74,14 @@
 
 						<jma:notEmpty name="#result" scope="command">
 							<div class="group">
-								<div class="group-widget group-header">Query Result</div>
-								<div class="group-widget group-content">Query OK,
-									${requestScope.command.result} row(s) effected.</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.query_result" />
+								</div>
+								<div class="group-widget group-content">
+									<m:print key="lbl.query_ok" />
+									, ${requestScope.command.result}
+									<m:print key="lbl.rows_effected" />
+								</div>
 							</div>
 						</jma:notEmpty>
 
@@ -83,8 +95,8 @@
 									<m:print key="lbl.rows" />
 									&#41;
 									<jma:if name="#max_rows" value="1" scope="command,">
-										<b style="float: right; margin-right: 10px;">1000+ rows
-											returned</b>
+										<b style="float: right; margin-right: 10px;"><m:print
+												key="lbl.1000_rows_returned" /></b>
 									</jma:if>
 								</div>
 								<div class="group-widget group-content">

@@ -42,7 +42,7 @@ public class DropColumnsController extends Controller<ColumnListBean> {
 			structureLogic = new StructureLogic((String) session.getAttribute(FrameworkConstants.SESSION_TABLE),
 					messages);
 			structureLogic.dropColums(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.column_dropped_successfully");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_COLUMN_DROPPED_SUCCESSFULLY);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

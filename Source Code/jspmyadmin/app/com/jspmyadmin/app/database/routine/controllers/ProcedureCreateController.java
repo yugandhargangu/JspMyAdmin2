@@ -27,18 +27,18 @@ public class ProcedureCreateController extends Controller<RoutineBean> {
 
 	@Override
 	protected void handleGet(RoutineBean bean, View view) throws Exception {
-		
+
 	}
 
 	@Override
 	@ValidateToken
 	protected void handlePost(RoutineBean bean, View view) throws Exception {
 		RoutineLogic routineLogic = new RoutineLogic();
-		if (routineLogic.isExisted(bean.getName(), "PROCEDURE")) {
+		if (routineLogic.isExisted(bean.getName(), FrameworkConstants.PROCEDURE)) {
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_DATABASE_PROCEDURES);
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.ERR_KEY, "msg.procedure_already_existed");
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_PROCEDURE_ALREADY_EXISTED);
 			view.setToken(encode(jsonObject));
 			return;
 		}

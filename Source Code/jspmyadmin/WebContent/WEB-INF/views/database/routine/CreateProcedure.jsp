@@ -161,7 +161,7 @@ input[readonly] {
 									<m:print key="lbl.show_create" />
 								</button>
 								<button type="button" class="btn" id="btn-go">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>

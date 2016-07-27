@@ -40,7 +40,7 @@ public class ViewDropController extends Controller<StructureBean> {
 		try {
 			structureLogic = new StructureLogic();
 			structureLogic.dropTables(bean, false);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.tables_dropped_successfully");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_VIEW_DROPPED_SUCCESSFULLY);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

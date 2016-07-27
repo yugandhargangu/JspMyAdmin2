@@ -95,7 +95,7 @@ public class HomeLogic extends AbstractLogic {
 			homeBean.setDb_server_user(databaseMetaData.getUserName());
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, "collation_server");
+			statement.setString(1, FrameworkConstants.COLLATION_SERVER);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setCollation(resultSet.getString(2));
@@ -106,7 +106,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, "hostname");
+			statement.setString(1, FrameworkConstants.HOSTNAME);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_name(resultSet.getString(2));
@@ -117,7 +117,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, "version_comment");
+			statement.setString(1, FrameworkConstants.VERSION_COMMENT);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_type(resultSet.getString(2));
@@ -128,7 +128,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, "version");
+			statement.setString(1, FrameworkConstants.VERSION);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_version(resultSet.getString(2));
@@ -139,7 +139,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, "protocol_version");
+			statement.setString(1, FrameworkConstants.PROTOCOL_VERSION);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_protocol(resultSet.getString(2));
@@ -150,7 +150,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, "character_set_server");
+			statement.setString(1, FrameworkConstants.CHARACTER_SET_SERVER);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_charset(resultSet.getString(2));
@@ -191,7 +191,7 @@ public class HomeLogic extends AbstractLogic {
 			statement.setString(1, collation);
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				charset = resultSet.getString("charset");
+				charset = resultSet.getString(FrameworkConstants.CHARSET);
 			}
 			close(resultSet);
 			close(statement);

@@ -32,11 +32,11 @@ public class UserDropController extends Controller<UserListBean> {
 		try {
 			UserLogic userLogic = new UserLogic();
 			userLogic.dropUser(bean.getToken());
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.user_drop_success");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_USER_DROP_SUCCESS);
 		} catch (SQLException e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} catch (Exception e) {
-			jsonObject.put(FrameworkConstants.ERR_KEY, "err.invalid_access");
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.ERR_INVALID_ACCESS);
 		}
 		view.setToken(super.encode(jsonObject));
 		view.setType(ViewType.REDIRECT);

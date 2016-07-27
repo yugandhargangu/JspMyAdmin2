@@ -383,7 +383,7 @@ public class EventLogic extends AbstractLogic {
 			builder.append(FrameworkConstants.SYMBOL_TEN);
 			builder.append(FrameworkConstants.SPACE);
 			builder.append("ON SCHEDULE ");
-			if ("AT".equalsIgnoreCase(eventBean.getSchedule_type())) {
+			if (FrameworkConstants.AT.equalsIgnoreCase(eventBean.getSchedule_type())) {
 				// one time
 				builder.append(eventBean.getSchedule_type());
 				builder.append(FrameworkConstants.SPACE);
@@ -415,7 +415,7 @@ public class EventLogic extends AbstractLogic {
 					}
 					builder.append(FrameworkConstants.SPACE);
 				}
-			} else if ("EVERY".equalsIgnoreCase(eventBean.getSchedule_type())) {
+			} else if (FrameworkConstants.EVERY.equalsIgnoreCase(eventBean.getSchedule_type())) {
 				// Recursive
 				builder.append(eventBean.getSchedule_type());
 				builder.append(FrameworkConstants.SPACE);

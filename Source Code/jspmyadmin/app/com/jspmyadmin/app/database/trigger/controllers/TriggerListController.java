@@ -27,6 +27,7 @@ public class TriggerListController extends Controller<TriggerListBean> {
 		TriggerLogic triggerLogic = null;
 		try {
 			super.fillBasics(bean);
+			super.checkForDb(bean);
 			triggerLogic = new TriggerLogic();
 			triggerLogic.fillListBean(bean);
 			super.generateToken(bean);

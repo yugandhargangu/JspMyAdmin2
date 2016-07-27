@@ -38,13 +38,12 @@ public class CreateTriggerController extends Controller<TriggerBean> {
 			TriggerLogic triggerLogic = new TriggerLogic();
 			if (triggerLogic.isExisted(bean.getTrigger_name())) {
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.ERR, "Trigger Name is Already Existed.");
+				jsonObject.put(FrameworkConstants.ERR, messages.getMessage(AppConstants.MSG_TRIGGER_ALREADY_EXISTED));
 				view.setType(ViewType.REDIRECT);
 				view.setPath(AppConstants.PATH_DATABASE_TRIGGERS);
 				view.setToken(super.encode(jsonObject));
 				return;
 			}
-			bean.init();
 			bean.setOther_trigger_name_list(triggerLogic.getTriggerList());
 			bean.setDatabase_name(session.getAttribute(FrameworkConstants.SESSION_DB).toString());
 			DataLogic dataLogic = new DataLogic();

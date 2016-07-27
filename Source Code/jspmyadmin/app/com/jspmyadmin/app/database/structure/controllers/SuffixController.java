@@ -42,15 +42,15 @@ public class SuffixController extends Controller<StructureBean> {
 			if (bean.getType() != null) {
 				if (FrameworkConstants.ADD.equalsIgnoreCase(bean.getType())) {
 					structureLogic.addSuffix(bean);
-					jsonObject.put(FrameworkConstants.MSG_KEY, "msg.executed_successfully");
+					jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EXECUTED_SUCCESSFULLY);
 				} else if (FrameworkConstants.REPLACE.equalsIgnoreCase(bean.getType())) {
 					structureLogic.replaceSuffix(bean);
-					jsonObject.put(FrameworkConstants.MSG_KEY, "msg.executed_successfully");
+					jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EXECUTED_SUCCESSFULLY);
 				} else if (FrameworkConstants.REMOVE.equalsIgnoreCase(bean.getType())) {
 					structureLogic.removeSuffix(bean);
-					jsonObject.put(FrameworkConstants.MSG_KEY, "msg.executed_successfully");
+					jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EXECUTED_SUCCESSFULLY);
 				} else if (FrameworkConstants.COPY.equalsIgnoreCase(bean.getType())) {
-					jsonObject.put(FrameworkConstants.MSG_KEY, "");
+					jsonObject.put(FrameworkConstants.MSG_KEY, FrameworkConstants.BLANK);
 				}
 
 			}

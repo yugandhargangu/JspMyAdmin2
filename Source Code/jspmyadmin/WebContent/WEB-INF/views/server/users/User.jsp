@@ -23,9 +23,11 @@
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
 						<h3>
-							User Information
+							<m:print key="lbl.user_information" />
 							<button type="button" class="btn" id="btn-back"
-								style="float: right;">Go Back</button>
+								style="float: right;">
+								<m:print key="lbl.go_back" />
+							</button>
 						</h3>
 					</div>
 					<form
@@ -39,31 +41,36 @@
 							type="hidden" name="old_host"
 							value="${requestScope.command.old_host}">
 						<div class="group">
-							<div class="group-widget group-header">Login Information</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.login_information" />
+							</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Login Name</label> <input type="text"
-										class="form-control" name="login_name" id="login-name"
-										value="${requestScope.command.login_name}">
+									<label><m:print key="lbl.login_name" /> </label> <input
+										type="text" class="form-control" name="login_name"
+										id="login-name" value="${requestScope.command.login_name}">
 								</div>
 								<div class="form-input">
-									<label>Host Name</label> <input type="text"
-										class="form-control" name="host_name" id="host-name"
-										value="${requestScope.command.host_name}">
+									<label><m:print key="lbl.hostname" /> </label> <input
+										type="text" class="form-control" name="host_name"
+										id="host-name" value="${requestScope.command.host_name}">
 								</div>
 								<div class="form-input">
-									<label>Password</label> <input type="password"
-										class="form-control" name="password"
-										value="${requestScope.command.password}">
+									<label><m:print key="lbl.password" /> </label> <input
+										id="password-input" type="password" class="form-control"
+										name="password" value="${requestScope.command.password}">
 								</div>
 								<div class="form-input">
-									<label>Confirm Password</label> <input type="password"
-										class="form-control" name="password_confirm"
+									<label><m:print key="lbl.re_enter_password" /> </label> <input
+										id="password-confirm" type="password" class="form-control"
+										name="password_confirm"
 										value="${requestScope.command.password_confirm}">
 								</div>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-run">Run</button>
+								<button type="button" class="btn" id="btn-run">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</div>
 					</form>
@@ -100,6 +107,11 @@
 	</div>
 	<form action="${pageContext.request.contextPath}/server_users.html"
 		method="get" id="back-form"></form>
+
+	<m:store name="msg_login_name_blank" key="msg.login_name_blank" />
+	<m:store name="err_hostname_is_blank" key="err.hostname_is_blank" />
+	<m:store name="msg_password_re_enter_password_not_same"
+		key="msg.password_re_enter_password_not_same" />
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(4)").addClass('active');
 
@@ -111,12 +123,17 @@
 
 			$('#btn-run').click(function() {
 				if ($('#login-name').val().trim() == '') {
-					$('#error-content').text('Login Name is Blank.');
+					$('#error-content').text('${msg_login_name_blank}');
 					$('#error-dialog').show();
 					return;
 				}
 				if ($('#host-name').val().trim() == '') {
-					$('#error-content').text('Host Name is Blank.');
+					$('#error-content').text('${err_hostname_is_blank}');
+					$('#error-dialog').show();
+					return;
+				}
+				if ($('#password-input').val() != $('#password-confirm').val()) {
+					$('#error-content').text('${msg_password_re_enter_password_not_same}');
 					$('#error-dialog').show();
 					return;
 				}

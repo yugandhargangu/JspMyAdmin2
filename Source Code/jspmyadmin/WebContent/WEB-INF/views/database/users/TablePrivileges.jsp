@@ -42,9 +42,12 @@
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
 						<h3>
-							Users (${requestScope.command.user})
+							<m:print key="lbl.users_privileges" />
+							(${requestScope.command.user})
 							<button type="button" class="btn" id="btn-back"
-								style="float: right;">Go Back</button>
+								style="float: right;">
+								<m:print key="lbl.go_back" />
+							</button>
 						</h3>
 					</div>
 					<jma:notEmpty name="#table_list" scope="command">
@@ -55,12 +58,14 @@
 								value="${requestScope.command.token}"> <input
 								type="hidden" name="user" value="${requestScope.command.user}">
 							<div class="group">
-								<div class="group-widget group-header">Assign Rights to
-									User</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.assign_rights_user" />
+								</div>
 								<div class="group-widget group-content">
 									<div class="form-input" style="width: 250px;">
-										<label>Select Table(s)</label> <select class="form-control"
-											name="tables" multiple="multiple" size="20">
+										<label><m:print key="lbl.select_tables" /> </label> <select
+											class="form-control" name="tables" multiple="multiple"
+											size="20">
 											<jma:notEmpty name="#table_list" scope="command">
 												<jma:forLoop items="#table_list" name="table"
 													scope="command">
@@ -70,7 +75,9 @@
 										</select>
 									</div>
 									<div class="div-inline-item">
-										<h4>Privileges</h4>
+										<h4>
+											<m:print key="lbl.privileges" />
+										</h4>
 										<jma:forLoop items="#privilege_table_list" name="obj_priv"
 											scope="command" index="_obj_priv_index">
 											<div class="div-item">
@@ -81,11 +88,15 @@
 									</div>
 								</div>
 								<div class="group-widget group-footer">
-									<button type="button" class="btn btn-select-all">Select
-										ALL</button>
-									<button type="button" class="btn btn-unselect-all">Unselect
-										ALL</button>
-									<button type="submit" class="btn btn-run">Run</button>
+									<button type="button" class="btn btn-select-all">
+										<m:print key="lbl.select_all" />
+									</button>
+									<button type="button" class="btn btn-unselect-all">
+										<m:print key="lbl.unselect_all" />
+									</button>
+									<button type="submit" class="btn btn-run">
+										<m:print key="lbl.run" />
+									</button>
 								</div>
 							</div>
 						</form>
@@ -98,12 +109,13 @@
 								value="${requestScope.command.token}"> <input
 								type="hidden" name="user" value="${requestScope.command.user}">
 							<div class="group">
-								<div class="group-widget group-header">Assign Rights to
-									User</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.assign_rights_user" />
+								</div>
 								<div class="group-widget group-content">
 									<div class="form-input" style="width: 250px;">
-										<label>Select Table</label> <select class="form-control"
-											id="table-single-select" name="table">
+										<label><m:print key="lbl.select_table" /> </label> <select
+											class="form-control" id="table-single-select" name="table">
 											<jma:notEmpty name="#table_list" scope="command">
 												<jma:forLoop items="#table_list" name="table"
 													scope="command">
@@ -121,7 +133,9 @@
 										</select>
 									</div>
 									<div class="div-inline-item">
-										<h4>Privileges</h4>
+										<h4>
+											<m:print key="lbl.privileges" />
+										</h4>
 										<jma:forLoop items="#privilege_table_list" name="obj_priv"
 											scope="command" index="_obj_priv_index">
 											<div class="div-item">
@@ -145,13 +159,18 @@
 								</div>
 								<div class="group-widget group-footer">
 									<button type="button" class="btn"
-										onclick="callColumnForm('${requestScope.command.column_token}')">Column
-										Privileges</button>
-									<button type="button" class="btn btn-select-all">Select
-										ALL</button>
-									<button type="button" class="btn btn-unselect-all">Unselect
-										ALL</button>
-									<button type="submit" class="btn btn-run">Run</button>
+										onclick="callColumnForm('${requestScope.command.column_token}')">
+										<m:print key="lbl.column_privileges" />
+									</button>
+									<button type="button" class="btn btn-select-all">
+										<m:print key="lbl.select_all" />
+									</button>
+									<button type="button" class="btn btn-unselect-all">
+										<m:print key="lbl.unselect_all" />
+									</button>
+									<button type="submit" class="btn btn-run">
+										<m:print key="lbl.run" />
+									</button>
 								</div>
 							</div>
 						</form>
@@ -172,6 +191,21 @@
 				</div>
 				<div class="dialog-content">
 					<p>${requestScope.command.err}</p>
+				</div>
+			</div>
+		</div>
+	</jma:notEmpty>
+	<jma:notEmpty name="#err_key" scope="command">
+		<div class="dialog">
+			<div class="dialog-widget dialog-error">
+				<div class="close" id="error-close1">&#10005;</div>
+				<div class="dialog-header">
+					<m:print key="lbl.errors" />
+				</div>
+				<div class="dialog-content">
+					<p>
+						<m:print key="err_key" scope="command" />
+					</p>
 				</div>
 			</div>
 		</div>
@@ -245,6 +279,10 @@
 			});
 
 			$('#error-close2').click(function() {
+				$(this).parent().parent().empty().remove();
+			});
+
+			$('#error-close1').click(function() {
 				$(this).parent().parent().empty().remove();
 			});
 

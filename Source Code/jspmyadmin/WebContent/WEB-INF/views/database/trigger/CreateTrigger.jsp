@@ -32,7 +32,9 @@ input[readonly] {
 			<div id="main-body">
 				<div style="padding: 0.1em 0.2em;">
 					<div class="page-head">
-						<h3>Create Trigger</h3>
+						<h3>
+							<m:print key="lbl.create_trigger" />
+						</h3>
 					</div>
 					<form action="#" accept-charset="utf-8" method="post"
 						id="create-trigger-form">
@@ -40,12 +42,15 @@ input[readonly] {
 							value="${requestScope.command.token}"> <input
 							type="hidden" name="action" id="action-input">
 						<div class="group">
-							<div class="group-widget group-header">Trigger Structure</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.trigger_structure" />
+							</div>
 							<div class="group-widget group-content">
 								<div>
 									<div class="form-input">
-										<label>Trigger Name</label> <input type="text"
-											name="trigger_name" id="trigger_name" class="form-control"
+										<label><m:print key="lbl.trigger_name" /> </label> <input
+											type="text" name="trigger_name" id="trigger_name"
+											class="form-control"
 											value="${requestScope.command.trigger_name}">
 									</div>
 									<div class="form-input">
@@ -66,8 +71,8 @@ input[readonly] {
 											type="text" name="definer_name" class="form-control">
 									</div>
 									<div class="form-input">
-										<label>Trigger Time</label> <select name="trigger_time"
-											class="form-control">
+										<label><m:print key="lbl.trigger_time" /> </label> <select
+											name="trigger_time" class="form-control">
 											<jma:notEmpty name="#trigger_time_list" scope="command">
 												<jma:forLoop items="#trigger_time_list"
 													name="triggerTimeVal" scope="command">
@@ -77,8 +82,8 @@ input[readonly] {
 										</select>
 									</div>
 									<div class="form-input">
-										<label>Trigger Event</label> <select name="trigger_event"
-											class="form-control">
+										<label><m:print key="lbl.trigger_event" /> </label> <select
+											name="trigger_event" class="form-control">
 											<jma:notEmpty name="#trigger_event_list" scope="command">
 												<jma:forLoop items="#trigger_event_list"
 													name="triggerEventVal" scope="command">
@@ -88,8 +93,8 @@ input[readonly] {
 										</select>
 									</div>
 									<div class="form-input">
-										<label>Database Name</label> <select name="database_name"
-											id="database_name" class="form-control">
+										<label><m:print key="lbl.database_name" /> </label> <select
+											name="database_name" id="database_name" class="form-control">
 											<jma:notEmpty name="#database_name_list" scope="command">
 												<jma:forLoop items="#database_name_list" name="databaseVal"
 													scope="command">
@@ -108,15 +113,15 @@ input[readonly] {
 										</select>
 									</div>
 									<div class="form-input">
-										<label>Table Name</label> <select name="table_name"
-											id="table_name" class="form-control">
+										<label><m:print key="lbl.table_name" /> </label> <select
+											name="table_name" id="table_name" class="form-control">
 
 										</select>
 									</div>
 									<div class="form-input">
-										<label>Trigger Order</label> <select name="trigger_order"
-											class="form-control">
-											<option value="">Select Order</option>
+										<label><m:print key="lbl.trigger_order" /> </label> <select
+											name="trigger_order" class="form-control">
+											<option value=""><m:print key="lbl.select_order" /></option>
 											<jma:notEmpty name="#trigger_order_list" scope="command">
 												<jma:forLoop items="#trigger_order_list"
 													name="triggerOrderVal" scope="command">
@@ -126,9 +131,10 @@ input[readonly] {
 										</select>
 									</div>
 									<div class="form-input">
-										<label>Other Trigger Name</label> <select
+										<label><m:print key="lbl.other_trigger_name" /></label> <select
 											name="other_trigger_name" class="form-control">
-											<option value="">Select Trigger Name</option>
+											<option value=""><m:print
+													key="lbl.select_trigger_name" /></option>
 											<jma:notEmpty name="#other_trigger_name_list" scope="command">
 												<jma:forLoop items="#other_trigger_name_list"
 													name="triggerNameVal" scope="command">
@@ -140,8 +146,8 @@ input[readonly] {
 								</div>
 								<div>
 									<div class="form-input" style="display: block;">
-										<label>Trigger Body</label> <input type="hidden"
-											name="trigger_body" id="definition">
+										<label><m:print key="lbl.trigger_body" /></label> <input
+											type="hidden" name="trigger_body" id="definition">
 									</div>
 									<div>
 										<textarea rows="15" cols="50" id="definition-area">UPDATE ;</textarea>
@@ -153,7 +159,7 @@ input[readonly] {
 									<m:print key="lbl.show_create" />
 								</button>
 								<button type="button" class="btn" id="btn-go">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -186,7 +192,8 @@ input[readonly] {
 		</div>
 	</div>
 	<div style="display: none;">
-		<form action="${pageContext.request.contextPath}/database_triggers.html"
+		<form
+			action="${pageContext.request.contextPath}/database_triggers.html"
 			id="success-form" method="get">
 			<input type="hidden" name="token" id="success-token">
 		</form>
@@ -223,10 +230,11 @@ input[readonly] {
 			}
 		});
 	</script>
+	<m:store name="lbl_select" key="lbl.select" />
 	<script type="text/javascript">
 		function listoutTables() {
 			$('#table_name').empty();
-			$('#table_name').append('<option value="">' + 'Select' + '</option>');
+			$('#table_name').append('<option value="">${lbl_select}</option>');
 			$.ajax({
 				url : Server.root + '/database_trigger_table_list.text',
 				method : 'POST',
@@ -276,22 +284,26 @@ input[readonly] {
 			});
 		});
 	</script>
+
+	<m:store name="msg_trigger_name_blank" key="msg.trigger_name_blank" />
+	<m:store name="msg_table_name_blank" key="msg.table_name_blank" />
+	<m:store name="msg_trigger_body_blank" key="msg.trigger_body_blank" />
 	<script type="text/javascript">
 		// save
 		function isValid() {
 			if ($('#trigger_name').val().trim() == '') {
-				$('#sidebar-error-msg').text('Trigger Name is Blank.');
+				$('#sidebar-error-msg').text('${msg_trigger_name_blank}');
 				$('#sidebar-error-dialog').show();
 				return false;
 			}
 			if ($('#table_name').val().trim() == '') {
-				$('#sidebar-error-msg').text('Table Name is Blank.');
+				$('#sidebar-error-msg').text('${msg_table_name_blank}');
 				$('#sidebar-error-dialog').show();
 				return false;
 			}
 
 			if (codeMirrorDefinition.getValue().trim() == '') {
-				$('#sidebar-error-msg').text('Trigger Body is Blank.');
+				$('#sidebar-error-msg').text('${msg_trigger_body_blank}');
 				$('#sidebar-error-dialog').show();
 				return false;
 			}

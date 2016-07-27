@@ -45,7 +45,7 @@
 						</div>
 						<div class="group-widget group-footer">
 							<button type="button" class="btn" id="btn-go">
-								<m:print key="btn.go" />
+								<m:print key="lbl.run" />
 							</button>
 						</div>
 					</div>
@@ -129,7 +129,8 @@
 												<tr>
 													<td><input type="checkbox" name="tables"
 														value="${tableInfo.name}"></td>
-													<td>${tableInfo.name}</td>
+													<td><a
+														href="${pageContext.request.contextPath}/view_data.html?token=${tableInfo.action}">${tableInfo.name}</a></td>
 													<td>${tableInfo.type}</td>
 													<td>${tableInfo.comment}</td>
 												</tr>
@@ -241,7 +242,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-prefix-go"
 									value="${pageContext.request.contextPath}/database_structure_prefix.html">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -308,7 +309,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-suffix-go"
 									value="${pageContext.request.contextPath}/database_structure_suffix.html">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -341,7 +342,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-export-go"
 									value="${pageContext.request.contextPath}/">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -419,10 +420,10 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>

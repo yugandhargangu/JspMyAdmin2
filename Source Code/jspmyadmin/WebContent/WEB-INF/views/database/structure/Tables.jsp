@@ -45,7 +45,7 @@
 						</div>
 						<div class="group-widget group-footer">
 							<button type="button" class="btn" id="btn-go">
-								<m:print key="btn.go" />
+								<m:print key="lbl.run" />
 							</button>
 						</div>
 					</div>
@@ -329,7 +329,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-duplicate-go"
 									value="${pageContext.request.contextPath}/database_structure_duplicate.html">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -348,7 +348,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-drop-go"
 									value="${pageContext.request.contextPath}/">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -367,7 +367,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-truncate-go"
 									value="${pageContext.request.contextPath}/">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -434,7 +434,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-prefix-go"
 									value="${pageContext.request.contextPath}/database_structure_prefix.html">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -501,7 +501,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-suffix-go"
 									value="${pageContext.request.contextPath}/database_structure_suffix.html">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -534,7 +534,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-export-go"
 									value="${pageContext.request.contextPath}/">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -582,7 +582,7 @@
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-copy-go"
 									value="${pageContext.request.contextPath}/database_structure_copy.html">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -660,10 +660,10 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>

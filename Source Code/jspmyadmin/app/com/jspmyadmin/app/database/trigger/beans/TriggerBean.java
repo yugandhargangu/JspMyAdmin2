@@ -30,35 +30,12 @@ public class TriggerBean extends Bean {
 	private String trigger_body = null;
 	private String action = null;
 
-	private List<String> definer_list = null;
-	private List<String> trigger_time_list = null;
-	private List<String> trigger_event_list = null;
+	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
+	private List<String> trigger_time_list = new ArrayList<String>(FrameworkConstants.Utils.TRIGGER_TIME_LIST);
+	private List<String> trigger_event_list = new ArrayList<String>(FrameworkConstants.Utils.TRIGGER_EVENT_LIST);
+	private List<String> trigger_order_list = new ArrayList<String>(FrameworkConstants.Utils.TRIGGER_ORDER_LIST);
 	private List<String> database_name_list = null;
-	private List<String> trigger_order_list = null;
 	private List<String> other_trigger_name_list = null;
-
-	/**
-	 * 
-	 */
-	@Override
-	public void init() {
-		definer_list = new ArrayList<String>(2);
-		definer_list.add(FrameworkConstants.CURRENT_USER);
-		definer_list.add("OTHER");
-
-		trigger_time_list = new ArrayList<String>(2);
-		trigger_time_list.add("BEFORE");
-		trigger_time_list.add("AFTER");
-
-		trigger_event_list = new ArrayList<String>(3);
-		trigger_event_list.add("INSERT");
-		trigger_event_list.add("UPDATE");
-		trigger_event_list.add("DELETE");
-
-		trigger_order_list = new ArrayList<String>(2);
-		trigger_order_list.add("FOLLOWS");
-		trigger_order_list.add("PRECEDES");
-	}
 
 	/**
 	 * @return the trigger_name

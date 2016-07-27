@@ -23,8 +23,12 @@
 					<div class="page-head">
 						<h3>
 							<jma:switch name="#update" scope="command">
-								<jma:case value="1">Update Table Data</jma:case>
-								<jma:default>Insert Data into Table</jma:default>
+								<jma:case value="1">
+									<m:print key="lbl.update_table_data" />
+								</jma:case>
+								<jma:default>
+									<m:print key="lbl.insert_data_into_table" />
+								</jma:default>
 							</jma:switch>
 						</h3>
 					</div>
@@ -41,7 +45,9 @@
 							type="hidden" name="update"
 							value="${requestScope.command.update}">
 						<div class="group">
-							<div class="group-widget group-header">Data</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.data" />
+							</div>
 							<div class="group-widget group-content">
 								<table class="tbl" id="table-data">
 									<thead>
@@ -51,7 +57,7 @@
 											<th><m:print key="lbl.datatype" /></th>
 											<th><m:print key="lbl.null" /></th>
 											<th><m:print key="lbl.extra" /></th>
-											<th>Value</th>
+											<th><m:print key="lbl.value" /></th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -61,7 +67,7 @@
 											<th><m:print key="lbl.datatype" /></th>
 											<th><m:print key="lbl.null" /></th>
 											<th><m:print key="lbl.extra" /></th>
-											<th>Value</th>
+											<th><m:print key="lbl.value" /></th>
 										</tr>
 									</tfoot>
 									<tbody>
@@ -100,7 +106,9 @@
 								</table>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" class="btn" id="btn-save">Run</button>
+								<button type="submit" class="btn" id="btn-save">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</div>
 					</form>

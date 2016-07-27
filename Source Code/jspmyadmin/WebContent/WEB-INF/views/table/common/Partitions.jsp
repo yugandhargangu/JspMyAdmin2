@@ -21,7 +21,9 @@
 			<div id="main-body">
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
-						<h3>Table Partitions</h3>
+						<h3>
+							<m:print key="lbl.table_partitions" />
+						</h3>
 					</div>
 
 					<form
@@ -31,20 +33,22 @@
 							value="${requestScope.command.token}">
 
 						<div class="group">
-							<div class="group-widget group-header">Add Partition</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.add_partition" />
+							</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Partition By</label> <select name="partition"
-										id="partition" class="form-control">
+									<label><m:print key="lbl.partition_by" /></label> <select
+										name="partition" id="partition" class="form-control">
 										<jma:forLoop items="#type_list" name="_type" scope="command">
 											<option value="${_type}">${_type}</option>
 										</jma:forLoop>
 									</select>
 								</div>
 								<div class="form-input">
-									<label>Partition Value</label> <input type="text"
-										name="partition_val" id="partition_val" class="form-control"
-										style="width: 420px;">
+									<label><m:print key="lbl.partition_value" /></label> <input
+										type="text" name="partition_val" id="partition_val"
+										class="form-control" style="width: 420px;">
 								</div>
 								<div class="form-input">
 									<label>Partition Count</label> <input type="number"
@@ -53,7 +57,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" id="add-btn" class="btn">
-									<m:print key="btn.go" />
+									<m:print key="lbl.run" />
 								</button>
 							</div>
 						</div>
@@ -65,28 +69,31 @@
 						<input type="hidden" name="token"
 							value="${requestScope.command.token}">
 						<div class="group">
-							<div class="group-widget group-header">Partition List</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.partition_list" />
+							</div>
 							<div class="group-widget group-content">
 								<table class="tbl" id="partitions-table">
 									<thead>
 										<tr>
 											<th><input type="checkbox" id="check-all"></th>
-											<th>Name</th>
-											<th>Sub Name</th>
-											<th>Method</th>
-											<th>Sub Method</th>
-											<th>Expression</th>
-											<th>Sub Expression</th>
-											<th>Description</th>
-											<th>Table Rows</th>
-											<th>Avg Row Length</th>
-											<th>Data Length</th>
+											<th><m:print key="lbl.name" /></th>
+											<th><m:print key="lbl.sub_name" /></th>
+											<th><m:print key="lbl.method" /></th>
+											<th><m:print key="lbl.sub_method" /></th>
+											<th><m:print key="lbl.expression" /></th>
+											<th><m:print key="lbl.sub_expression" /></th>
+											<th><m:print key="lbl.description" /></th>
+											<th><m:print key="lbl.table_rows" /></th>
+											<th><m:print key="lbl.avg_row_length" /></th>
+											<th><m:print key="lbl.data_length" /></th>
 										</tr>
 									</thead>
 									<tfoot>
 										<tr>
 											<th></th>
-											<th colspan="10">Total: ${requestScope.command.p_count}</th>
+											<th colspan="10"><m:print key="lbl.total" />:
+												${requestScope.command.p_count}</th>
 										</tr>
 									</tfoot>
 									<tbody>
@@ -111,7 +118,7 @@
 										</jma:notEmpty>
 										<jma:empty name="#partition_list" scope="command">
 											<tr>
-												<td colspan="11">No Partitions Found.</td>
+												<td colspan="11"><m:print key="msg.no_partition_found" /></td>
 											</tr>
 										</jma:empty>
 									</tbody>
@@ -160,6 +167,8 @@
 		</div>
 	</jma:notEmpty>
 	<m:store name="msg_select_least_one_key" key="msg.select_least_one_key" />
+	<m:store name="msg_partition_value_blank"
+		key="msg.partition_value_blank" />
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(4)").addClass('active');
 		applyEvenOdd('#partitions-table');
@@ -192,7 +201,7 @@
 
 			$('#add-btn').click(function() {
 				if ($('#partition_val').val().trim() == '') {
-					$('#sidebar-error-msg').text('Partition Value is Blank.');
+					$('#sidebar-error-msg').text('${msg_partition_value_blank}');
 					$('#sidebar-error-dialog').show();
 					return;
 				}

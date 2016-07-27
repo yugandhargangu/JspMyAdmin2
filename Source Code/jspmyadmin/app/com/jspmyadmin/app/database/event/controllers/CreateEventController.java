@@ -31,7 +31,6 @@ public class CreateEventController extends Controller<EventBean> {
 	@ValidateToken
 	protected void handlePost(EventBean bean, View view) throws Exception {
 
-		bean.init();
 		EventLogic eventLogic = new EventLogic();
 		eventLogic.setMessages(messages);
 		bean.setStart_interval(eventLogic.getStartInterval(bean.getInterval_list()));

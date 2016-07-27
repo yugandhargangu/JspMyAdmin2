@@ -41,7 +41,7 @@ public class DropFKController extends Controller<ForeignKeyBean> {
 		try {
 			foreignKeyLogic = new ForeignKeyLogic((String) session.getAttribute(FrameworkConstants.SESSION_TABLE));
 			foreignKeyLogic.dropForeignKeys(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.drop_fk_success");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_DROP_FK_SUCCESS);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

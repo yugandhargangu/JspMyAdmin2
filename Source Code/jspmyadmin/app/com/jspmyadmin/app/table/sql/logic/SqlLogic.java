@@ -111,7 +111,7 @@ public class SqlLogic extends AbstractLogic {
 						long end_time = System.nanoTime();
 						long exec_time = end_time - start_time;
 						double final_exec_time = ((double) exec_time) / 1000000000.0;
-						DecimalFormat decimalFormat = new DecimalFormat("0");
+						DecimalFormat decimalFormat = new DecimalFormat(FrameworkConstants.ZERO);
 						decimalFormat.setMaximumFractionDigits(6);
 						sqlBean.setExec_time(decimalFormat.format(final_exec_time));
 						if (result) {

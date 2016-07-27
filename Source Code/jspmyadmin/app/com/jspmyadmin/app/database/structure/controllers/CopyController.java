@@ -40,7 +40,7 @@ public class CopyController extends Controller<StructureBean> {
 		try {
 			structureLogic = new StructureLogic();
 			structureLogic.copyTables(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.copy_done");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_COPY_DONE);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

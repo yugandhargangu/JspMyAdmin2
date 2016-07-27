@@ -30,10 +30,9 @@ public class CreateTableController extends Controller<CreateTableBean> {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	@ValidateToken
 	protected void handleGet(CreateTableBean bean, View view) throws Exception {
 		view.setType(ViewType.REDIRECT);
-		view.setPath(AppConstants.JSP_COMMON_HOME);
+		view.setPath(AppConstants.PATH_HOME);
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class CreateTableController extends Controller<CreateTableBean> {
 		StructureLogic structureLogic = new StructureLogic();
 		if (structureLogic.isTableExisted(bean.getTable_name())) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.ERR_KEY, "msg.table_already_existed");
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_TABLE_ALREADY_EXISTED);
 			view.setToken(super.encode(jsonObject));
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_DATABASE_STRUCTURE);

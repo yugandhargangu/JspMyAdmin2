@@ -70,7 +70,7 @@ public class DataSelectLogic extends AbstractLogic {
 			DatabaseMetaData databaseMetaData = apiConnection.getDatabaseMetaData();
 			resultSet = databaseMetaData.getPrimaryKeys(null, null, _table);
 			if (resultSet.next()) {
-				dataSelectBean.setPrimary_key(resultSet.getString("COLUMN_NAME"));
+				dataSelectBean.setPrimary_key(resultSet.getString(FrameworkConstants.COLUMN_NAME));
 			}
 			close(resultSet);
 
@@ -375,7 +375,7 @@ public class DataSelectLogic extends AbstractLogic {
 			DatabaseMetaData databaseMetaData = apiConnection.getDatabaseMetaData();
 			resultSet = databaseMetaData.getPrimaryKeys(null, null, _table);
 			if (resultSet.next()) {
-				dataSelectBean.setPrimary_key(resultSet.getString("COLUMN_NAME"));
+				dataSelectBean.setPrimary_key(resultSet.getString(FrameworkConstants.COLUMN_NAME));
 			}
 			close(resultSet);
 
@@ -438,7 +438,7 @@ public class DataSelectLogic extends AbstractLogic {
 			DatabaseMetaData databaseMetaData = apiConnection.getDatabaseMetaData();
 			resultSet = databaseMetaData.getPrimaryKeys(null, null, _table);
 			if (resultSet.next()) {
-				primaryKey = resultSet.getString("COLUMN_NAME");
+				primaryKey = resultSet.getString(FrameworkConstants.COLUMN_NAME);
 			}
 			close(resultSet);
 

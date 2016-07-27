@@ -39,7 +39,7 @@ public class DisableController extends Controller<EventListBean> {
 		try {
 			eventLogic = new EventLogic();
 			eventLogic.disableEvent(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.executed_successfully");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EXECUTED_SUCCESSFULLY);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		}

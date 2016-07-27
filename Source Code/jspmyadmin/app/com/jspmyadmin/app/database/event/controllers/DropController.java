@@ -39,7 +39,7 @@ public class DropController extends Controller<EventListBean> {
 		try {
 			eventLogic = new EventLogic();
 			eventLogic.dropEvent(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.event_drop_success");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EVENT_DROP_SUCCESS);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		}

@@ -41,7 +41,7 @@ public class AddFKController extends Controller<ForeignKeyBean> {
 		try {
 			foreignKeyLogic = new ForeignKeyLogic((String) session.getAttribute(FrameworkConstants.SESSION_TABLE));
 			foreignKeyLogic.addForeignKey(bean);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.fk_add_success");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_FK_ADD_SUCCESS);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

@@ -42,32 +42,8 @@ public class EventBean extends Bean {
 	private String end_interval = null;
 	private String action = null;
 
-	private List<String> interval_list = null;
-	private List<String> definer_list = null;
-
-	@Override
-	public void init() {
-		interval_list = new ArrayList<String>(15);
-		interval_list.add("DAY");
-		interval_list.add("DAY_HOUR");
-		interval_list.add("DAY_MINUTE");
-		interval_list.add("DAY_SECOND");
-		interval_list.add("HOUR");
-		interval_list.add("HOUR_MINUTE");
-		interval_list.add("HOUR_SECOND");
-		interval_list.add("MINUTE");
-		interval_list.add("MINUTE_SECOND");
-		interval_list.add("MONTH");
-		interval_list.add("QUARTER");
-		interval_list.add("SECOND");
-		interval_list.add("WEEK");
-		interval_list.add("YEAR ");
-		interval_list.add("YEAR_MONTH");
-
-		definer_list = new ArrayList<String>(2);
-		definer_list.add(FrameworkConstants.CURRENT_USER);
-		definer_list.add("OTHER");
-	}
+	private List<String> interval_list = new ArrayList<String>(FrameworkConstants.Utils.EVENT_INTERVAL_LIST);
+	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
 
 	/**
 	 * @return the definer

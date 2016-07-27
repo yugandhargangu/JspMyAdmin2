@@ -100,11 +100,9 @@
 								<m:print key="lbl.about_jspmyadmin" />
 							</div>
 							<div class="group-widget group-content">
-								<p>JspMyAdmin 2.0 is the software for MySql database
-									administration over Web. It provides a user friendly design to
-									manage most of the MySql database administration. Create and
-									Manage database objects (Database, Table, View, User etc..)
-									with simple mouse clicks.</p>
+								<p>
+									<m:print key="zyx.about" />
+								</p>
 							</div>
 						</div>
 

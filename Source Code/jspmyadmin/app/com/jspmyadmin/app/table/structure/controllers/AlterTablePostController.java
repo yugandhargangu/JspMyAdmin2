@@ -55,7 +55,7 @@ public class AlterTablePostController extends Controller<AlterColumnBean> {
 					jsonObject.append(FrameworkConstants.DATA, result);
 				} else {
 					JSONObject msg = new JSONObject();
-					msg.put(FrameworkConstants.MSG_KEY, "msg.table_altered");
+					msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_TABLE_ALTERED);
 					jsonObject.append(FrameworkConstants.MSG, super.encode(msg.toString()));
 				}
 			}

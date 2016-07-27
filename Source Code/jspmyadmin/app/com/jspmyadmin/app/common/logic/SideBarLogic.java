@@ -121,11 +121,10 @@ public class SideBarLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(1);
+				result = resultSet.getString(FrameworkConstants.FIELD);
 				jsonObject = new JSONObject();
 				jsonObject.put(FrameworkConstants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.COLUMN, result);
 				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
@@ -166,11 +165,10 @@ public class SideBarLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(2);
+				result = resultSet.getString(FrameworkConstants.NAME);
 				jsonObject = new JSONObject();
 				jsonObject.put(FrameworkConstants.NAME, result);
-				tempJsonObject = new JSONObject();
-				tempJsonObject.put(FrameworkConstants.DATABASE, token);
+				tempJsonObject = new JSONObject(token);
 				tempJsonObject.put(FrameworkConstants.EVENT, result);
 				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
@@ -207,17 +205,17 @@ public class SideBarLogic extends AbstractLogic {
 			encDecLogic = new EncDecLogic();
 			token = encDecLogic.decode(token);
 			jsonObject = new JSONObject(token);
+			String database = jsonObject.getString(FrameworkConstants.DATABASE);
 			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
-			statement = apiConnection.getStmtSelect("SHOW PROCEDURE STATUS WHERE DB LIKE ?");
-			statement.setString(1, token);
+			statement = apiConnection.getStmtSelect("SHOW PROCEDURE STATUS WHERE DB = ?");
+			statement.setString(1, database);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(1);
+				result = resultSet.getString(FrameworkConstants.NAME);
 				jsonObject = new JSONObject();
 				jsonObject.put(FrameworkConstants.NAME, result);
-				tempJsonObject = new JSONObject();
-				tempJsonObject.put(FrameworkConstants.DATABASE, token);
+				tempJsonObject = new JSONObject(token);
 				tempJsonObject.put(FrameworkConstants.NAME, result);
 				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
@@ -254,17 +252,17 @@ public class SideBarLogic extends AbstractLogic {
 			encDecLogic = new EncDecLogic();
 			token = encDecLogic.decode(token);
 			jsonObject = new JSONObject(token);
+			String database = jsonObject.getString(FrameworkConstants.DATABASE);
 			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
-			statement = apiConnection.getStmtSelect("SHOW FUNCTION STATUS WHERE DB LIKE ?");
-			statement.setString(1, token);
+			statement = apiConnection.getStmtSelect("SHOW FUNCTION STATUS WHERE DB = ?");
+			statement.setString(1, database);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(1);
+				result = resultSet.getString(FrameworkConstants.NAME);
 				jsonObject = new JSONObject();
 				jsonObject.put(FrameworkConstants.NAME, result);
-				tempJsonObject = new JSONObject();
-				tempJsonObject.put(FrameworkConstants.DATABASE, token);
+				tempJsonObject = new JSONObject(token);
 				tempJsonObject.put(FrameworkConstants.NAME, result);
 				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
@@ -302,16 +300,15 @@ public class SideBarLogic extends AbstractLogic {
 			token = encDecLogic.decode(token);
 			jsonObject = new JSONObject(token);
 			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
-			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE LIKE ?");
-			statement.setString(1, "VIEW");
+			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE = ?");
+			statement.setString(1, FrameworkConstants.VIEW_UPPER_CASE);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
 				result = resultSet.getString(1);
 				jsonObject = new JSONObject();
 				jsonObject.put(FrameworkConstants.NAME, result);
-				tempJsonObject = new JSONObject();
-				tempJsonObject.put(FrameworkConstants.DATABASE, token);
+				tempJsonObject = new JSONObject(token);
 				tempJsonObject.put(FrameworkConstants.VIEW, result);
 				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
@@ -350,8 +347,8 @@ public class SideBarLogic extends AbstractLogic {
 			token = encDecLogic.decode(token);
 			oldJsonObject = new JSONObject(token);
 			apiConnection = getConnection(oldJsonObject.getString(FrameworkConstants.DATABASE));
-			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE LIKE ?");
-			statement.setString(1, "BASE TABLE");
+			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE = ?");
+			statement.setString(1, FrameworkConstants.BASE_TABLE);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
@@ -400,11 +397,10 @@ public class SideBarLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(1);
+				result = resultSet.getString(FrameworkConstants.TRIGGER);
 				jsonObject = new JSONObject();
 				jsonObject.put(FrameworkConstants.NAME, result);
-				tempJsonObject = new JSONObject();
-				tempJsonObject.put(FrameworkConstants.DATABASE, token);
+				tempJsonObject = new JSONObject(token);
 				tempJsonObject.put(FrameworkConstants.NAME, result);
 				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);

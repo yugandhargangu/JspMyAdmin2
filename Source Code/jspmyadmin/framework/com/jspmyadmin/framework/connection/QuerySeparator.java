@@ -34,8 +34,8 @@ public class QuerySeparator {
 	private void _generateQueries() {
 		String query = _script;
 		int start = -1;
-		while ((start = query.indexOf("/*")) > -1) {
-			int end = query.indexOf("*/");
+		while ((start = query.indexOf(FrameworkConstants.SYMBOL_SQL_MULTI_START)) > -1) {
+			int end = query.indexOf(FrameworkConstants.SYMBOL_SQL_MULTI_END);
 			if (end == -1) {
 				if (start == 0) {
 					query = FrameworkConstants.BLANK;
@@ -51,28 +51,28 @@ public class QuerySeparator {
 			}
 		}
 		List<String> delimeterList = new ArrayList<String>();
-		while (query != null && query.contains("DELIMITER $$")) {
-			int indexCheck = query.indexOf("DELIMITER $$");
+		while (query != null && query.contains(FrameworkConstants.DELIMITER_$$)) {
+			int indexCheck = query.indexOf(FrameworkConstants.DELIMITER_$$);
 			if (indexCheck != 0) {
 				String temp = query.substring(0, indexCheck - 1);
-				String[] qArray = temp.split(";");
+				String[] qArray = temp.split(FrameworkConstants.SYMBOL_SEMI_COLON);
 				if (qArray != null && qArray.length > 0) {
 					delimeterList.addAll(Arrays.asList(qArray));
 				}
 				query = query.substring(temp.length());
 			}
-			indexCheck = query.indexOf("DELIMITER $$");
-			if (query.contains("DELIMITER ;")) {
-				int index = query.indexOf("DELIMITER ;");
+			indexCheck = query.indexOf(FrameworkConstants.DELIMITER_$$);
+			if (query.contains(FrameworkConstants.DELIMITER_COMMA)) {
+				int index = query.indexOf(FrameworkConstants.DELIMITER_COMMA);
 				String temp = query.substring(indexCheck + 12, index - 1);
-				String[] qArray = temp.split("\\$\\$");
+				String[] qArray = temp.split(FrameworkConstants.REGEX_$$);
 				if (qArray != null && qArray.length > 0) {
 					delimeterList.addAll(Arrays.asList(qArray));
 				}
 				query = query.substring(index + 11);
 			} else {
 				String temp = query.substring(indexCheck + 12);
-				String[] qArray = temp.split("\\$\\$");
+				String[] qArray = temp.split(FrameworkConstants.REGEX_$$);
 				if (qArray != null && qArray.length > 0) {
 					delimeterList.addAll(Arrays.asList(qArray));
 				}
@@ -84,7 +84,7 @@ public class QuerySeparator {
 			}
 		}
 		if (query != null && !FrameworkConstants.BLANK.equals(query)) {
-			String[] qArray = query.split(";");
+			String[] qArray = query.split(FrameworkConstants.SYMBOL_COMMA);
 			if (qArray != null && qArray.length > 0) {
 				delimeterList.addAll(Arrays.asList(qArray));
 			}
@@ -96,10 +96,11 @@ public class QuerySeparator {
 
 			StringBuilder builder = new StringBuilder();
 			String queryPart = queries[i];
-			String[] queryParts = queryPart.split("\\r\\n");
+			String[] queryParts = queryPart.split(FrameworkConstants.REGEX_NEW_LINE);
 			for (int j = 0; j < queryParts.length; j++) {
 				int mIndex = -1;
-				if ((mIndex = queryParts[j].indexOf("#")) > -1 || (mIndex = queryParts[j].indexOf("--")) > -1) {
+				if ((mIndex = queryParts[j].indexOf(FrameworkConstants.SYMBOL_HASH)) > -1
+						|| (mIndex = queryParts[j].indexOf(FrameworkConstants.SYMBOL_HIFEN_HIFEN)) > -1) {
 					if (mIndex == 0) {
 						queryParts[j] = null;
 					} else {

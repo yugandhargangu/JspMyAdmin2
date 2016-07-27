@@ -96,7 +96,7 @@ html {
 			</div>
 			<div class="group-widget group-footer">
 				<button type="button" class="btn" id="go_btn">
-					<m:print key="btn.go" />
+					<m:print key="lbl.run" />
 				</button>
 			</div>
 		</form>

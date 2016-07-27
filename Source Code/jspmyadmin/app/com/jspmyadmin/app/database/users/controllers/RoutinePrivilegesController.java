@@ -53,6 +53,7 @@ public class RoutinePrivilegesController extends Controller<RoutinePrivilegeBean
 			userLogic.saveRoutinePrivileges(bean);
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(FrameworkConstants.USER, bean.getUser());
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_SAVE_SUCCESS);
 			view.setToken(super.encode(jsonObject));
 		} catch (Exception e) {
 			e.printStackTrace();

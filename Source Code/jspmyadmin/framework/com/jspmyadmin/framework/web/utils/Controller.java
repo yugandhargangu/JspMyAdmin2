@@ -179,6 +179,7 @@ public abstract class Controller<T extends Bean> implements Serializable {
 	 * @return
 	 */
 	protected String checkForTable(Bean bean) {
+		session.removeAttribute(FrameworkConstants.SESSION_VIEW);
 		if (bean.getToken() != null && !FrameworkConstants.BLANK.equals(bean.getToken().trim())) {
 			EncDecLogic encDecLogic = new EncDecLogic();
 			JSONObject jsonObject = null;
@@ -191,6 +192,46 @@ public abstract class Controller<T extends Bean> implements Serializable {
 							session.setAttribute(FrameworkConstants.SESSION_TABLE,
 									jsonObject.getString(FrameworkConstants.TABLE));
 							token = jsonObject.getString(FrameworkConstants.TABLE);
+							if (jsonObject.has(FrameworkConstants.DATABASE)) {
+								session.setAttribute(FrameworkConstants.SESSION_DB,
+										jsonObject.getString(FrameworkConstants.DATABASE));
+							}
+							return token;
+						}
+					} catch (Exception e) {
+					}
+				}
+			} catch (Exception e) {
+			} finally {
+				encDecLogic = null;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	protected String checkForView(Bean bean) {
+		session.removeAttribute(FrameworkConstants.SESSION_TABLE);
+		if (bean.getToken() != null && !FrameworkConstants.BLANK.equals(bean.getToken().trim())) {
+			EncDecLogic encDecLogic = new EncDecLogic();
+			JSONObject jsonObject = null;
+			try {
+				String token = encDecLogic.decode(bean.getToken());
+				if (token != null) {
+					try {
+						jsonObject = new JSONObject(token);
+						if (jsonObject.has(FrameworkConstants.VIEW)) {
+							session.setAttribute(FrameworkConstants.SESSION_VIEW,
+									jsonObject.getString(FrameworkConstants.VIEW));
+							token = jsonObject.getString(FrameworkConstants.VIEW);
+							if (jsonObject.has(FrameworkConstants.DATABASE)) {
+								session.setAttribute(FrameworkConstants.SESSION_DB,
+										jsonObject.getString(FrameworkConstants.DATABASE));
+							}
 							return token;
 						}
 					} catch (Exception e) {
@@ -210,6 +251,7 @@ public abstract class Controller<T extends Bean> implements Serializable {
 	protected void clearForServer() {
 		session.removeAttribute(FrameworkConstants.SESSION_DB);
 		session.removeAttribute(FrameworkConstants.SESSION_TABLE);
+		session.removeAttribute(FrameworkConstants.SESSION_VIEW);
 	}
 
 	/**
@@ -217,6 +259,7 @@ public abstract class Controller<T extends Bean> implements Serializable {
 	 */
 	protected void clearForDb() {
 		session.removeAttribute(FrameworkConstants.SESSION_TABLE);
+		session.removeAttribute(FrameworkConstants.SESSION_VIEW);
 	}
 
 	/**

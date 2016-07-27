@@ -6,6 +6,7 @@ package com.jspmyadmin.app.database.routine.controllers;
 import com.jspmyadmin.app.database.routine.beans.RoutineListBean;
 import com.jspmyadmin.app.database.routine.logic.RoutineLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.annotations.WebController;
 import com.jspmyadmin.framework.web.utils.Controller;
 import com.jspmyadmin.framework.web.utils.View;
@@ -29,8 +30,9 @@ public class FunctionListController extends Controller<RoutineListBean> {
 	@Override
 	protected void handlePost(RoutineListBean bean, View view) throws Exception {
 		super.fillBasics(bean);
+		super.checkForDb(bean);
 		RoutineLogic routineLogic = new RoutineLogic();
-		routineLogic.fillListBean(bean, "FUNCTION");
+		routineLogic.fillListBean(bean, FrameworkConstants.FUNCTION);
 		super.generateToken(bean);
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_DATABASE_ROUTINE_FUNCTIONS);

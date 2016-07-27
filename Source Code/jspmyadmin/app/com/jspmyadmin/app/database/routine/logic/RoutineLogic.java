@@ -98,7 +98,7 @@ public class RoutineLogic extends AbstractLogic {
 		ResultSet resultSet = null;
 		try {
 			apiConnection = super.getConnection(true);
-			statement = apiConnection.getStmtSelect("SHOW " + type + " STATUS WHERE Name LIKE ? AND Db LIKE ?");
+			statement = apiConnection.getStmtSelect("SHOW " + type + " STATUS WHERE name LIKE ? AND db LIKE ?");
 			statement.setString(1, name);
 			statement.setString(2, apiConnection.getDatabase());
 			resultSet = statement.executeQuery();

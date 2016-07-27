@@ -45,7 +45,7 @@ public class CreateViewPostController extends Controller<CreateViewBean> {
 		try {
 			structureLogic = new StructureLogic();
 			if (structureLogic.isTableExisted(bean.getView_name())) {
-				jsonObject.put(FrameworkConstants.ERR, messages.getMessage("msg.view_already_existed"));
+				jsonObject.put(FrameworkConstants.ERR, messages.getMessage(AppConstants.MSG_VIEW_ALREADY_EXISTED));
 			} else {
 				String result = structureLogic.createView(bean);
 				jsonObject.append(FrameworkConstants.ERR, FrameworkConstants.BLANK);
@@ -53,7 +53,7 @@ public class CreateViewPostController extends Controller<CreateViewBean> {
 					jsonObject.append(FrameworkConstants.DATA, result);
 				} else {
 					JSONObject msg = new JSONObject();
-					msg.put(FrameworkConstants.MSG_KEY, "msg.view_created");
+					msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_VIEW_CREATED);
 					jsonObject.append(FrameworkConstants.MSG, super.encode(msg.toString()));
 				}
 			}

@@ -39,9 +39,12 @@
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
 						<h3>
-							Schema Privileges (${requestScope.command.user})
+							<m:print key="lbl.schema_privileges" />
+							&#40;${requestScope.command.user}&#41;
 							<button type="button" class="btn" id="btn-back"
-								style="float: right;">Go Back</button>
+								style="float: right;">
+								<m:print key="lbl.go_back" />
+							</button>
 						</h3>
 					</div>
 					<jma:notEmpty name="#schema_list" scope="command">
@@ -52,11 +55,13 @@
 								value="${requestScope.command.token}"> <input
 								type="hidden" name="user" value="${requestScope.command.user}">
 							<div class="group">
-								<div class="group-widget group-header">Add New Entry</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.add_new_entry" />
+								</div>
 								<div class="group-widget group-content">
 									<div class="form-input" style="width: 250px;">
-										<label>Select Database</label> <select class="form-control"
-											name="database">
+										<label><m:print key="lbl.select_database" /> </label> <select
+											class="form-control" name="database">
 											<jma:notEmpty name="#schema_list" scope="command">
 												<jma:forLoop items="#schema_list" name="schema"
 													scope="command">
@@ -67,8 +72,8 @@
 									</div>
 									<div class="div-inline-item">
 										<h4>
-											<input type="checkbox" class="obj-check-all"> Object
-											Rights
+											<input type="checkbox" class="obj-check-all">
+											<m:print key="lbl.object_rights" />
 										</h4>
 										<jma:forLoop items="#privilege_obj_list" name="obj_priv"
 											scope="command" index="_obj_priv_index">
@@ -80,8 +85,8 @@
 									</div>
 									<div class="div-inline-item">
 										<h4>
-											<input type="checkbox" class="ddl-check-all"> DDL
-											Rights
+											<input type="checkbox" class="ddl-check-all">
+											<m:print key="lbl.ddl_rights" />
 										</h4>
 										<jma:forLoop items="#privilege_ddl_list" name="ddl_priv"
 											scope="command" index="_ddl_priv_index">
@@ -93,8 +98,8 @@
 									</div>
 									<div class="div-inline-item">
 										<h4>
-											<input type="checkbox" class="other-check-all"> Other
-											Rights
+											<input type="checkbox" class="other-check-all">
+											<m:print key="lbl.other_rights" />
 										</h4>
 										<jma:forLoop items="#privilege_admn_list" name="other_priv"
 											scope="command" index="_other_priv_index">
@@ -106,18 +111,24 @@
 									</div>
 								</div>
 								<div class="group-widget group-footer">
-									<button type="button" class="btn btn-select-all">Select
-										ALL</button>
-									<button type="button" class="btn btn-unselect-all">Unselect
-										ALL</button>
-									<button type="submit" class="btn btn-run">Run</button>
+									<button type="button" class="btn btn-select-all">
+										<m:print key="lbl.select_all" />
+									</button>
+									<button type="button" class="btn btn-unselect-all">
+										<m:print key="lbl.unselect_all" />
+									</button>
+									<button type="submit" class="btn btn-run">
+										<m:print key="lbl.run" />
+									</button>
 								</div>
 							</div>
 						</form>
 					</jma:notEmpty>
 					<jma:notEmpty name="#privilege_list" scope="command">
 						<div class="group">
-							<div class="group-widget group-header">Schema Privileges</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.schema_privileges" />
+							</div>
 							<div class="group-widget group-content">
 
 								<jma:notEmpty name="#privilege_list" scope="command">
@@ -126,7 +137,6 @@
 										<form
 											action="${pageContext.request.contextPath}/server_schema_privileges.html"
 											method="post" accept-charset="utf-8">
-
 											<input type="hidden" name="token"
 												value="${requestScope.command.token}"> <input
 												type="hidden" name="user"
@@ -138,7 +148,7 @@
 													<div class="div-inline-item">
 														<h4>
 															<input type="checkbox" class="obj-check-all">
-															Object Rights
+															<m:print key="lbl.object_rights" />
 														</h4>
 														<jma:forLoop items="#privilege_obj_list" name="obj_priv"
 															scope="command" index="_obj_priv_index">
@@ -163,8 +173,8 @@
 													</div>
 													<div class="div-inline-item">
 														<h4>
-															<input type="checkbox" class="ddl-check-all"> DDL
-															Rights
+															<input type="checkbox" class="ddl-check-all">
+															<m:print key="lbl.ddl_rights" />
 														</h4>
 														<jma:forLoop items="#privilege_ddl_list" name="ddl_priv"
 															scope="command" index="_ddl_priv_index">
@@ -190,7 +200,7 @@
 													<div class="div-inline-item">
 														<h4>
 															<input type="checkbox" class="other-check-all">
-															Other Rights
+															<m:print key="lbl.other_rights" />
 														</h4>
 														<jma:forLoop items="#privilege_admn_list"
 															name="other_priv" scope="command"
@@ -216,13 +226,18 @@
 													</div>
 												</div>
 												<div class="group-widget group-footer">
-													<button type="button" class="btn btn-select-all">Select
-														ALL</button>
-													<button type="button" class="btn btn-unselect-all">Unselect
-														ALL</button>
-													<button type="button" class="btn btn-delete">Delete
-														Entry</button>
-													<button type="submit" class="btn btn-run">Run</button>
+													<button type="button" class="btn btn-select-all">
+														<m:print key="lbl.select_all" />
+													</button>
+													<button type="button" class="btn btn-unselect-all">
+														<m:print key="lbl.unselect_all" />
+													</button>
+													<button type="button" class="btn btn-delete">
+														<m:print key="lbl.delete_entry" />
+													</button>
+													<button type="submit" class="btn btn-run">
+														<m:print key="lbl.run" />
+													</button>
 												</div>
 											</div>
 										</form>
@@ -245,14 +260,16 @@
 				<m:print key="lbl.alert" />
 			</div>
 			<div class="dialog-content">
-				<p id="confirm-content">Do You Really Want to Delete this Entry?</p>
+				<p id="confirm-content">
+					<m:print key="msg.user_privilege_delete_alert" />
+				</p>
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>
@@ -270,12 +287,26 @@
 			</div>
 		</div>
 	</jma:notEmpty>
+	<jma:notEmpty name="#err_key" scope="command">
+		<div class="dialog">
+			<div class="dialog-widget dialog-error">
+				<div class="close" id="error-close1">&#10005;</div>
+				<div class="dialog-header">
+					<m:print key="lbl.errors" />
+				</div>
+				<div class="dialog-content">
+					<p>
+						<m:print key="err_key" scope="command" />
+					</p>
+				</div>
+			</div>
+		</div>
+	</jma:notEmpty>
 	<form action="${pageContext.request.contextPath}/server_users.html"
 		method="get" id="back-form"></form>
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(4)").addClass('active');
 		applyEvenOdd('#privilege-list');
-
 		var formElement;
 		$(function() {
 
@@ -327,6 +358,10 @@
 			$('#error-close2').click(function() {
 				$(this).parent().parent().empty().remove();
 			});
+			$('#error-close1').click(function() {
+				$(this).parent().parent().empty().remove();
+			});
+
 			$('#yes_btn').click(function() {
 				$(formElement).find('input[name="privileges"]').prop('checked', false);
 				$(formElement).submit();

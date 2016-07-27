@@ -29,6 +29,7 @@ public class SchemaPrivilegesController extends Controller<SchemaPrivilegeBean> 
 	protected void handleGet(SchemaPrivilegeBean bean, View view) throws Exception {
 		UserLogic userLogic = null;
 		try {
+			super.fillBasics(bean);
 			userLogic = new UserLogic();
 			userLogic.fillSchemaPrivileges(bean);
 			super.generateToken(bean);
@@ -53,6 +54,7 @@ public class SchemaPrivilegesController extends Controller<SchemaPrivilegeBean> 
 			userLogic.saveSchemaPrivileges(bean);
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put(FrameworkConstants.USER, bean.getUser());
+			jsonObject.put(FrameworkConstants.ERR_KEY, AppConstants.MSG_SAVE_SUCCESS);
 			view.setToken(super.encode(jsonObject));
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_SERVER_SCHEMA_PRIVILEGES);

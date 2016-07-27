@@ -13,6 +13,7 @@ import java.util.Map;
 
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
+import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.logic.EncDecLogic;
 
 /**
@@ -103,7 +104,7 @@ public class DataLogic extends AbstractLogic {
 			}
 			apiConnection = getConnection(database);
 			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE LIKE ?");
-			statement.setString(1, "BASE TABLE");
+			statement.setString(1, FrameworkConstants.BASE_TABLE);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				tableList.add(resultSet.getString(1));
@@ -140,7 +141,7 @@ public class DataLogic extends AbstractLogic {
 			}
 			apiConnection = getConnection(database);
 			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE LIKE ?");
-			statement.setString(1, "BASE TABLE");
+			statement.setString(1, FrameworkConstants.BASE_TABLE);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				temp = resultSet.getString(1);

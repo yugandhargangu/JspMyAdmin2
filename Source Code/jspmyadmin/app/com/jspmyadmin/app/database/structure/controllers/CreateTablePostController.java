@@ -55,7 +55,7 @@ public class CreateTablePostController extends Controller<CreateTableBean> {
 					jsonObject.append(FrameworkConstants.DATA, result);
 				} else {
 					JSONObject msg = new JSONObject();
-					msg.put(FrameworkConstants.MSG_KEY, "msg.table_created");
+					msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_TABLE_CREATED);
 					jsonObject.append(FrameworkConstants.MSG, super.encode(msg.toString()));
 				}
 			}

@@ -42,9 +42,12 @@
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
 						<h3>
-							Users (${requestScope.command.user})
+							<m:print key="lbl.users_privileges" />
+							(${requestScope.command.user})
 							<button type="button" class="btn" id="btn-back"
-								style="float: right;">Go Back</button>
+								style="float: right;">
+								<m:print key="lbl.go_back" />
+							</button>
 						</h3>
 					</div>
 					<jma:notEmpty name="#column_list" scope="command">
@@ -58,8 +61,10 @@
 								value="${requestScope.command.table}"><input
 								type="hidden" name="fetch" value="1">
 							<div class="group">
-								<div class="group-widget group-header">Grant Rights to
-									User (${requestScope.command.table})</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.grant_rights_user" />
+									(${requestScope.command.table})
+								</div>
 								<div class="group-widget group-content">
 									<div class="form-input">
 										<label>SELECT</label> <select class="form-control"
@@ -107,7 +112,9 @@
 									</div>
 								</div>
 								<div class="group-widget group-footer">
-									<button type="submit" class="btn btn-grant">Grant</button>
+									<button type="submit" class="btn btn-grant">
+										<m:print key="lbl.grant" />
+									</button>
 								</div>
 							</div>
 						</form>
@@ -124,8 +131,10 @@
 								value="${requestScope.command.table}"><input
 								type="hidden" name="fetch" value="2">
 							<div class="group">
-								<div class="group-widget group-header">Revoke Rights from
-									User (${requestScope.command.table})</div>
+								<div class="group-widget group-header">
+									<m:print key="lbl.revoke_rights_user" />
+									(${requestScope.command.table})
+								</div>
 								<div class="group-widget group-content">
 									<div class="form-input">
 										<label>SELECT</label> <select class="form-control"
@@ -173,7 +182,9 @@
 									</div>
 								</div>
 								<div class="group-widget group-footer">
-									<button type="submit" class="btn btn-revoke">Revoke</button>
+									<button type="submit" class="btn btn-revoke">
+										<m:print key="lbl.revoke" />
+									</button>
 								</div>
 							</div>
 						</form>
@@ -198,6 +209,21 @@
 			</div>
 		</div>
 	</jma:notEmpty>
+	<jma:notEmpty name="#err_key" scope="command">
+		<div class="dialog">
+			<div class="dialog-widget dialog-error">
+				<div class="close" id="error-close1">&#10005;</div>
+				<div class="dialog-header">
+					<m:print key="lbl.errors" />
+				</div>
+				<div class="dialog-content">
+					<p>
+						<m:print key="err_key" scope="command" />
+					</p>
+				</div>
+			</div>
+		</div>
+	</jma:notEmpty>
 	<div style="display: none;">
 		<form method="get" accept-charset="utf-8" id="back-form"
 			action="${pageContext.request.contextPath}/database_table_privileges.html">
@@ -211,6 +237,10 @@
 		$(function() {
 
 			$('#error-close2').click(function() {
+				$(this).parent().parent().empty().remove();
+			});
+
+			$('#error-close1').click(function() {
 				$(this).parent().parent().empty().remove();
 			});
 

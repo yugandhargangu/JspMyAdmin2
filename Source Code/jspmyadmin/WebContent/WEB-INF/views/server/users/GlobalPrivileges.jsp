@@ -23,9 +23,11 @@
 				<div style="padding: 0.2em 2em;">
 					<div class="page-head">
 						<h3>
-							Global Privileges
+							<m:print key="lbl.global_privileges" />
 							<button type="button" class="btn" id="btn-back"
-								style="float: right;">Go Back</button>
+								style="float: right;">
+								<m:print key="lbl.go_back" />
+							</button>
 						</h3>
 					</div>
 					<form method="post" accept-charset="UTF-8" id="privilege-form"
@@ -36,16 +38,18 @@
 						<input type="hidden" name="user"
 							value="${requestScope.command.user}">
 						<div class="group">
-							<div class="group-widget group-header">Privilege List
-								(${requestScope.command.user})</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.privileges" />
+								(${requestScope.command.user})
+							</div>
 							<div class="group-widget group-content">
 								<table class="tbl" id="privilege-list">
 									<thead>
 										<tr>
 											<th><input type="checkbox" id="check-all"></th>
-											<th>Privilege</th>
-											<th>Context</th>
-											<th>Comment</th>
+											<th><m:print key="lbl.privilege" /></th>
+											<th><m:print key="lbl.context" /></th>
+											<th><m:print key="lbl.comment" /></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -72,16 +76,20 @@
 										</jma:notEmpty>
 										<jma:empty name="#privilege_info_list" scope="command">
 											<tr class="even">
-												<td colspan="4">No Privileges Found.</td>
+												<td colspan="4"><m:print key="msg.no_privileges_found" />
+												</td>
 											</tr>
 										</jma:empty>
 									</tbody>
 								</table>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-revoke-all">Revoke
-									All Privileges</button>
-								<button type="button" class="btn" id="btn-run">Run</button>
+								<button type="button" class="btn" id="btn-revoke-all">
+									<m:print key="lbl.revoke_all_privileges" />
+								</button>
+								<button type="button" class="btn" id="btn-run">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</div>
 					</form>
@@ -99,15 +107,16 @@
 				<m:print key="lbl.alert" />
 			</div>
 			<div class="dialog-content">
-				<p id="confirm-content">Add new privileges afterwards or the
-					user will not be able to access any schema object.</p>
+				<p id="confirm-content">
+					<m:print key="msg.revoke_all_alert" />
+				</p>
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.ok" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.cancel" />
 				</button>
 			</div>
 		</div>
@@ -121,6 +130,21 @@
 				</div>
 				<div class="dialog-content">
 					<p>${requestScope.command.err}</p>
+				</div>
+			</div>
+		</div>
+	</jma:notEmpty>
+	<jma:notEmpty name="#err_key" scope="command">
+		<div class="dialog">
+			<div class="dialog-widget dialog-error">
+				<div class="close" id="error-close1">&#10005;</div>
+				<div class="dialog-header">
+					<m:print key="lbl.errors" />
+				</div>
+				<div class="dialog-content">
+					<p>
+						<m:print key="err_key" scope="command" />
+					</p>
 				</div>
 			</div>
 		</div>
@@ -149,6 +173,11 @@
 			$('#error-close2').click(function() {
 				$(this).parent().parent().empty().remove();
 			});
+
+			$('#error-close1').click(function() {
+				$(this).parent().parent().empty().remove();
+			});
+
 			$('#yes_btn').click(function() {
 				$('#revoke-all').val('1');
 				$('#privilege-form').submit();

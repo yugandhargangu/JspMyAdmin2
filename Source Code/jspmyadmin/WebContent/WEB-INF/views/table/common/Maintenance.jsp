@@ -37,7 +37,9 @@
 			<div id="main-body">
 				<div style="padding: 0.1em 0.2em;">
 					<div class="page-head">
-						<h3>Table Maintenance</h3>
+						<h3>
+							<m:print key="lbl.table_maintenance" />
+						</h3>
 					</div>
 					<div class="group group-spl">
 						<form
@@ -49,9 +51,9 @@
 							<div class="group-widget group-header">ANALYZE TABLE</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Select Option</label> <select name="option"
-										class="form-control">
-										<option value="">Select</option>
+									<label><m:print key="lbl.select_option" /></label> <select
+										name="option" class="form-control">
+										<option value=""><m:print key="lbl.select" /></option>
 										<jma:notEmpty name="#analize_op_list" scope="command">
 											<jma:forLoop items="#analize_op_list" name="item"
 												scope="command">
@@ -62,7 +64,9 @@
 								</div>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" class="btn">Run</button>
+								<button type="submit" class="btn">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</form>
 					</div>
@@ -76,9 +80,9 @@
 							<div class="group-widget group-header">CHECK TABLE</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Select Option</label> <select name="option"
-										class="form-control">
-										<option value="">Select</option>
+									<label><m:print key="lbl.select_option" /></label> <select
+										name="option" class="form-control">
+										<option value=""><m:print key="lbl.select" /></option>
 										<jma:notEmpty name="#check_op_list" scope="command">
 											<jma:forLoop items="#check_op_list" name="item"
 												scope="command">
@@ -89,7 +93,9 @@
 								</div>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" class="btn">Run</button>
+								<button type="submit" class="btn">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</form>
 					</div>
@@ -103,9 +109,9 @@
 							<div class="group-widget group-header">CHECKSUM TABLE</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Select Option</label> <select name="option"
-										class="form-control">
-										<option value="">Select</option>
+									<label><m:print key="lbl.select_option" /></label> <select
+										name="option" class="form-control">
+										<option value=""><m:print key="lbl.select" /></option>
 										<jma:notEmpty name="#checksum_op_list" scope="command">
 											<jma:forLoop items="#checksum_op_list" name="item"
 												scope="command">
@@ -116,7 +122,9 @@
 								</div>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" class="btn">Run</button>
+								<button type="submit" class="btn">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</form>
 					</div>
@@ -130,9 +138,9 @@
 							<div class="group-widget group-header">OPTIMIZE TABLE</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Select Option</label> <select name="option"
-										class="form-control">
-										<option value="">Select</option>
+									<label><m:print key="lbl.select_option" /></label> <select
+										name="option" class="form-control">
+										<option value=""><m:print key="lbl.select" /></option>
 										<jma:notEmpty name="#analize_op_list" scope="command">
 											<jma:forLoop items="#analize_op_list" name="item"
 												scope="command">
@@ -143,7 +151,9 @@
 								</div>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" class="btn">Run</button>
+								<button type="submit" class="btn">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</form>
 					</div>
@@ -157,9 +167,9 @@
 							<div class="group-widget group-header">REPAIR TABLE</div>
 							<div class="group-widget group-content">
 								<div class="form-input">
-									<label>Select Option</label> <select name="option"
-										class="form-control">
-										<option value="">Select</option>
+									<label><m:print key="lbl.select_option" /></label> <select
+										name="option" class="form-control">
+										<option value=""><m:print key="lbl.select" /></option>
 										<jma:notEmpty name="#analize_op_list" scope="command">
 											<jma:forLoop items="#analize_op_list" name="item"
 												scope="command">
@@ -179,13 +189,17 @@
 								</jma:notEmpty>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="submit" class="btn">Run</button>
+								<button type="submit" class="btn">
+									<m:print key="lbl.run" />
+								</button>
 							</div>
 						</form>
 					</div>
 					<jma:notEmpty name="#column_names" scope="command">
 						<div class="group">
-							<div class="group-widget group-header">Result</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.result" />
+							</div>
 							<div class="group-widget group-content">
 								<div style="width: 100%; margin-top: 10px; overflow-y: auto;">
 									<table class="tbl" id="data-rows">

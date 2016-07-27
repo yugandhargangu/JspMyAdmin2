@@ -40,7 +40,7 @@ public class FunctionDropController extends Controller<RoutineListBean> {
 		try {
 			routineLogic = new RoutineLogic();
 			routineLogic.dropRoutines(bean, false);
-			jsonObject.put(FrameworkConstants.MSG_KEY, "msg.function_drop_success");
+			jsonObject.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_FUNCTION_DROP_SUCCESS);
 		} catch (Exception e) {
 			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
 		} finally {

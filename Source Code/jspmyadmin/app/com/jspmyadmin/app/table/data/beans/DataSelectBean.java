@@ -23,7 +23,7 @@ public class DataSelectBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private String query = null;
-	private String limit = "25";
+	private String limit = FrameworkConstants.FETCH_LIMIT;
 	private Map<String, String> column_name_map = null;
 	private String[] search_columns = null;
 	private String[] search_list = null;
@@ -42,18 +42,7 @@ public class DataSelectBean extends Bean {
 
 	private String[] ids = null;
 
-	private List<String> limit_list = new ArrayList<String>(5);
-
-	/**
-	 * 
-	 */
-	public DataSelectBean() {
-		limit_list.add("25");
-		limit_list.add("50");
-		limit_list.add("100");
-		limit_list.add("500");
-		limit_list.add("1000");
-	}
+	private List<String> limit_list = new ArrayList<String>(FrameworkConstants.Utils.LIMIT_LIST);
 
 	/**
 	 * @return the query

@@ -45,7 +45,7 @@
 						</div>
 						<div class="group-widget group-footer">
 							<button type="button" class="btn" id="btn-go">
-								<m:print key="btn.go" />
+								<m:print key="lbl.run" />
 							</button>
 						</div>
 					</div>
@@ -212,10 +212,10 @@
 			</div>
 			<div class="dialog-footer">
 				<button type="button" class="btn" id="yes_btn">
-					<m:print key="btn.yes" />
+					<m:print key="lbl.yes" />
 				</button>
 				<button type="button" class="btn" id="no_btn">
-					<m:print key="btn.no" />
+					<m:print key="lbl.no" />
 				</button>
 			</div>
 		</div>
@@ -360,6 +360,7 @@
 		});
 	</script>
 
+	<m:store name="msg_procedure_create" key="msg.procedure_create" />
 	<script type="text/javascript">
 		// show-create
 		function showCreateApply(res) {
@@ -379,7 +380,7 @@
 				var keys = Object.keys(actJsonData);
 				var result = '';
 				for (key in actJsonData) {
-					result += '\n#------------- Create Procedure: ';
+					result += '\n#------------- ${msg_procedure_create}: ';
 					result += key;
 					result += ' ------------- \n\n';
 					result += actJsonData[key];

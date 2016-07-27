@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.jspmyadmin.app.database.event.beans.EventBean;
 import com.jspmyadmin.app.database.event.logic.EventLogic;
+import com.jspmyadmin.framework.constants.AppConstants;
 import com.jspmyadmin.framework.constants.FrameworkConstants;
 import com.jspmyadmin.framework.web.annotations.ResponseBody;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
@@ -44,7 +45,7 @@ public class CreateEventPostController extends Controller<EventBean> {
 				jsonObject.put(FrameworkConstants.DATA, result.trim());
 			} else {
 				JSONObject msg = new JSONObject();
-				msg.put(FrameworkConstants.MSG_KEY, "msg.event_create_success");
+				msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EVENT_CREATE_SUCCESS);
 				jsonObject.put(FrameworkConstants.MSG, super.encode(msg));
 			}
 		} catch (Exception e) {
