@@ -3,6 +3,7 @@
  */
 package com.jspmyadmin.framework.web.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.logging.Level;
@@ -23,15 +24,29 @@ public class FrameworkListener implements ServletContextListener {
 
 	private static final Logger _LOGGER = Logger.getLogger(FrameworkListener.class.getName());
 
+	private static String _root_path = null;
+
+	/**
+	 * @return the _root_path
+	 */
+	public static String getRoot_path() {
+		return _root_path;
+	}
+
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext context = null;
 		try {
 
 			context = event.getServletContext();
 			if (context != null) {
+				_root_path = context.getRealPath("/");
+				_root_path = _root_path + "/uploads";
+				File file = new File(_root_path);
+				file.mkdirs();
 				context.setAttribute(FrameworkConstants.APP_DATA_TYPES_INFO, FrameworkConstants.Utils.DATA_TYPES_INFO);
 				context.setAttribute(FrameworkConstants.HOSTNAME, InetAddress.getLocalHost().getHostName());
 				DefaultServlet.setContext(context);
+
 			}
 			// scan controllers
 			new Thread() {

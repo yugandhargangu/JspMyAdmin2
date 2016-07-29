@@ -57,6 +57,7 @@
 											<th><m:print key="lbl.datatype" /></th>
 											<th><m:print key="lbl.null" /></th>
 											<th><m:print key="lbl.extra" /></th>
+											<th>Use Function</th>
 											<th><m:print key="lbl.value" /></th>
 										</tr>
 									</thead>
@@ -67,6 +68,7 @@
 											<th><m:print key="lbl.datatype" /></th>
 											<th><m:print key="lbl.null" /></th>
 											<th><m:print key="lbl.extra" /></th>
+											<th>Use Function</th>
 											<th><m:print key="lbl.value" /></th>
 										</tr>
 									</tfoot>
@@ -89,6 +91,15 @@
 													</td>
 													<td>${insertInfo.canBeNull}</td>
 													<td>${insertInfo.extra}</td>
+													<td style="text-align: center;"><input type="hidden"
+														name="functions" value=""> <jma:switch
+															name="#insertInfo.file_type" scope="page">
+															<jma:case value="1">
+															</jma:case>
+															<jma:default>
+																<input type="checkbox" class="function-check">
+															</jma:default>
+														</jma:switch></td>
 													<td><jma:switch name="#insertInfo.file_type"
 															scope="page">
 															<jma:case value="1">
@@ -138,8 +149,18 @@
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(6)").addClass('active');
 		applyEvenOdd('#table-data');
-		$('#error-close2').click(function() {
-			$(this).parent().parent().empty().remove();
+		$(function() {
+			$('.function-check').change(function() {
+				if ($(this).is(':checked')) {
+					$(this).parent().find('input[name="functions"]').val('1');
+				} else {
+					$(this).parent().find('input[name="functions"]').val('');
+				}
+			});
+
+			$('#error-close2').click(function() {
+				$(this).parent().parent().empty().remove();
+			});
 		});
 	</script>
 </body>

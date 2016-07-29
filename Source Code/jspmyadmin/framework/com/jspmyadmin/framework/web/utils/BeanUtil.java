@@ -134,7 +134,8 @@ class BeanUtil {
 			for (int len = 1; len > 0; len = inputStream.readLine(buf, 0, buf.length)) {
 				String temp = new String(buf, 0, len);
 
-				if (boundaryStart.equalsIgnoreCase(temp.trim()) && fileInputImpl != null) {
+				if (boundaryEnd.equalsIgnoreCase(temp.trim())) {
+				} else if (boundaryStart.equalsIgnoreCase(temp.trim()) && fileInputImpl != null) {
 					List<Object> tempList = null;
 					if (paramMap.containsKey(name)) {
 						tempList = (List<Object>) paramMap.get(name);
@@ -163,7 +164,6 @@ class BeanUtil {
 					isText = true;
 				} else if (!temp.startsWith(boundaryStart) && null != name && isText
 						&& !FrameworkConstants.BLANK.equals(temp.trim())) {
-
 					List<Object> tempList = null;
 					if (paramMap.containsKey(name)) {
 						tempList = (List<Object>) paramMap.get(name);
@@ -184,8 +184,6 @@ class BeanUtil {
 					}
 					if (fileInputImpl != null) {
 						tempList.add(fileInputImpl);
-					} else if (!FrameworkConstants.BLANK.equals(temp.trim())) {
-						tempList.add(temp.trim());
 					} else {
 						tempList.add(null);
 					}

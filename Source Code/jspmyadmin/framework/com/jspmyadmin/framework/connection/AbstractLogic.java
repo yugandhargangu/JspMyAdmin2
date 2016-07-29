@@ -4,12 +4,14 @@
 package com.jspmyadmin.framework.connection;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.web.utils.FrameworkListener;
 
 /**
  * @author Yugandhar Gangu
@@ -78,6 +80,18 @@ public abstract class AbstractLogic {
 			Integer.parseInt(val);
 			return true;
 		} catch (Exception e) {
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 */
+	protected boolean deleteFile(File file) {
+		if (file != null) {
+			return file.delete();
 		}
 		return false;
 	}
@@ -197,5 +211,14 @@ public abstract class AbstractLogic {
 			return _query;
 		}
 
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected static synchronized String getTempFilePath() {
+		File file = new File(FrameworkListener.getRoot_path(), System.currentTimeMillis() + ".tmp");
+		return file.getAbsolutePath();
 	}
 }

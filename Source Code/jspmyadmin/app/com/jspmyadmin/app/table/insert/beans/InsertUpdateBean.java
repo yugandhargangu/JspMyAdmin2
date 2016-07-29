@@ -25,6 +25,7 @@ public class InsertUpdateBean extends Bean {
 	private String[] changes = null;
 	private String[] columns = null;
 	private String[] nulls = null;
+	private String[] functions = null;
 	private Object[] values = null;
 
 	private List<InsertInfo> info_list = null;
@@ -132,6 +133,21 @@ public class InsertUpdateBean extends Bean {
 	 */
 	public void setNulls(String[] nulls) {
 		this.nulls = nulls;
+	}
+
+	/**
+	 * @return the functions
+	 */
+	public String[] getFunctions() {
+		return functions;
+	}
+
+	/**
+	 * @param functions
+	 *            the functions to set
+	 */
+	public void setFunctions(String[] functions) {
+		this.functions = functions;
 	}
 
 	/**

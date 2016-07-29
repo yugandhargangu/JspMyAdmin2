@@ -26,7 +26,8 @@
 				src="${pageContext.request.contextPath}/components/icons/send-file-g.png">
 				${lbl_export}</a></li>
 		<m:store name="lbl_import" key="lbl.import" />
-		<li><a href="#"><img alt="${lbl_import}" class="icon"
+		<li><a href="${pageContext.request.contextPath}/view_import.html"><img
+				alt="${lbl_import}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/import-g.png">
 				${lbl_import} </a></li>
 	</ul>

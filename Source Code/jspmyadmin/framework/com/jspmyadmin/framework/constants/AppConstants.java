@@ -57,6 +57,8 @@ public final class AppConstants {
 	public static final String JSP_COMMON_LOGIN = "common/Login.jsp";
 	public static final String JSP_DATABASE_EVENT_CREATEEVENT = "database/event/CreateEvent.jsp";
 	public static final String JSP_DATABASE_EVENT_EVENTS = "database/event/Events.jsp";
+	public static final String JSP_DATABASE_EXPORT_IMPORT = "database/export/Import.jsp";
+	public static final String JSP_DATABASE_EXPORT_IMPORT_RESULT = "database/export/ImportResult.jsp";
 	public static final String JSP_DATABASE_ROUTINE_CREATEFUNCTION = "database/routine/CreateFunction.jsp";
 	public static final String JSP_DATABASE_ROUTINE_CREATEPROCEDURE = "database/routine/CreateProcedure.jsp";
 	public static final String JSP_DATABASE_ROUTINE_FUNCTIONS = "database/routine/Functions.jsp";
@@ -78,6 +80,8 @@ public final class AppConstants {
 	public static final String JSP_SERVER_COMMON_STATUSLIST = "server/common/StatusList.jsp";
 	public static final String JSP_SERVER_COMMON_VARIABLELIST = "server/common/VariableList.jsp";
 	public static final String JSP_SERVER_DATABASE_DATABASELIST = "server/database/DatabaseList.jsp";
+	public static final String JSP_SERVER_EXPORT_IMPORT = "server/export/Import.jsp";
+	public static final String JSP_SERVER_EXPORT_IMPORT_RESULT = "server/export/ImportResult.jsp";
 	public static final String JSP_SERVER_SQL_SQL = "server/sql/SQL.jsp";
 	public static final String JSP_SERVER_USERS_GLOBAL_PRIVILEGES = "server/users/GlobalPrivileges.jsp";
 	public static final String JSP_SERVER_USERS_SCHEMA_PRIVILEGES = "server/users/SchemaPrivileges.jsp";
@@ -88,15 +92,20 @@ public final class AppConstants {
 	public static final String JSP_TABLE_COMMON_MAINTENANCE = "table/common/Maintenance.jsp";
 	public static final String JSP_TABLE_COMMON_PARTITIONS = "table/common/Partitions.jsp";
 	public static final String JSP_TABLE_DATA_DATA = "table/data/Data.jsp";
+	public static final String JSP_TABLE_EXPORT_IMPORT = "table/export/Import.jsp";
+	public static final String JSP_TABLE_EXPORT_IMPORT_RESULT = "table/export/ImportResult.jsp";
 	public static final String JSP_TABLE_INSERT_INSERTUPDATE = "table/insert/InsertUpdate.jsp";
 	public static final String JSP_TABLE_STRUCTURE_ALTER_TABLE = "table/structure/AlterTable.jsp";
 	public static final String JSP_TABLE_STRUCTURE_STRUCTURE = "table/structure/Structure.jsp";
 	public static final String JSP_TABLE_SQL_SQL = "table/sql/SQL.jsp";
 	public static final String JSP_VIEW_DATA_DATA = "view/data/Data.jsp";
+	public static final String JSP_VIEW_EXPORT_IMPORT = "view/export/Import.jsp";
+	public static final String JSP_VIEW_EXPORT_IMPORT_RESULT = "view/export/ImportResult.jsp";
 	public static final String JSP_VIEW_STRUCTURE_STRUCTURE = "view/structure/Structure.jsp";
 	public static final String JSP_VIEW_SQL_SQL = "view/sql/SQL.jsp";
 
 	public static final String PATH_HOME = "/home.html";
+	public static final String PATH_DATABASE_IMPORT = "/database_import.html";
 	public static final String PATH_DATABASE_EVENTS = "/database_events.html";
 	public static final String PATH_DATABASE_FUNCTIONS = "/database_functions.html";
 	public static final String PATH_DATABASE_PRIVILEGES = "/database_privileges.html";
@@ -111,12 +120,15 @@ public final class AppConstants {
 	public static final String PATH_LOGIN = "/login.html";
 	public static final String PATH_SERVER_DATABASES = "/server_databases.html";
 	public static final String PATH_SERVER_GLOBAL_PRIVILEGES = "/server_global_privileges.html";
+	public static final String PATH_SERVER_IMPORT = "/server_import.html";
 	public static final String PATH_SERVER_SCHEMA_PRIVILEGES = "/server_schema_privileges.html";
 	public static final String PATH_SERVER_USER_INFO = "/server_user_info.html";
 	public static final String PATH_SERVER_USERS = "/server_users.html";
 	public static final String PATH_TABLE_DATA = "/table_data.html";
 	public static final String PATH_TABLE_FOREIGN_KEYS = "/table_foreign_keys.html";
+	public static final String PATH_TABLE_IMPORT = "/table_import.html";
 	public static final String PATH_TABLE_PARTITIONS = "/table_partitions.html";
 	public static final String PATH_TABLE_STRUCTURE = "/table_structure.html";
+	public static final String PATH_VIEW_IMPORT = "/view_import.html";
 
 }

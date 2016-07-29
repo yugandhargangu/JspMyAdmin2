@@ -67,7 +67,7 @@ public final class FrameworkConstants {
 	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 	public static final String NAME = "name";
 	public static final String NEW_ADD = "new_add";
-	public static final String NEW_LINE = "\\n";
+	public static final String NEW_LINE = "\r\n";
 	public static final String NO = "No";
 	public static final String NON_ALPHA_NUM = "[^A-Za-z0-9 ]";
 	public static final String ONE = "1";

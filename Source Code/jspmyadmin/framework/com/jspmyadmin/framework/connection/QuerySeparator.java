@@ -84,7 +84,7 @@ public class QuerySeparator {
 			}
 		}
 		if (query != null && !FrameworkConstants.BLANK.equals(query)) {
-			String[] qArray = query.split(FrameworkConstants.SYMBOL_COMMA);
+			String[] qArray = query.split(FrameworkConstants.SYMBOL_SEMI_COLON);
 			if (qArray != null && qArray.length > 0) {
 				delimeterList.addAll(Arrays.asList(qArray));
 			}

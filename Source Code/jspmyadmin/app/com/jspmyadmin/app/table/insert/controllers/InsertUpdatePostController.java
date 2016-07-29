@@ -42,6 +42,7 @@ public class InsertUpdatePostController extends Controller<InsertUpdateBean> {
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_TABLE_DATA);
 		} catch (Exception e) {
+			e.printStackTrace();
 			insertUpdateLogic.fillBean(bean);
 			insertUpdateLogic.fillValues(bean);
 			super.generateToken(bean);
