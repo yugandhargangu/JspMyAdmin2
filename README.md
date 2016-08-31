@@ -29,6 +29,7 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 5. Jsp as View
 6. JDBC to connect with Database
 7. A new UI design
+8. Maven support
 
 <h3>3rd Party Libraries</h3>
 1. Json Library <a href="http://www.json.org">Visit</a>

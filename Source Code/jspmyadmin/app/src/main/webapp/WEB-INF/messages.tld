@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>m</short-name>
+	<uri>http://jspmyadmin.com/taglib/jsp/messages</uri>
+	<display-name>JspMyadmin Message Tags</display-name>
+	<tag>
+		<name>open</name>
+		<tag-class>com.jspmyadmin.framework.taglib.messages.MessageOpenTag
+		</tag-class>
+		<body-content>empty</body-content>
+		<description>To load messages with locale.</description>
+	</tag>
+	<tag>
+		<name>print</name>
+		<tag-class>com.jspmyadmin.framework.taglib.messages.PrintTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>key</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+		</attribute>
+		<description>
+			To print message.
+			Examples:
+			Properties - &lt;m:store key="one" id="ones" /&gt;,
+			PageContext -
+			&lt;m:store key="#one" id="ones" scope="page" /&gt;,
+			Command -
+			&lt;m:store key="#one" id="ones" scope="command" /&gt;,
+			Request -
+			&lt;m:store key="#one" id="ones" scope="request" /&gt; 
+		</description>
+	</tag>
+	<tag>
+		<name>store</name>
+		<tag-class>com.jspmyadmin.framework.taglib.messages.StoreTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>key</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+		</attribute>
+		<description>
+			To store message in pageContext object.
+			Examples:
+			Properties - &lt;m:store key="one" id="ones" /&gt;,
+			PageContext -
+			&lt;m:store key="#one" name="ones" scope="page" /&gt;,
+			Command -
+			&lt;m:store key="#one" name="ones" scope="command" /&gt;,
+			Request -
+			&lt;m:store key="#one" name="ones" scope="request" /&gt; 
+		</description>
+	</tag>
+</taglib>
