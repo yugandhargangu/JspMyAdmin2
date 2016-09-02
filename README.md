@@ -1,6 +1,6 @@
 <h1>JspMyAdmin 2 - A Java Web tool for MySql database administration</h1>
 
-<img src="https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master" alt="Jenkin Build">
+[![Build Status](https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master)](https://travis-ci.org/yugandhargangu/JspMyAdmin2)
 
 <p>Website: <a href="http://jspmyadmin.com">http://jspmyadmin.com</a></p>
 <p>JspMyAdmin 2 is the software for MySql database administration over Web.
