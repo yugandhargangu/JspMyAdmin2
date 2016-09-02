@@ -39,8 +39,12 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 5. JQuery <a href="https://jquery.com/">Visit</a>
 
 <h3>Versions</h3>
-1. version 1.0
-<p>Currently under development. Soon going to release.</p>
+1. version 2.0
+<h4>Steps to Deploy JspMyAdmin</h4>
+<ul>
+<li>Download jspmyadmin.war file</li>
+<li>Change Default settings in web.xml file</li>
+</ul>
 
 <h3>Author</h3>
 Name: Yugandhar Gangu<br>
