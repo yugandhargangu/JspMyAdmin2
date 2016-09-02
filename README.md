@@ -1,10 +1,12 @@
-<h1>JspMyAdmin 2.0 - A Java Web tool for MySql database administration</h1>
+<h1>JspMyAdmin 2 - A Java Web tool for MySql database administration</h1>
 
 <p>Website: <a href="http://jspmyadmin.com">http://jspmyadmin.com</a></p>
-<p>JspMyAdmin 2.0 is the software for MySql database administration over Web.
+<p>JspMyAdmin 2 is the software for MySql database administration over Web.
 It provides a user friendly design to manage most of the MySql database administration.
 Create and Manage database objects (Databse, Table, View etc..) with simple mouse clicks.
 </p>
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ABkQWtCwhTA" target="_blank"><img src="http://img.youtube.com/vi/ABkQWtCwhTA/0.jpg" alt="IMAGE ALT TEXT HERE" width="320" height="250" border="10" /></a>
 
 <h3>Requirements</h3>
 1. Java (>= 1.5 recommended)
@@ -44,6 +46,12 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 <ul>
 <li>Download jspmyadmin.war file</li>
 <li>Change Default settings in web.xml file</li>
+<li>Comment configuration details in web.xml file to enable user login</li>
+<li>Conditions:<br>
+1. If "host", "port", "user", "password" params are present then login page will be deactivated.<br>
+2. If "host", "port" params are present then login will be activated with username and password.<br>
+3. If no params are present then login will be activated with all details 
+</li>
 </ul>
 
 <h3>Author</h3>
@@ -53,3 +61,4 @@ Website: <a href="http://yugandhargangu.com">http://yugandhargangu.com</a><br>
 
 
 License: Please read LICENCE file
+
