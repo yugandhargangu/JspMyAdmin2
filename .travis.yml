@@ -1,5 +1,5 @@
-before-install: cd Source\ Code/jspmyadmin 
 language: java
-script: "mvn clean compile"
+before_install: "cd Source\ Code/jspmyadmin/"
+script: "mvn clean install"
 jdk:
   - oraclejdk7
