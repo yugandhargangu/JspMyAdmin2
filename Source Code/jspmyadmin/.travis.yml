@@ -1,4 +1,0 @@
-lgnguage: java
-script: "mvn clean compile"
-jdk:
-  - oraclejdk7
