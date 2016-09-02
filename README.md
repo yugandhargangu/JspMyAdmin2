@@ -8,6 +8,8 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ABkQWtCwhTA" target="_blank"><img src="http://img.youtube.com/vi/ABkQWtCwhTA/0.jpg" alt="IMAGE ALT TEXT HERE" width="320" height="250" border="10" /></a>
 
+https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master
+
 <h3>Requirements</h3>
 1. Java (>= 1.5 recommended)
 2. Web Server (Apache Tomcat, jBoss etc)
