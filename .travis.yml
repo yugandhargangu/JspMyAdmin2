@@ -1,4 +1,4 @@
-before-install: cd Source\ Code/jspmyadmin 
+before-script: cd Source\ Code/jspmyadmin 
 language: java
 script: "mvn clean compile"
 jdk:
