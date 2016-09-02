@@ -6,6 +6,8 @@ It provides a user friendly design to manage most of the MySql database administ
 Create and Manage database objects (Databse, Table, View etc..) with simple mouse clicks.
 </p>
 
+<iframe width="1280" height="720" src="https://www.youtube.com/embed/ABkQWtCwhTA" frameborder="0" allowfullscreen></iframe>
+
 <h3>Requirements</h3>
 1. Java (>= 1.5 recommended)
 2. Web Server (Apache Tomcat, jBoss etc)
