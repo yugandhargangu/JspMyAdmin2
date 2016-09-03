@@ -59,7 +59,6 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 <h3>Author</h3>
 Name: Yugandhar Gangu<br>
 Email Id: <a href="mailto:yugandhar1210@gmail.com">yugandhar1210@gmail.com</a><br>
-Website: <a href="http://yugandhargangu.com">http://yugandhargangu.com</a><br>
 
 
 License: Please read LICENCE file
