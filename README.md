@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master)](https://travis-ci.org/yugandhargangu/JspMyAdmin2)
 
+[![Download JapMyAdmin2](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/japmyadmin2-0/files/latest/download)
+
 <p>Website: <a href="http://jspmyadmin.com">http://jspmyadmin.com</a></p>
 <p>JspMyAdmin 2 is the software for MySql database administration over Web.
 It provides a user friendly design to manage most of the MySql database administration.
