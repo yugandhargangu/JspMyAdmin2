@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.table.structure.beans.AlterColumnBean;
@@ -21,7 +22,7 @@ import com.jspmyadmin.app.table.structure.beans.IndexInfo;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 import com.jspmyadmin.framework.web.utils.Messages;
 
@@ -54,7 +55,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void fillStructureBean(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void fillStructureBean(Bean bean) throws SQLException {
 		ColumnListBean columnListBean = null;
 
 		ApiConnection apiConnection = null;
@@ -74,7 +75,7 @@ public class StructureLogic extends AbstractLogic {
 			builder = new StringBuilder();
 			builder.append("SHOW FULL COLUMNS FROM `");
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			columnInfoList = new ArrayList<ColumnInfo>();
@@ -98,7 +99,7 @@ public class StructureLogic extends AbstractLogic {
 			builder.delete(0, builder.length());
 			builder.append("SHOW INDEXES FROM `");
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			indexInfoList = new ArrayList<IndexInfo>();
@@ -129,7 +130,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws Exception
 	 */
-	public void dropColums(Bean bean) throws SQLException, ClassNotFoundException, Exception {
+	public void dropColums(Bean bean) throws SQLException {
 		ColumnListBean columnListBean = null;
 
 		ApiConnection apiConnection = null;
@@ -142,15 +143,15 @@ public class StructureLogic extends AbstractLogic {
 				builder = new StringBuilder();
 				builder.append("ALTER TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(" DROP ");
 				for (int i = 0; i < columnListBean.getColumns().length; i++) {
 					if (i != 0) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(columnListBean.getColumns()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 				}
 				apiConnection = getConnection(bean.getRequest_db());
 				statement = apiConnection.getStmt(builder.toString());
@@ -183,15 +184,15 @@ public class StructureLogic extends AbstractLogic {
 				builder = new StringBuilder();
 				builder.append("ALTER TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(" DROP ");
 				for (int i = 0; i < columnListBean.getKeys().length; i++) {
 					if (i != 0) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(columnListBean.getKeys()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 				}
 				apiConnection = getConnection(bean.getRequest_db());
 				statement = apiConnection.getStmt(builder.toString());
@@ -211,7 +212,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void fillAlterBean(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void fillAlterBean(Bean bean) throws SQLException {
 
 		AlterColumnBean alterColumnBean = (AlterColumnBean) bean;
 
@@ -250,6 +251,7 @@ public class StructureLogic extends AbstractLogic {
 				alterColumnBean.setOld_comments(resultSet.getString("comment"));
 				alterColumnBean.setNew_comments(alterColumnBean.getOld_comments());
 			}
+			close(resultSet);
 
 			String uniqueQuery = "SHOW KEYS FROM `" + _table + "` WHERE key_name <> ? AND non_unique = ?";
 			statement = apiConnection.getStmtSelect(uniqueQuery);
@@ -260,11 +262,12 @@ public class StructureLogic extends AbstractLogic {
 			while (resultSet.next()) {
 				oldUniqueList.add(resultSet.getString("column_name"));
 			}
+			close(resultSet);
 
 			builder = new StringBuilder();
 			builder.append("SHOW FULL COLUMNS FROM `");
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			if (resultSet.last()) {
@@ -291,7 +294,7 @@ public class StructureLogic extends AbstractLogic {
 					String temp = resultSet.getString("type");
 					String[] tempType = temp.split(" ");
 					if (tempType.length > 1) {
-						int index = tempType[0].indexOf(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+						int index = tempType[0].indexOf(Constants.SYMBOL_BRACKET_OPEN);
 						if (index != -1) {
 							datatypes[i] = tempType[0].substring(0, index);
 							lengths[i] = tempType[0].substring(index + 1, tempType[0].length() - 1);
@@ -306,7 +309,7 @@ public class StructureLogic extends AbstractLogic {
 							}
 						}
 					} else {
-						int index = temp.indexOf(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+						int index = temp.indexOf(Constants.SYMBOL_BRACKET_OPEN);
 						if (index != -1) {
 							datatypes[i] = temp.substring(0, index);
 							lengths[i] = temp.substring(index + 1, temp.length() - 1);
@@ -366,7 +369,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public String alterColumns(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public String alterColumns(Bean bean) throws SQLException {
 
 		String result = null;
 
@@ -395,9 +398,9 @@ public class StructureLogic extends AbstractLogic {
 			uniqueList = new ArrayList<String>();
 			builder = new StringBuilder();
 			builder.append("ALTER TABLE ");
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 
 			String table_start = builder.toString();
 
@@ -409,7 +412,7 @@ public class StructureLogic extends AbstractLogic {
 
 			if (!alterColumnBean.getOld_engine().equalsIgnoreCase(alterColumnBean.getNew_engine())) {
 				if (alreadyEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 				}
 				builder.append(" ENGINE = ");
 				builder.append(alterColumnBean.getNew_engine());
@@ -421,116 +424,116 @@ public class StructureLogic extends AbstractLogic {
 			for (int i = 0; i < alterColumnBean.getColumns().length; i++) {
 				if (!isEmpty(alterColumnBean.getOld_columns()[i]) || !isEmpty(alterColumnBean.getColumns()[i])) {
 					// check for changes
-					if (FrameworkConstants.ONE.equals(alterColumnBean.getChanges()[i])) {
+					if (Constants.ONE.equals(alterColumnBean.getChanges()[i])) {
 
 						if (isEmpty(alterColumnBean.getOld_columns()[i])
-								&& !FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])) {
+								&& !Constants.ONE.equals(alterColumnBean.getDeletes()[i])) {
 							// add new column
 							if (alreadyEntered) {
-								builder.append(FrameworkConstants.SYMBOL_COMMA);
+								builder.append(Constants.SYMBOL_COMMA);
 							}
 							if (!alreadyEntered) {
 								alreadyEntered = true;
 							}
 
 							builder.append(" ADD COLUMN ");
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(alterColumnBean.getColumns()[i]);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
-							builder.append(FrameworkConstants.SPACE);
+							builder.append(Constants.SYMBOL_TEN);
+							builder.append(Constants.SPACE);
 							builder.append(alterColumnBean.getDatatypes()[i]);
 							if (!isEmpty(alterColumnBean.getLengths()[i])) {
-								builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+								builder.append(Constants.SYMBOL_BRACKET_OPEN);
 								builder.append(alterColumnBean.getLengths()[i]);
-								builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+								builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 							}
-							builder.append(FrameworkConstants.SPACE);
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getZfs()[i])) {
+							builder.append(Constants.SPACE);
+							if (Constants.ONE.equals(alterColumnBean.getZfs()[i])) {
 								builder.append(zerofill);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getUns()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getUns()[i])) {
 								builder.append(unsigned);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getBins()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getBins()[i])) {
 								builder.append(binary);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
 							if (!isEmpty(alterColumnBean.getCollations()[i])) {
 								builder.append(collate);
-								builder.append(FrameworkConstants.SPACE);
-								builder.append(FrameworkConstants.SYMBOL_QUOTE);
+								builder.append(Constants.SPACE);
+								builder.append(Constants.SYMBOL_QUOTE);
 								builder.append(alterColumnBean.getCollations()[i]);
-								builder.append(FrameworkConstants.SYMBOL_QUOTE);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SYMBOL_QUOTE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getNns()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getNns()[i])) {
 								builder.append(not_null);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							} else {
 								builder.append(null_);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
 							if (!isEmpty(alterColumnBean.getDefaults()[i])) {
 								builder.append(default_);
-								builder.append(FrameworkConstants.SPACE);
-								if (FrameworkConstants.CURRENT_TIMESTAMP.equals(alterColumnBean.getDefaults()[i])) {
+								builder.append(Constants.SPACE);
+								if (Constants.CURRENT_TIMESTAMP.equals(alterColumnBean.getDefaults()[i])) {
 									builder.append(alterColumnBean.getDefaults()[i]);
 								} else {
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
+									builder.append(Constants.SYMBOL_QUOTE);
 									builder.append(alterColumnBean.getDefaults()[i]);
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
+									builder.append(Constants.SYMBOL_QUOTE);
 								}
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getAis()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getAis()[i])) {
 								builder.append(auto_increment);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
 
-							builder.append(FrameworkConstants.SPACE);
+							builder.append(Constants.SPACE);
 							builder.append(comment);
-							builder.append(FrameworkConstants.SPACE);
-							builder.append(FrameworkConstants.SYMBOL_QUOTE);
+							builder.append(Constants.SPACE);
+							builder.append(Constants.SYMBOL_QUOTE);
 							if (!isEmpty(alterColumnBean.getComments()[i])) {
 								builder.append(alterColumnBean.getComments()[i]);
 							}
-							builder.append(FrameworkConstants.SYMBOL_QUOTE);
+							builder.append(Constants.SYMBOL_QUOTE);
 
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getPks()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getPks()[i])) {
 								primary_key = alterColumnBean.getColumns()[i];
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getUqs()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getUqs()[i])) {
 								uniqueList.add(alterColumnBean.getColumns()[i]);
 							}
 							if (previous_column != null) {
 								builder.append(" AFTER ");
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(previous_column);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 							} else {
 								builder.append(" FIRST");
 							}
 
 							previous_column = alterColumnBean.getColumns()[i];
 						} else if (!isEmpty(alterColumnBean.getOld_columns()[i])
-								&& FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])) {
+								&& Constants.ONE.equals(alterColumnBean.getDeletes()[i])) {
 							// drop column
 							if (alreadyEntered) {
-								builder.append(FrameworkConstants.SYMBOL_COMMA);
+								builder.append(Constants.SYMBOL_COMMA);
 							}
 							if (!alreadyEntered) {
 								alreadyEntered = true;
 							}
 							builder.append(" DROP COLUMN ");
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(alterColumnBean.getOld_columns()[i]);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 						} else if (!isEmpty(alterColumnBean.getOld_columns()[i])) {
 							// alter column
 							if (alreadyEntered) {
-								builder.append(FrameworkConstants.SYMBOL_COMMA);
+								builder.append(Constants.SYMBOL_COMMA);
 							}
 							if (!alreadyEntered) {
 								alreadyEntered = true;
@@ -540,92 +543,92 @@ public class StructureLogic extends AbstractLogic {
 									.trim().equals(alterColumnBean.getColumns()[i].trim())) {
 								// change column
 								builder.append(" CHANGE COLUMN ");
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(alterColumnBean.getOld_columns()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
-								builder.append(FrameworkConstants.SPACE);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
+								builder.append(Constants.SPACE);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(alterColumnBean.getColumns()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 							} else {
 								// modify column
 								builder.append(" MODIFY COLUMN ");
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(alterColumnBean.getColumns()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 							}
-							builder.append(FrameworkConstants.SPACE);
+							builder.append(Constants.SPACE);
 							builder.append(alterColumnBean.getDatatypes()[i]);
 							if (!isEmpty(alterColumnBean.getLengths()[i])) {
-								builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+								builder.append(Constants.SYMBOL_BRACKET_OPEN);
 								builder.append(alterColumnBean.getLengths()[i]);
-								builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+								builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 							}
-							builder.append(FrameworkConstants.SPACE);
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getZfs()[i])) {
+							builder.append(Constants.SPACE);
+							if (Constants.ONE.equals(alterColumnBean.getZfs()[i])) {
 								builder.append(zerofill);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getUns()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getUns()[i])) {
 								builder.append(unsigned);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getBins()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getBins()[i])) {
 								builder.append(binary);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
 							if (!isEmpty(alterColumnBean.getCollations()[i])) {
 								builder.append(collate);
-								builder.append(FrameworkConstants.SPACE);
-								builder.append(FrameworkConstants.SYMBOL_QUOTE);
+								builder.append(Constants.SPACE);
+								builder.append(Constants.SYMBOL_QUOTE);
 								builder.append(alterColumnBean.getCollations()[i]);
-								builder.append(FrameworkConstants.SYMBOL_QUOTE);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SYMBOL_QUOTE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getNns()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getNns()[i])) {
 								builder.append(not_null);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							} else {
 								builder.append(null_);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
 							if (!isEmpty(alterColumnBean.getDefaults()[i])) {
 								builder.append(default_);
-								builder.append(FrameworkConstants.SPACE);
-								if (FrameworkConstants.CURRENT_TIMESTAMP.equals(alterColumnBean.getDefaults()[i])) {
+								builder.append(Constants.SPACE);
+								if (Constants.CURRENT_TIMESTAMP.equals(alterColumnBean.getDefaults()[i])) {
 									builder.append(alterColumnBean.getDefaults()[i]);
 								} else {
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
+									builder.append(Constants.SYMBOL_QUOTE);
 									builder.append(alterColumnBean.getDefaults()[i]);
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
+									builder.append(Constants.SYMBOL_QUOTE);
 								}
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getAis()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getAis()[i])) {
 								builder.append(auto_increment);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 							}
 
-							builder.append(FrameworkConstants.SPACE);
+							builder.append(Constants.SPACE);
 							builder.append(comment);
-							builder.append(FrameworkConstants.SPACE);
-							builder.append(FrameworkConstants.SYMBOL_QUOTE);
+							builder.append(Constants.SPACE);
+							builder.append(Constants.SYMBOL_QUOTE);
 							if (!isEmpty(alterColumnBean.getComments()[i])) {
 								builder.append(alterColumnBean.getComments()[i]);
 							}
-							builder.append(FrameworkConstants.SYMBOL_QUOTE);
+							builder.append(Constants.SYMBOL_QUOTE);
 
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getPks()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getPks()[i])) {
 								primary_key = alterColumnBean.getColumns()[i].trim();
 							}
-							if (FrameworkConstants.ONE.equals(alterColumnBean.getUqs()[i])) {
+							if (Constants.ONE.equals(alterColumnBean.getUqs()[i])) {
 								uniqueList.add(alterColumnBean.getColumns()[i].trim());
 							}
 							if (previous_column != null) {
 								builder.append(" AFTER ");
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(previous_column);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 							} else {
 								builder.append(" FIRST");
 							}
@@ -636,10 +639,10 @@ public class StructureLogic extends AbstractLogic {
 						}
 					} else {
 						previous_column = alterColumnBean.getColumns()[i];
-						if (FrameworkConstants.ONE.equals(alterColumnBean.getPks()[i])) {
+						if (Constants.ONE.equals(alterColumnBean.getPks()[i])) {
 							primary_key = alterColumnBean.getColumns()[i].trim();
 						}
-						if (FrameworkConstants.ONE.equals(alterColumnBean.getUqs()[i])) {
+						if (Constants.ONE.equals(alterColumnBean.getUqs()[i])) {
 							uniqueList.add(alterColumnBean.getColumns()[i].trim());
 						}
 					}
@@ -655,6 +658,7 @@ public class StructureLogic extends AbstractLogic {
 			if (resultSet.next()) {
 				old_primary_key = resultSet.getString("column_name");
 			}
+			close(resultSet);
 
 			boolean oldPKStatus = false;
 			for (int i = 0; i < alterColumnBean.getOld_columns().length; i++) {
@@ -669,35 +673,35 @@ public class StructureLogic extends AbstractLogic {
 					// do nothing
 				} else if (old_primary_key != null && primary_key != null) {
 					if (!old_primary_key.equalsIgnoreCase(primary_key)) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_COMMA);
+						builder.append(Constants.SPACE);
 						builder.append(" DROP PRIMARY KEY");
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 						builder.append(" ADD PRIMARY KEY");
-						builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_BRACKET_OPEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(primary_key);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 						if (!alreadyEntered) {
 							alreadyEntered = true;
 						}
 					}
 				} else if (old_primary_key != null) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SYMBOL_COMMA);
+					builder.append(Constants.SPACE);
 					builder.append(" DROP PRIMARY KEY");
 					if (!alreadyEntered) {
 						alreadyEntered = true;
 					}
 				} else if (primary_key != null) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 					builder.append(" ADD PRIMARY KEY");
-					builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_BRACKET_OPEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(primary_key);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 					if (!alreadyEntered) {
 						alreadyEntered = true;
 					}
@@ -713,6 +717,7 @@ public class StructureLogic extends AbstractLogic {
 			while (resultSet.next()) {
 				oldUniqueList.put(resultSet.getString("column_name"), resultSet.getString("key_name"));
 			}
+			close(resultSet);
 
 			uniqueIterator = uniqueList.iterator();
 			while (uniqueIterator.hasNext()) {
@@ -721,14 +726,14 @@ public class StructureLogic extends AbstractLogic {
 					oldUniqueList.remove(item);
 				} else {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 					builder.append(" ADD UNIQUE ");
-					builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_BRACKET_OPEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(item);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 					if (!alreadyEntered) {
 						alreadyEntered = true;
 					}
@@ -737,12 +742,12 @@ public class StructureLogic extends AbstractLogic {
 			if (oldUniqueList.size() > 0) {
 				for (String item : oldUniqueList.values()) {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 					builder.append(" DROP KEY ");
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(item);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					if (!alreadyEntered) {
 						alreadyEntered = true;
 					}
@@ -751,12 +756,12 @@ public class StructureLogic extends AbstractLogic {
 
 			if (!alterColumnBean.getOld_comments().equalsIgnoreCase(alterColumnBean.getNew_comments())) {
 				if (alreadyEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 				}
 				builder.append(" COMMENT = ");
-				builder.append(FrameworkConstants.SYMBOL_QUOTE);
+				builder.append(Constants.SYMBOL_QUOTE);
 				builder.append(alterColumnBean.getNew_comments());
-				builder.append(FrameworkConstants.SYMBOL_QUOTE);
+				builder.append(Constants.SYMBOL_QUOTE);
 				if (!alreadyEntered) {
 					alreadyEntered = true;
 				}
@@ -764,15 +769,15 @@ public class StructureLogic extends AbstractLogic {
 
 			if (!alterColumnBean.getOld_table_name().equalsIgnoreCase(alterColumnBean.getNew_table_name())) {
 				if (alreadyEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 				}
 				builder.append(" RENAME TO ");
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(alterColumnBean.getNew_table_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 			}
 
-			if (FrameworkConstants.YES.equalsIgnoreCase(alterColumnBean.getAction())) {
+			if (Constants.YES.equalsIgnoreCase(alterColumnBean.getAction())) {
 				String temp = builder.toString();
 				if (!table_start.equals(temp)) {
 					statement = apiConnection.getStmt(builder.toString());
@@ -785,9 +790,7 @@ public class StructureLogic extends AbstractLogic {
 					result = _messages.getMessage(AppConstants.MSG_NO_CHANGES_FOUND);
 				}
 			}
-		} finally
-
-		{
+		} finally {
 			close(resultSet);
 			close(statement);
 			close(apiConnection);
@@ -800,9 +803,10 @@ public class StructureLogic extends AbstractLogic {
 	 * 
 	 * @param bean
 	 * @return
+	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public String validate(Bean bean) throws Exception {
+	public String validate(Bean bean) throws JSONException {
 
 		String result = null;
 		AlterColumnBean alterColumnBean = null;
@@ -814,9 +818,9 @@ public class StructureLogic extends AbstractLogic {
 		String[] tempArr = null;
 		try {
 			alterColumnBean = (AlterColumnBean) bean;
-			jsonObject = new JSONObject(FrameworkConstants.Utils.DATA_TYPES_INFO);
+			jsonObject = new JSONObject(Constants.Utils.DATA_TYPES_INFO);
 			for (int i = 0; i < alterColumnBean.getColumns().length; i++) {
-				if (!FrameworkConstants.ONE.equals(alterColumnBean.getDeletes()[i])
+				if (!Constants.ONE.equals(alterColumnBean.getDeletes()[i])
 						&& !isEmpty(alterColumnBean.getColumns()[i])) {
 					count++;
 					// check column is duplicate or not
@@ -838,7 +842,7 @@ public class StructureLogic extends AbstractLogic {
 						}
 
 						// validate list values
-						tempArr = alterColumnBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+						tempArr = alterColumnBean.getLengths()[i].split(Constants.SYMBOL_COMMA);
 						boolean isInvalid = false;
 						for (int j = 0; j < tempArr.length; j++) {
 							if (!isValidSqlString(tempArr[j], true)) {
@@ -873,7 +877,7 @@ public class StructureLogic extends AbstractLogic {
 								isInvalid = true;
 								break;
 							}
-							tempArr = alterColumnBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+							tempArr = alterColumnBean.getLengths()[i].split(Constants.SYMBOL_COMMA);
 							if (tempArr == null || tempArr.length != 2) {
 								isInvalid = true;
 								break;
@@ -893,7 +897,7 @@ public class StructureLogic extends AbstractLogic {
 						case 3:
 							// length = 2 and not mandatory
 							if (!isEmpty(alterColumnBean.getLengths()[i])) {
-								tempArr = alterColumnBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+								tempArr = alterColumnBean.getLengths()[i].split(Constants.SYMBOL_COMMA);
 								if (tempArr == null || tempArr.length != 2) {
 									isInvalid = true;
 									break;
@@ -946,11 +950,11 @@ public class StructureLogic extends AbstractLogic {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean isColumnNameValid(String[] columns, String[] deletes, String column) throws Exception {
+	public boolean isColumnNameValid(String[] columns, String[] deletes, String column) {
 		int count = 0;
 		try {
 			for (int i = 0; i < columns.length; i++) {
-				if (!isEmpty(columns[i]) && !FrameworkConstants.ONE.equals(deletes[i])
+				if (!isEmpty(columns[i]) && !Constants.ONE.equals(deletes[i])
 						&& columns[i].trim().equalsIgnoreCase(column.trim())) {
 					count++;
 					if (count > 1) {

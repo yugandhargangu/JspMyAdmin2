@@ -17,7 +17,7 @@ import com.jspmyadmin.app.database.trigger.beans.TriggerInfo;
 import com.jspmyadmin.app.database.trigger.beans.TriggerListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -33,7 +33,7 @@ public class TriggerLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillListBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillListBean(Bean bean) throws SQLException {
 
 		TriggerListBean triggerListBean = null;
 
@@ -82,7 +82,7 @@ public class TriggerLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public boolean isExisted(String name, String database) throws ClassNotFoundException, SQLException {
+	public boolean isExisted(String name, String database) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -117,7 +117,7 @@ public class TriggerLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws JSONException
 	 */
-	public String showCreate(Bean bean) throws ClassNotFoundException, SQLException, JSONException {
+	public String showCreate(Bean bean) throws SQLException, JSONException {
 
 		String result = null;
 
@@ -138,7 +138,7 @@ public class TriggerLogic extends AbstractLogic {
 				for (int i = 0; i < triggerListBean.getTriggers().length; i++) {
 					builder.append(temp);
 					builder.append(triggerListBean.getTriggers()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmtSelect(builder.toString());
 					resultSet = statement.executeQuery();
 					if (resultSet.next()) {
@@ -162,7 +162,7 @@ public class TriggerLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void drop(Bean bean) throws ClassNotFoundException, SQLException {
+	public void drop(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -178,7 +178,7 @@ public class TriggerLogic extends AbstractLogic {
 				for (int i = 0; i < triggerListBean.getTriggers().length; i++) {
 					builder.append(temp);
 					builder.append(triggerListBean.getTriggers()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					builder.delete(0, builder.length());
@@ -197,7 +197,7 @@ public class TriggerLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public List<String> getTriggerList(String database) throws ClassNotFoundException, SQLException {
+	public List<String> getTriggerList(String database) throws SQLException {
 		List<String> triggerList = new ArrayList<String>();
 
 		ApiConnection apiConnection = null;
@@ -227,7 +227,7 @@ public class TriggerLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public String save(Bean bean) throws ClassNotFoundException, SQLException {
+	public String save(Bean bean) throws SQLException {
 
 		String result = null;
 
@@ -243,61 +243,61 @@ public class TriggerLogic extends AbstractLogic {
 			builder = new StringBuilder();
 			builder.append("CREATE ");
 			if (!isEmpty(triggerBean.getDefiner())) {
-				if (FrameworkConstants.CURRENT_USER.equalsIgnoreCase(triggerBean.getDefiner())) {
+				if (Constants.CURRENT_USER.equalsIgnoreCase(triggerBean.getDefiner())) {
 					builder.append("DEFINER = ");
 					builder.append(triggerBean.getDefiner());
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				} else if (!isEmpty(triggerBean.getDefiner_name())) {
-					temp = triggerBean.getDefiner_name().split(FrameworkConstants.SYMBOL_AT);
+					temp = triggerBean.getDefiner_name().split(Constants.SYMBOL_AT);
 					builder.append("DEFINER = ");
 					if (temp.length < 2) {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[0]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SPACE);
 					} else {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[0]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_AT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_AT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[1]);
-						if (!temp[1].endsWith(FrameworkConstants.SYMBOL_TEN)) {
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+						if (!temp[1].endsWith(Constants.SYMBOL_TEN)) {
+							builder.append(Constants.SYMBOL_TEN);
 						}
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
 				}
 			}
 			builder.append("TRIGGER ");
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(triggerBean.getTrigger_name());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SPACE);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SPACE);
 
 			builder.append(triggerBean.getTrigger_time());
-			builder.append(FrameworkConstants.SPACE);
+			builder.append(Constants.SPACE);
 			builder.append(triggerBean.getTrigger_event());
 
 			builder.append(" ON ");
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(triggerBean.getDatabase_name());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SYMBOL_DOT);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_DOT);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(triggerBean.getTable_name());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 
 			builder.append(" FOR EACH ROW ");
 
 			if (!isEmpty(triggerBean.getTrigger_order()) && !isEmpty(triggerBean.getOther_trigger_name())) {
 				builder.append(triggerBean.getTrigger_order());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append(triggerBean.getOther_trigger_name());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 			}
 			builder.append(triggerBean.getTrigger_body());
-			if (FrameworkConstants.YES.equalsIgnoreCase(triggerBean.getAction())) {
+			if (Constants.YES.equalsIgnoreCase(triggerBean.getAction())) {
 				apiConnection = getConnection(bean.getRequest_db());
 				statement = apiConnection.getStmt(builder.toString());
 				statement.execute();

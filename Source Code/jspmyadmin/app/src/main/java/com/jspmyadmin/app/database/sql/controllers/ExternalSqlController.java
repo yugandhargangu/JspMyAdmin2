@@ -3,8 +3,12 @@
  */
 package com.jspmyadmin.app.database.sql.controllers;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 
+import javax.servlet.http.HttpSession;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.database.event.beans.EventListBean;
@@ -15,10 +19,12 @@ import com.jspmyadmin.app.database.sql.beans.ExternalSqlBean;
 import com.jspmyadmin.app.database.structure.beans.StructureBean;
 import com.jspmyadmin.app.database.structure.logic.StructureLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -29,21 +35,20 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/database_ext_sql.html", requestLevel = RequestLevel.DATABASE)
-public class ExternalSqlController extends Controller<ExternalSqlBean> {
+public class ExternalSqlController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private HttpSession session;
+	@Detect
+	private View view;
+	@Model
+	private ExternalSqlBean bean;
 
-	@Override
-	protected void handleGet(ExternalSqlBean bean, View view) throws Exception {
-		view.setType(ViewType.REDIRECT);
-		view.setPath(AppConstants.PATH_DATABASE_SQL);
-	}
-
-	@Override
+	@HandlePost
 	@ValidateToken
-	protected void handlePost(ExternalSqlBean bean, View view) throws Exception {
+	private void alterSql() throws JSONException, SQLException {
 		if (bean.getEdit_type() != null && bean.getEdit_name() != null
-				&& !FrameworkConstants.BLANK.equals(bean.getEdit_name().trim())) {
+				&& !Constants.BLANK.equals(bean.getEdit_name().trim())) {
 			JSONObject jsonObject = null;
 			int type = _getInteger(bean.getEdit_type());
 			switch (type) {
@@ -65,7 +70,7 @@ public class ExternalSqlController extends Controller<ExternalSqlBean> {
 				builder.append(result);
 				builder.append("$$");
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.QUERY, builder.toString());
+				jsonObject.put(Constants.QUERY, builder.toString());
 				break;
 			case 2:
 				// alter procedure
@@ -81,25 +86,25 @@ public class ExternalSqlController extends Controller<ExternalSqlBean> {
 				builder = new StringBuilder();
 				builder.append("DROP PROCEDURE IF EXISTS `");
 				builder.append(bean.getEdit_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_SEMI_COLON);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_SEMI_COLON);
 				builder.append("\n\n");
 				builder.append("DELIMITER $$\n\n");
 				builder.append(result);
 				builder.append("$$");
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.QUERY, builder.toString());
+				jsonObject.put(Constants.QUERY, builder.toString());
 				break;
 			case 3:
 				// execute procedure
 				builder = new StringBuilder();
 				builder.append("CALL PROCEDURE `");
 				builder.append(bean.getEdit_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append("(<params>)");
-				builder.append(FrameworkConstants.SYMBOL_SEMI_COLON);
+				builder.append(Constants.SYMBOL_SEMI_COLON);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.QUERY, builder.toString());
+				jsonObject.put(Constants.QUERY, builder.toString());
 				break;
 			case 4:
 				// alter function
@@ -115,25 +120,25 @@ public class ExternalSqlController extends Controller<ExternalSqlBean> {
 				builder = new StringBuilder();
 				builder.append("DROP FUNCTION IF EXISTS `");
 				builder.append(bean.getEdit_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_SEMI_COLON);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_SEMI_COLON);
 				builder.append("\n\n");
 				builder.append("DELIMITER $$\n\n");
 				builder.append(result);
 				builder.append("$$");
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.QUERY, builder.toString());
+				jsonObject.put(Constants.QUERY, builder.toString());
 				break;
 			case 5:
 				// execute function
 				builder = new StringBuilder();
 				builder.append("SELECT `");
 				builder.append(bean.getEdit_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append("(<params>)");
-				builder.append(FrameworkConstants.SYMBOL_SEMI_COLON);
+				builder.append(Constants.SYMBOL_SEMI_COLON);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.QUERY, builder.toString());
+				jsonObject.put(Constants.QUERY, builder.toString());
 				break;
 			case 6:
 				// alter event
@@ -153,12 +158,13 @@ public class ExternalSqlController extends Controller<ExternalSqlBean> {
 				builder.append(result);
 				builder.append("$$");
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.QUERY, builder.toString());
+				jsonObject.put(Constants.QUERY, builder.toString());
+				break;
 			default:
 				break;
 			}
 			if (jsonObject != null) {
-				session.setAttribute(FrameworkConstants.QUERY, jsonObject.toString());
+				session.setAttribute(Constants.QUERY, jsonObject.toString());
 			}
 		}
 		view.setType(ViewType.REDIRECT);

@@ -18,7 +18,7 @@ import com.jspmyadmin.app.table.common.beans.ForeignKeyBean;
 import com.jspmyadmin.app.table.common.beans.ForeignKeyInfo;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -40,7 +40,7 @@ public class ForeignKeyLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 
 		ForeignKeyBean foreignKeyBean = (ForeignKeyBean) bean;
 
@@ -127,7 +127,7 @@ public class ForeignKeyLogic extends AbstractLogic {
 			builder.append(bean.getRequest_db());
 			builder.append("` WHERE table_type = ?");
 			statement = apiConnection.getStmtSelect(builder.toString());
-			statement.setString(1, FrameworkConstants.BASE_TABLE);
+			statement.setString(1, Constants.BASE_TABLE);
 			resultSet = statement.executeQuery();
 			List<String> tableList = new ArrayList<String>();
 			while (resultSet.next()) {
@@ -145,11 +145,10 @@ public class ForeignKeyLogic extends AbstractLogic {
 	 * 
 	 * @param database
 	 * @return
-	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws JSONException
 	 */
-	public JSONObject fetchColumns(String database) throws ClassNotFoundException, SQLException, JSONException {
+	public JSONObject fetchColumns(String database) throws SQLException, JSONException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -164,7 +163,7 @@ public class ForeignKeyLogic extends AbstractLogic {
 				jsonArray.put(resultSet.getString(1));
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 		} finally {
 			close(resultSet);
 			close(statement);
@@ -179,7 +178,7 @@ public class ForeignKeyLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void dropForeignKeys(Bean bean) throws ClassNotFoundException, SQLException {
+	public void dropForeignKeys(Bean bean) throws SQLException {
 		ForeignKeyBean foreignKeyBean = (ForeignKeyBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -189,18 +188,18 @@ public class ForeignKeyLogic extends AbstractLogic {
 				apiConnection = getConnection(bean.getRequest_db());
 				StringBuilder builder = new StringBuilder("ALTER TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				boolean alreadyEntered = false;
 				for (String key : foreignKeyBean.getKeys()) {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					} else {
 						alreadyEntered = true;
 					}
 					builder.append(" DROP FOREIGN KEY `");
 
 					builder.append(key);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 				}
 				statement = apiConnection.getStmt(builder.toString());
 				statement.execute();
@@ -218,7 +217,7 @@ public class ForeignKeyLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void addForeignKey(Bean bean) throws ClassNotFoundException, SQLException {
+	public void addForeignKey(Bean bean) throws SQLException {
 		ForeignKeyBean foreignKeyBean = (ForeignKeyBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -227,7 +226,7 @@ public class ForeignKeyLogic extends AbstractLogic {
 			apiConnection = getConnection(bean.getRequest_db());
 			StringBuilder builder = new StringBuilder("ALTER TABLE `");
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(" ADD FOREIGN KEY (`");
 			builder.append(foreignKeyBean.getColumn_name());
 			builder.append("`)");

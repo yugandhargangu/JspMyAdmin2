@@ -6,7 +6,7 @@ package com.jspmyadmin.app.table.common.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -18,10 +18,10 @@ public class MaintenanceBean extends Bean {
 
 	private static final long serialVersionUID = 1L;
 
-	private final List<String> check_op_list = new ArrayList<String>(FrameworkConstants.Utils.CHECK_OP_LIST);
-	private final List<String> analize_op_list = new ArrayList<String>(FrameworkConstants.Utils.ANALIZE_OP_LIST);
-	private final List<String> checksum_op_list = new ArrayList<String>(FrameworkConstants.Utils.CHECKSUM_OP_LIST);
-	private final List<String> repair_op_list = new ArrayList<String>(FrameworkConstants.Utils.REPAIR_OP_LIST);
+	private final List<String> check_op_list = new ArrayList<String>(Constants.Utils.CHECK_OP_LIST);
+	private final List<String> analize_op_list = new ArrayList<String>(Constants.Utils.ANALIZE_OP_LIST);
+	private final List<String> checksum_op_list = new ArrayList<String>(Constants.Utils.CHECKSUM_OP_LIST);
+	private final List<String> repair_op_list = new ArrayList<String>(Constants.Utils.REPAIR_OP_LIST);
 
 	private String option = null;
 	private String[] repair_options = null;
@@ -149,8 +149,8 @@ public class MaintenanceBean extends Bean {
 	 */
 	public String getColumn_count() {
 		if (column_names != null) {
-			String.valueOf(column_names.size());
+			return String.valueOf(column_names.size());
 		}
-		return FrameworkConstants.ZERO;
+		return Constants.ZERO;
 	}
 }

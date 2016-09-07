@@ -6,7 +6,7 @@ package com.jspmyadmin.app.database.structure.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -29,10 +29,10 @@ public class CreateViewBean extends Bean {
 	private String check = null;
 	private String action = null;
 
-	private List<String> algorithm_list = new ArrayList<String>(FrameworkConstants.Utils.ALGORITHM_LIST);
-	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
-	private List<String> security_list = new ArrayList<String>(FrameworkConstants.Utils.SECURITY_TYPE_LIST);
-	private List<String> check_list = new ArrayList<String>(FrameworkConstants.Utils.VIEW_CHECK_LIST);
+	private List<String> algorithm_list = new ArrayList<String>(Constants.Utils.ALGORITHM_LIST);
+	private List<String> definer_list = new ArrayList<String>(Constants.Utils.DEFINER_LIST);
+	private List<String> security_list = new ArrayList<String>(Constants.Utils.SECURITY_TYPE_LIST);
+	private List<String> check_list = new ArrayList<String>(Constants.Utils.VIEW_CHECK_LIST);
 
 	/**
 	 * @return the view_name

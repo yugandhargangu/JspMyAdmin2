@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractTagSupport;
 
 /**
@@ -41,7 +41,7 @@ public class ForLoopTag extends AbstractTagSupport {
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(String name) {
+	public synchronized void setName(String name) {
 		this.name = name;
 	}
 
@@ -49,7 +49,7 @@ public class ForLoopTag extends AbstractTagSupport {
 	 * @param items
 	 *            the items to set
 	 */
-	public void setItems(String items) {
+	public synchronized void setItems(String items) {
 		this.items = items;
 	}
 
@@ -57,7 +57,7 @@ public class ForLoopTag extends AbstractTagSupport {
 	 * @param scope
 	 *            the scope to set
 	 */
-	public void setScope(String scope) {
+	public synchronized void setScope(String scope) {
 		this.scope = scope;
 	}
 
@@ -65,7 +65,7 @@ public class ForLoopTag extends AbstractTagSupport {
 	 * @param index
 	 *            the index to set
 	 */
-	public void setIndex(String index) {
+	public synchronized void setIndex(String index) {
 		this.index = index;
 	}
 
@@ -73,7 +73,7 @@ public class ForLoopTag extends AbstractTagSupport {
 	 * @param key
 	 *            the key to set
 	 */
-	public void setKey(String key) {
+	public synchronized void setKey(String key) {
 		this.key = key;
 	}
 
@@ -84,105 +84,111 @@ public class ForLoopTag extends AbstractTagSupport {
 	// checks for next items
 	private boolean _continue = true;
 	// items iterator
-	private Iterator<?> _iterator = null;
-	private Map<?, ?> _mapItems = null;
+	private transient Iterator<?> _iterator = null;
+	private transient Map<?, ?> _mapItems = null;
 	// array object
 	private Object _array = null;
 	private int _length = 0;
 
 	@Override
 	public int doStartTag() throws JspException {
-		Object temp = null;
-		boolean skip = false;
-		// fetch items from specified scope
-		if (items.startsWith(FrameworkConstants.SYMBOL_HASH)) {
-			String[] parts = new String(items.substring(1)).split(FrameworkConstants.SYMBOL_DOT_EXPR);
-			if (scope == null || FrameworkConstants.PAGE.equals(scope)) {
-				for (int i = 0; i < parts.length; i++) {
-					if (temp == null) {
-						temp = pageContext.getAttribute(parts[i]);
-					} else {
-						temp = super.getReflectValue(temp, parts[i]);
+		synchronized (this) {
+			Object temp = null;
+			boolean skip = false;
+			// fetch items from specified scope
+			if (items.startsWith(Constants.SYMBOL_HASH)) {
+				String[] parts = items.substring(1).split(Constants.SYMBOL_DOT_EXPR);
+				if (scope == null || Constants.PAGE.equals(scope)) {
+					for (int i = 0; i < parts.length; i++) {
+						if (temp == null) {
+							temp = pageContext.getAttribute(parts[i]);
+						} else {
+							temp = super.getReflectValue(temp, parts[i]);
+						}
 					}
-				}
-			} else if (FrameworkConstants.COMMAND.equals(scope)) {
-				for (int i = 0; i < parts.length; i++) {
-					if (temp == null) {
-						temp = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
-						temp = super.getReflectValue(temp, parts[i]);
-					} else {
-						temp = super.getReflectValue(temp, parts[i]);
+				} else if (Constants.COMMAND.equals(scope)) {
+					for (int i = 0; i < parts.length; i++) {
+						if (temp == null) {
+							temp = pageContext.getRequest().getAttribute(Constants.COMMAND);
+							temp = super.getReflectValue(temp, parts[i]);
+						} else {
+							temp = super.getReflectValue(temp, parts[i]);
+						}
 					}
-				}
-			} else if (FrameworkConstants.REQUEST.equals(scope)) {
-				for (int i = 0; i < parts.length; i++) {
-					if (temp == null) {
-						temp = pageContext.getRequest().getAttribute(parts[i]);
-					} else {
-						temp = super.getReflectValue(temp, parts[i]);
+				} else if (Constants.REQUEST.equals(scope)) {
+					for (int i = 0; i < parts.length; i++) {
+						if (temp == null) {
+							temp = pageContext.getRequest().getAttribute(parts[i]);
+						} else {
+							temp = super.getReflectValue(temp, parts[i]);
+						}
 					}
 				}
 			}
-		}
 
-		// check kind of items
-		if (temp != null) {
-			if (temp instanceof List) {
-				List<?> _listItems = (List<?>) temp;
-				_iterator = _listItems.iterator();
-				_type = _LIST;
-			} else if (temp instanceof Map) {
-				_mapItems = (Map<?, ?>) temp;
-				_iterator = _mapItems.keySet().iterator();
-				if (key == null || isEmpty(key)) {
-					key = "jnnoiasjdiosadhsbdsb";
+			// check kind of items
+			if (temp != null) {
+				if (temp instanceof List) {
+					List<?> _listItems = (List<?>) temp;
+					_iterator = _listItems.iterator();
+					_type = _LIST;
+				} else if (temp instanceof Map) {
+					_mapItems = (Map<?, ?>) temp;
+					_iterator = _mapItems.keySet().iterator();
+					if (key == null || isEmpty(key)) {
+						key = "jnnoiasjdiosadhsbdsb";
+					}
+					_type = _MAP;
+				} else if (temp.getClass().isArray()) {
+					_array = temp;
+					_length = Array.getLength(_array);
+					_type = _ARRAY;
+				} else {
+					skip = true;
 				}
-				_type = _MAP;
-			} else if (temp.getClass().isArray()) {
-				_array = temp;
-				_length = Array.getLength(_array);
-				_type = _ARRAY;
 			} else {
 				skip = true;
 			}
-		} else {
-			skip = true;
-		}
-		if (skip) {
-			return SKIP_BODY;
-		}
-		// go to next item
-		_next();
-		if (_continue) {
-			return EVAL_BODY_INCLUDE;
-		} else {
-			return SKIP_BODY;
+			if (skip) {
+				return SKIP_BODY;
+			}
+			// go to next item
+			_next();
+			if (_continue) {
+				return EVAL_BODY_INCLUDE;
+			} else {
+				return SKIP_BODY;
+			}
 		}
 	}
 
 	@Override
 	public int doAfterBody() throws JspException {
 		_next();
-		if (_continue) {
-			return EVAL_BODY_AGAIN;
+		synchronized (this) {
+			if (_continue) {
+				return EVAL_BODY_AGAIN;
+			}
 		}
 		return SKIP_BODY;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
-		items = null;
-		name = null;
-		scope = null;
-		index = null;
-		key = null;
-		_type = 0;
-		_index = -1;
-		_continue = true;
-		_iterator = null;
-		_array = null;
-		_length = 0;
-		_mapItems = null;
+		synchronized (this) {
+			items = null;
+			name = null;
+			scope = null;
+			index = null;
+			key = null;
+			_type = 0;
+			_index = -1;
+			_continue = true;
+			_iterator = null;
+			_array = null;
+			_length = 0;
+			_mapItems = null;
+		}
 		return super.doEndTag();
 	}
 
@@ -229,5 +235,4 @@ public class ForLoopTag extends AbstractTagSupport {
 			break;
 		}
 	}
-
 }

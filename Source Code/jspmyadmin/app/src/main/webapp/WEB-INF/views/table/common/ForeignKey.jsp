@@ -28,9 +28,11 @@
 
 					<form action="${pageContext.request.contextPath}/table_fk_add.html"
 						method="post">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="request_table" value="${requestScope.command.request_table}">
-						<input type="hidden" name="token" id="token" class="server-token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="request_table"
+							value="${requestScope.command.request_table}"> <input
+							type="hidden" name="token" id="token" class="server-token"
 							value="${requestScope.command.token}">
 
 						<div class="group">
@@ -91,11 +93,14 @@
 						</div>
 					</form>
 
-					<form action="${pageContext.request.contextPath}/table_fk_drop.html"
+					<form
+						action="${pageContext.request.contextPath}/table_fk_drop.html"
 						method="post" id="drop-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="request_table" value="${requestScope.command.request_table}">
-						<input type="hidden" name="token" class="server-token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="request_table"
+							value="${requestScope.command.request_table}"> <input
+							type="hidden" name="token" class="server-token"
 							value="${requestScope.command.token}">
 						<div class="group">
 							<div class="group-widget group-header">
@@ -145,11 +150,13 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="group-widget group-footer">
-								<button type="button" id="drop-btn" class="btn">
-									<m:print key="lbl.drop" />
-								</button>
-							</div>
+							<jma:notEmpty name="#foreign_key_info_list" scope="command">
+								<div class="group-widget group-footer">
+									<button type="button" id="drop-btn" class="btn">
+										<m:print key="lbl.drop" />
+									</button>
+								</div>
+							</jma:notEmpty>
 						</div>
 					</form>
 
@@ -245,6 +252,8 @@
 				method : 'POST',
 				data : {
 					'ref_table_name' : $('#ref_table_name').val(),
+					'request_db' : Server.database,
+					'request_table' : Server.table,
 					'token' : $('#token').val()
 				},
 				success : function(result) {

@@ -16,6 +16,7 @@ public final class AppConstants {
 
 	public static final String ERR_INVALID_ACCESS = "err.invalid_access";
 	public static final String ERR_INVALID_SETTINGS = "err.invalid_settings";
+	public static final String ERR_UNABLE_TO_CONNECT_WITH_SERVER = "err.unable_to_connect_with_server";
 
 	public static final String MSG_COLUMN_DROPPED_SUCCESSFULLY = "msg.column_dropped_successfully";
 	public static final String MSG_COPY_DONE = "msg.copy_done";
@@ -30,6 +31,9 @@ public final class AppConstants {
 	public static final String MSG_FUNCTION_ALREADY_EXISTED = "msg.function_already_existed";
 	public static final String MSG_FUNCTION_DROP_SUCCESS = "msg.function_drop_success";
 	public static final String MSG_FUNCTION_SAVE_SUCCESS = "msg.function_save_success";
+	public static final String MSG_IMPORT_FILE_BLANK = "msg.import_file_blank";
+	public static final String MSG_IMPORT_FILE_EMPTY = "msg.import_file_empty";
+	public static final String MSG_IMPORT_INVALID_FILE = "msg.import_invalid_file";
 	public static final String MSG_NO_CHANGES_FOUND = "msg.no_changes_found";
 	public static final String MSG_PROCEDURE_ALREADY_EXISTED = "msg.procedure_already_existed";
 	public static final String MSG_PROCEDURE_DROP_SUCCESS = "msg.procedure_drop_success";
@@ -53,8 +57,11 @@ public final class AppConstants {
 	public static final String VAL_MINS = "val.mins";
 	public static final String VAL_SECS = "val.secs";
 
+	public static final String JSP_COMMON_ERROR = "common/Error.jsp";
 	public static final String JSP_COMMON_HOME = "common/Home.jsp";
+	public static final String JSP_COMMON_INSTALL = "common/Install.jsp";
 	public static final String JSP_COMMON_LOGIN = "common/Login.jsp";
+	public static final String JSP_COMMON_UNINSTALL = "common/Uninstall.jsp";
 	public static final String JSP_DATABASE_EVENT_CREATEEVENT = "database/event/CreateEvent.jsp";
 	public static final String JSP_DATABASE_EVENT_EVENTS = "database/event/Events.jsp";
 	public static final String JSP_DATABASE_EXPORT_EXPORT = "database/export/Export.jsp";
@@ -94,6 +101,7 @@ public final class AppConstants {
 	public static final String JSP_TABLE_COMMON_MAINTENANCE = "table/common/Maintenance.jsp";
 	public static final String JSP_TABLE_COMMON_PARTITIONS = "table/common/Partitions.jsp";
 	public static final String JSP_TABLE_DATA_DATA = "table/data/Data.jsp";
+	public static final String JSP_TABLE_EXPORT_EXPORT = "table/export/Export.jsp";
 	public static final String JSP_TABLE_EXPORT_IMPORT = "table/export/Import.jsp";
 	public static final String JSP_TABLE_EXPORT_IMPORT_RESULT = "table/export/ImportResult.jsp";
 	public static final String JSP_TABLE_INSERT_INSERTUPDATE = "table/insert/InsertUpdate.jsp";
@@ -101,12 +109,14 @@ public final class AppConstants {
 	public static final String JSP_TABLE_STRUCTURE_STRUCTURE = "table/structure/Structure.jsp";
 	public static final String JSP_TABLE_SQL_SQL = "table/sql/SQL.jsp";
 	public static final String JSP_VIEW_DATA_DATA = "view/data/Data.jsp";
+	public static final String JSP_VIEW_EXPORT_EXPORT = "view/export/Export.jsp";
 	public static final String JSP_VIEW_EXPORT_IMPORT = "view/export/Import.jsp";
 	public static final String JSP_VIEW_EXPORT_IMPORT_RESULT = "view/export/ImportResult.jsp";
 	public static final String JSP_VIEW_STRUCTURE_STRUCTURE = "view/structure/Structure.jsp";
 	public static final String JSP_VIEW_SQL_SQL = "view/sql/SQL.jsp";
 
 	public static final String PATH_HOME = "/home.html";
+	public static final String PATH_INSTALL = "/install.html";
 	public static final String PATH_DATABASE_IMPORT = "/database_import.html";
 	public static final String PATH_DATABASE_EVENTS = "/database_events.html";
 	public static final String PATH_DATABASE_FUNCTIONS = "/database_functions.html";
@@ -131,6 +141,7 @@ public final class AppConstants {
 	public static final String PATH_TABLE_IMPORT = "/table_import.html";
 	public static final String PATH_TABLE_PARTITIONS = "/table_partitions.html";
 	public static final String PATH_TABLE_STRUCTURE = "/table_structure.html";
+	public static final String PATH_UNINSTALL = "/uninstall.html";
 	public static final String PATH_VIEW_IMPORT = "/view_import.html";
 
 }

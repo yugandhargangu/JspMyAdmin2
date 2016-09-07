@@ -3,20 +3,27 @@
  */
 package com.jspmyadmin.app.database.event.controllers;
 
-import java.io.PrintWriter;
+import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.database.event.beans.EventBean;
 import com.jspmyadmin.app.database.event.logic.EventLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.annotations.ResponseBody;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
+import com.jspmyadmin.framework.web.annotations.Rest;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
-import com.jspmyadmin.framework.web.utils.View;
 
 /**
  * @author Yugandhar Gangu
@@ -24,44 +31,40 @@ import com.jspmyadmin.framework.web.utils.View;
  *
  */
 @WebController(authentication = true, path = "/database_event_create_post.text", requestLevel = RequestLevel.DATABASE)
-public class CreateEventPostController extends Controller<EventBean> {
+@Rest
+public class CreateEventPostController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private EncodeHelper encodeObj;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private HttpServletResponse response;
+	@Model
+	private EventBean bean;
 
-	@Override
-	@ResponseBody
-	protected void handleGet(EventBean bean, View view) throws Exception {
-
-	}
-
-	@Override
+	@HandlePost
 	@ValidateToken
-	@ResponseBody
-	protected void handlePost(EventBean bean, View view) throws Exception {
+	private JSONObject createEvent() throws JSONException, EncodingException {
 		JSONObject jsonObject = new JSONObject();
 		try {
 			EventLogic eventLogic = new EventLogic();
 			String result = eventLogic.saveEvent(bean);
-			jsonObject.put(FrameworkConstants.ERR, FrameworkConstants.BLANK);
+			jsonObject.put(Constants.ERR, Constants.BLANK);
 			if (result != null) {
-				jsonObject.put(FrameworkConstants.DATA, result.trim());
+				jsonObject.put(Constants.DATA, result.trim());
 			} else {
 				JSONObject msg = new JSONObject();
-				msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_EVENT_CREATE_SUCCESS);
-				jsonObject.put(FrameworkConstants.MSG, super.encode(msg.toString()));
+				msg.put(Constants.MSG_KEY, AppConstants.MSG_EVENT_CREATE_SUCCESS);
+				jsonObject.put(Constants.MSG, encodeObj.encode(msg.toString()));
 			}
-		} catch (Exception e) {
-			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
+		} catch (JSONException e) {
+			jsonObject.put(Constants.ERR, e.getMessage());
+		} catch (SQLException e) {
+			jsonObject.put(Constants.ERR, e.getMessage());
 		}
-		jsonObject.put(FrameworkConstants.TOKEN, super.generateToken());
-		PrintWriter writer = response.getWriter();
-		try {
-			writer.println(super.encrypt(jsonObject));
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-		}
+		jsonObject.put(Constants.TOKEN, requestAdaptor.generateToken());
+		return jsonObject;
 	}
 
 }

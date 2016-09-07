@@ -10,11 +10,11 @@ import java.lang.annotation.Target;
 
 /**
  * @author Yugandhar Gangu
- * @created_at 2016/01/29
+ * @created_at 2016/09/01
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = ElementType.METHOD)
-public @interface ResponseBody {
+@Target(value = ElementType.FIELD)
+public @interface Detect {
 
 }

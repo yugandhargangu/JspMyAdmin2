@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 import com.jspmyadmin.app.server.export.beans.ExportBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -40,7 +40,7 @@ public class ExportLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 		ExportBean exportBean = (ExportBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -52,8 +52,8 @@ public class ExportLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			List<String> tempDBList = new ArrayList<String>();
 			while (resultSet.next()) {
-				String database = resultSet.getString(FrameworkConstants.DATABASE);
-				if (!FrameworkConstants.Utils.IGNORE_DATABASE_LIST.contains(database.toLowerCase())) {
+				String database = resultSet.getString(Constants.DATABASE);
+				if (!Constants.Utils.IGNORE_DATABASE_LIST.contains(database.toLowerCase())) {
 					tempDBList.add(database);
 				}
 			}
@@ -73,7 +73,7 @@ public class ExportLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public File exportFile(Bean bean) throws ClassNotFoundException, SQLException, IOException {
+	public File exportFile(Bean bean) throws SQLException, IOException, ClassNotFoundException {
 		ExportBean exportBean = (ExportBean) bean;
 
 		File file = null;
@@ -96,43 +96,46 @@ public class ExportLogic extends AbstractLogic {
 				close(statement);
 
 				file = new File(super.getTempFilePath());
+				file.setExecutable(true, false);
+				file.setReadable(true, false);
+				file.setWritable(true, false);
 				fileOutputStream = new FileOutputStream(file);
 				outputStreamWriter = new OutputStreamWriter(fileOutputStream);
 				bufferedWriter = new BufferedWriter(outputStreamWriter);
 
-				if (FrameworkConstants.ONE.equals(exportBean.getDisable_fks())) {
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
+				if (Constants.ONE.equals(exportBean.getDisable_fks())) {
+					bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.NEW_LINE);
 					bufferedWriter.write("SET foreign_key_checks = 0");
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
+					bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.NEW_LINE);
 				}
 
 				StringBuilder builder = new StringBuilder();
 				for (String database : exportBean.getDatabases()) {
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+					bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 					bufferedWriter.write(" DATABASE: `");
 					bufferedWriter.write(database);
-					bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					bufferedWriter.write(FrameworkConstants.NEW_LINE);
-					if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_db())) {
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+					bufferedWriter.write(Constants.SYMBOL_TEN);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+					bufferedWriter.write(Constants.NEW_LINE);
+					bufferedWriter.write(Constants.NEW_LINE);
+					if (Constants.ONE.equals(exportBean.getAdd_drop_db())) {
+						bufferedWriter.write(Constants.NEW_LINE);
 						bufferedWriter.write("DROP DATABASE IF EXISTS `");
 						bufferedWriter.write(database);
-						bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-						bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+						bufferedWriter.write(Constants.SYMBOL_TEN);
+						bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
+						bufferedWriter.write(Constants.NEW_LINE);
 					}
 
 					builder.delete(0, builder.length());
@@ -148,19 +151,19 @@ public class ExportLogic extends AbstractLogic {
 						bufferedWriter.write(resultSet.getString(1));
 						bufferedWriter.write(" COLLATE ");
 						bufferedWriter.write(resultSet.getString(2));
-						bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+						bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
+						bufferedWriter.write(Constants.NEW_LINE);
 						bufferedWriter.write("USE `");
 						bufferedWriter.write(database);
-						bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-						bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+						bufferedWriter.write(Constants.SYMBOL_TEN);
+						bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
+						bufferedWriter.write(Constants.NEW_LINE);
+						bufferedWriter.write(Constants.NEW_LINE);
 					}
 					close(resultSet);
 					close(statement);
 
-					statement = apiConnection.getStmt("USE `" + database + FrameworkConstants.SYMBOL_TEN);
+					statement = apiConnection.getStmt("USE `" + database + Constants.SYMBOL_TEN);
 					statement.execute();
 					close(statement);
 
@@ -191,7 +194,7 @@ public class ExportLogic extends AbstractLogic {
 					close(statement);
 
 					statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE table_type = ?");
-					statement.setString(1, FrameworkConstants.BASE_TABLE);
+					statement.setString(1, Constants.BASE_TABLE);
 					resultSet = statement.executeQuery();
 					while (resultSet.next()) {
 						tableList.add(resultSet.getString(1));
@@ -203,27 +206,27 @@ public class ExportLogic extends AbstractLogic {
 						Iterator<String> iterator = tableList.iterator();
 						while (iterator.hasNext()) {
 							String table = iterator.next();
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
-							bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
-							bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+							bufferedWriter.write(Constants.NEW_LINE);
+							bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+							bufferedWriter.write(Constants.NEW_LINE);
+							bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 							bufferedWriter.write(" TABLE: `");
 							bufferedWriter.write(table);
-							bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
-							bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
+							bufferedWriter.write(Constants.SYMBOL_TEN);
+							bufferedWriter.write(Constants.NEW_LINE);
+							bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+							bufferedWriter.write(Constants.NEW_LINE);
 
-							if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_table())) {
+							if (Constants.ONE.equals(exportBean.getAdd_drop_table())) {
 								bufferedWriter.write("DROP TABLE IF EXISTS `");
 								bufferedWriter.write(table);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
+								bufferedWriter.write(Constants.NEW_LINE);
 							}
 
 							statement = apiConnection
-									.getStmtSelect("SHOW CREATE TABLE `" + table + FrameworkConstants.SYMBOL_TEN);
+									.getStmtSelect("SHOW CREATE TABLE `" + table + Constants.SYMBOL_TEN);
 							resultSet = statement.executeQuery();
 							if (resultSet.next()) {
 								String createStmt = resultSet.getString(2);
@@ -234,7 +237,7 @@ public class ExportLogic extends AbstractLogic {
 									int index = -1;
 									while (keyIterator.hasNext()) {
 										String key = keyIterator.next();
-										String check = "CONSTRAINT `" + key + FrameworkConstants.SYMBOL_TEN;
+										String check = "CONSTRAINT `" + key + Constants.SYMBOL_TEN;
 										int k = createStmt.indexOf(check);
 										if (index == -1 || (index > k)) {
 											index = k;
@@ -253,24 +256,24 @@ public class ExportLogic extends AbstractLogic {
 								}
 								bufferedWriter.write(createStmt);
 							}
-							bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
+							bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
 							close(resultSet);
 							close(statement);
 
-							if (FrameworkConstants.ONE.equals(exportBean.getExport_type())) {
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+							if (Constants.ONE.equals(exportBean.getExport_type())) {
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 								bufferedWriter.write(" TABLE DATA: `");
 								bufferedWriter.write(table);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
 
 								statement = apiConnection
-										.getStmtSelect("SELECT * FROM `" + table + FrameworkConstants.SYMBOL_TEN);
+										.getStmtSelect("SELECT * FROM `" + table + Constants.SYMBOL_TEN);
 								resultSet = statement.executeQuery();
 								ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 
@@ -281,18 +284,18 @@ public class ExportLogic extends AbstractLogic {
 									if (index == 0) {
 										bufferedWriter.write("INSERT INTO `");
 										bufferedWriter.write(table);
-										bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-										bufferedWriter.write(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+										bufferedWriter.write(Constants.SYMBOL_TEN);
+										bufferedWriter.write(Constants.SYMBOL_BRACKET_OPEN);
 										for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
 											if (i > 1) {
-												bufferedWriter.write(FrameworkConstants.SYMBOL_COMMA);
+												bufferedWriter.write(Constants.SYMBOL_COMMA);
 											}
-											bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
+											bufferedWriter.write(Constants.SYMBOL_TEN);
 											bufferedWriter.write(resultSetMetaData.getColumnName(i));
-											bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
+											bufferedWriter.write(Constants.SYMBOL_TEN);
 
 											String className = resultSetMetaData.getColumnClassName(i);
-											if (FrameworkConstants.BYTE_TYPE.equals(className)) {
+											if (Constants.BYTE_TYPE.equals(className)) {
 												columnMap.put(i, 2);
 											} else {
 												Class<?> klass = Class.forName(className);
@@ -306,18 +309,18 @@ public class ExportLogic extends AbstractLogic {
 												}
 											}
 										}
-										bufferedWriter.write(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+										bufferedWriter.write(Constants.SYMBOL_BRACKET_CLOSE);
 										bufferedWriter.write(" VALUES ");
-										bufferedWriter.write(FrameworkConstants.NEW_LINE);
+										bufferedWriter.write(Constants.NEW_LINE);
 									} else {
-										bufferedWriter.write(FrameworkConstants.SYMBOL_COMMA);
-										bufferedWriter.write(FrameworkConstants.NEW_LINE);
+										bufferedWriter.write(Constants.SYMBOL_COMMA);
+										bufferedWriter.write(Constants.NEW_LINE);
 									}
 
-									bufferedWriter.write(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+									bufferedWriter.write(Constants.SYMBOL_BRACKET_OPEN);
 									for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
 										if (i > 1) {
-											bufferedWriter.write(FrameworkConstants.SYMBOL_COMMA);
+											bufferedWriter.write(Constants.SYMBOL_COMMA);
 										}
 										switch (columnMap.get(i)) {
 										case 1:
@@ -325,7 +328,7 @@ public class ExportLogic extends AbstractLogic {
 											if (value != null) {
 												bufferedWriter.write(value);
 											} else {
-												bufferedWriter.write(FrameworkConstants.NULL);
+												bufferedWriter.write(Constants.NULL);
 											}
 											break;
 										case 2:
@@ -334,62 +337,62 @@ public class ExportLogic extends AbstractLogic {
 												hexStatement = apiConnection.getStmtSelect("SELECT HEX(?) FROM DUAL");
 												hexStatement.setBytes(1, byteValue);
 												hexResultSet = hexStatement.executeQuery();
-												value = FrameworkConstants.NULL;
+												value = Constants.NULL;
 												if (hexResultSet.next()) {
 													value = hexResultSet.getString(1);
 												}
 												close(hexResultSet);
 												close(hexStatement);
 												bufferedWriter.write("UNHEX(");
-												bufferedWriter.write(FrameworkConstants.SYMBOL_QUOTE);
+												bufferedWriter.write(Constants.SYMBOL_QUOTE);
 												bufferedWriter.write(value);
-												bufferedWriter.write(FrameworkConstants.SYMBOL_QUOTE);
-												bufferedWriter.write(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+												bufferedWriter.write(Constants.SYMBOL_QUOTE);
+												bufferedWriter.write(Constants.SYMBOL_BRACKET_CLOSE);
 											} else {
-												bufferedWriter.write(FrameworkConstants.NULL);
+												bufferedWriter.write(Constants.NULL);
 											}
 											break;
 										default:
 											value = resultSet.getString(i);
 											if (value != null) {
-												value = value.replaceAll(FrameworkConstants.SYMBOL_QUOTE,
-														FrameworkConstants.SYMBOL_QUOTE_ESCAPE);
-												bufferedWriter.write(FrameworkConstants.SYMBOL_QUOTE);
+												value = value.replaceAll(Constants.SYMBOL_QUOTE,
+														Constants.SYMBOL_QUOTE_ESCAPE);
+												bufferedWriter.write(Constants.SYMBOL_QUOTE);
 												bufferedWriter.write(value);
-												bufferedWriter.write(FrameworkConstants.SYMBOL_QUOTE);
+												bufferedWriter.write(Constants.SYMBOL_QUOTE);
 											} else {
-												bufferedWriter.write(FrameworkConstants.NULL);
+												bufferedWriter.write(Constants.NULL);
 											}
 											break;
 										}
 									}
-									bufferedWriter.write(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+									bufferedWriter.write(Constants.SYMBOL_BRACKET_CLOSE);
 									index++;
 								}
 								if (index > 0) {
-									bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
+									bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
 								}
 								close(resultSet);
 								close(statement);
 							}
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
-							bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
+							bufferedWriter.write(Constants.NEW_LINE);
+							bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+							bufferedWriter.write(Constants.NEW_LINE);
 						}
 					}
 
 					if (constraintList.size() > 0) {
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
-						bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+						bufferedWriter.write(Constants.NEW_LINE);
+						bufferedWriter.write(Constants.NEW_LINE);
+						bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 						bufferedWriter.write(" CONSTRAINT STATEMENTS START");
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+						bufferedWriter.write(Constants.NEW_LINE);
 						for (Entry<String, String> entry : constraintList.entrySet()) {
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
+							bufferedWriter.write(Constants.NEW_LINE);
 							builder.delete(0, builder.length());
 							builder.append("ALTER TABLE `");
 							builder.append(entry.getKey());
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							bufferedWriter.write(builder.toString());
 							String value = entry.getValue().replaceAll("CONSTRAINT", "ADD CONSTRAINT");
 							int index = value.length();
@@ -398,20 +401,20 @@ public class ExportLogic extends AbstractLogic {
 								ch = value.charAt(--index);
 							}
 							bufferedWriter.write(value.substring(0, index + 1));
-							bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
-							bufferedWriter.write(FrameworkConstants.NEW_LINE);
+							bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
+							bufferedWriter.write(Constants.NEW_LINE);
 						}
-						bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+						bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 						bufferedWriter.write(" CONSTRAINT STATEMENTS END");
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+						bufferedWriter.write(Constants.NEW_LINE);
+						bufferedWriter.write(Constants.NEW_LINE);
 					}
 
-					if (FrameworkConstants.ONE.equals(exportBean.getInclude_views())) {
+					if (Constants.ONE.equals(exportBean.getInclude_views())) {
 						// dump views
 						List<String> viewList = new ArrayList<String>();
 						statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE table_type = ?");
-						statement.setString(1, FrameworkConstants.VIEW);
+						statement.setString(1, Constants.VIEW);
 						resultSet = statement.executeQuery();
 						while (resultSet.next()) {
 							viewList.add(resultSet.getString(1));
@@ -423,44 +426,44 @@ public class ExportLogic extends AbstractLogic {
 							Iterator<String> iterator = viewList.iterator();
 							while (iterator.hasNext()) {
 								String view = iterator.next();
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 								bufferedWriter.write(" VIEW: `");
 								bufferedWriter.write(view);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
 
-								if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_table())) {
+								if (Constants.ONE.equals(exportBean.getAdd_drop_table())) {
 									bufferedWriter.write("DROP VIEW IF EXISTS `");
 									bufferedWriter.write(view);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
-									bufferedWriter.write(FrameworkConstants.NEW_LINE);
+									bufferedWriter.write(Constants.SYMBOL_TEN);
+									bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
+									bufferedWriter.write(Constants.NEW_LINE);
 								}
 								statement = apiConnection
-										.getStmtSelect("SHOW CREATE VIEW `" + view + FrameworkConstants.SYMBOL_TEN);
+										.getStmtSelect("SHOW CREATE VIEW `" + view + Constants.SYMBOL_TEN);
 								resultSet = statement.executeQuery();
 								if (resultSet.next()) {
 									bufferedWriter.write(resultSet.getString(2));
 								}
-								bufferedWriter.write(FrameworkConstants.SYMBOL_SEMI_COLON);
+								bufferedWriter.write(Constants.SYMBOL_SEMI_COLON);
 								close(resultSet);
 								close(statement);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+								bufferedWriter.write(Constants.NEW_LINE);
 							}
 						}
 					}
 
 					boolean delimeter = false;
 
-					if (FrameworkConstants.ONE.equals(exportBean.getInclude_procedures())) {
+					if (Constants.ONE.equals(exportBean.getInclude_procedures())) {
 						// dump procedures
 						List<String> procedureList = new ArrayList<String>();
 						statement = apiConnection.getStmtSelect("SHOW PROCEDURE STATUS WHERE db = ?");
@@ -474,51 +477,51 @@ public class ExportLogic extends AbstractLogic {
 
 						if (procedureList.size() > 0) {
 							if (!delimeter) {
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.DELIMITER_$$);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.DELIMITER_$$);
+								bufferedWriter.write(Constants.NEW_LINE);
 								delimeter = true;
 							}
 
 							Iterator<String> iterator = procedureList.iterator();
 							while (iterator.hasNext()) {
 								String procedure = iterator.next();
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 								bufferedWriter.write(" PROCEDURE: `");
 								bufferedWriter.write(procedure);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
 
-								if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_table())) {
+								if (Constants.ONE.equals(exportBean.getAdd_drop_table())) {
 									bufferedWriter.write("DROP PROCEDURE IF EXISTS `");
 									bufferedWriter.write(procedure);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
+									bufferedWriter.write(Constants.SYMBOL_TEN);
 									bufferedWriter.write("$$");
-									bufferedWriter.write(FrameworkConstants.NEW_LINE);
+									bufferedWriter.write(Constants.NEW_LINE);
 								}
-								statement = apiConnection.getStmtSelect(
-										"SHOW CREATE PROCEDURE `" + procedure + FrameworkConstants.SYMBOL_TEN);
+								statement = apiConnection
+										.getStmtSelect("SHOW CREATE PROCEDURE `" + procedure + Constants.SYMBOL_TEN);
 								resultSet = statement.executeQuery();
 								if (resultSet.next()) {
 									bufferedWriter.write(resultSet.getString(3));
 								}
-								bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
+								bufferedWriter.write(Constants.SYMBOL_$$);
 								close(resultSet);
 								close(statement);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
 							}
 						}
 					}
 
-					if (FrameworkConstants.ONE.equals(exportBean.getInclude_functions())) {
+					if (Constants.ONE.equals(exportBean.getInclude_functions())) {
 						// dump functions
 						List<String> functionList = new ArrayList<String>();
 						statement = apiConnection.getStmtSelect("SHOW FUNCTION STATUS WHERE db = ?");
@@ -532,50 +535,50 @@ public class ExportLogic extends AbstractLogic {
 
 						if (functionList.size() > 0) {
 							if (!delimeter) {
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.DELIMITER_$$);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.DELIMITER_$$);
+								bufferedWriter.write(Constants.NEW_LINE);
 								delimeter = true;
 							}
 							Iterator<String> iterator = functionList.iterator();
 							while (iterator.hasNext()) {
 								String function = iterator.next();
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 								bufferedWriter.write(" FUNCTION: `");
 								bufferedWriter.write(function);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
 
-								if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_table())) {
+								if (Constants.ONE.equals(exportBean.getAdd_drop_table())) {
 									bufferedWriter.write("DROP FUNCTION IF EXISTS `");
 									bufferedWriter.write(function);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
-									bufferedWriter.write(FrameworkConstants.NEW_LINE);
+									bufferedWriter.write(Constants.SYMBOL_TEN);
+									bufferedWriter.write(Constants.SYMBOL_$$);
+									bufferedWriter.write(Constants.NEW_LINE);
 								}
-								statement = apiConnection.getStmtSelect(
-										"SHOW CREATE FUNCTION `" + function + FrameworkConstants.SYMBOL_TEN);
+								statement = apiConnection
+										.getStmtSelect("SHOW CREATE FUNCTION `" + function + Constants.SYMBOL_TEN);
 								resultSet = statement.executeQuery();
 								if (resultSet.next()) {
 									bufferedWriter.write(resultSet.getString(3));
 								}
-								bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
+								bufferedWriter.write(Constants.SYMBOL_$$);
 								close(resultSet);
 								close(statement);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
 							}
 						}
 					}
 
-					if (FrameworkConstants.ONE.equals(exportBean.getInclude_events())) {
+					if (Constants.ONE.equals(exportBean.getInclude_events())) {
 						// dump events
 						List<String> eventList = new ArrayList<String>();
 						statement = apiConnection.getStmtSelect("SHOW EVENTS WHERE db = ?");
@@ -589,51 +592,51 @@ public class ExportLogic extends AbstractLogic {
 
 						if (eventList.size() > 0) {
 							if (!delimeter) {
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.DELIMITER_$$);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.DELIMITER_$$);
+								bufferedWriter.write(Constants.NEW_LINE);
 								delimeter = true;
 							}
 
 							Iterator<String> iterator = eventList.iterator();
 							while (iterator.hasNext()) {
 								String event = iterator.next();
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 								bufferedWriter.write(" EVENT: `");
 								bufferedWriter.write(event);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
 
-								if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_table())) {
+								if (Constants.ONE.equals(exportBean.getAdd_drop_table())) {
 									bufferedWriter.write("DROP EVENT IF EXISTS `");
 									bufferedWriter.write(event);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
-									bufferedWriter.write(FrameworkConstants.NEW_LINE);
+									bufferedWriter.write(Constants.SYMBOL_TEN);
+									bufferedWriter.write(Constants.SYMBOL_$$);
+									bufferedWriter.write(Constants.NEW_LINE);
 								}
 								statement = apiConnection
-										.getStmtSelect("SHOW CREATE EVENT `" + event + FrameworkConstants.SYMBOL_TEN);
+										.getStmtSelect("SHOW CREATE EVENT `" + event + Constants.SYMBOL_TEN);
 								resultSet = statement.executeQuery();
 								if (resultSet.next()) {
 									bufferedWriter.write(resultSet.getString(4));
 								}
-								bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
+								bufferedWriter.write(Constants.SYMBOL_$$);
 								close(resultSet);
 								close(statement);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
 							}
 						}
 					}
 
-					if (FrameworkConstants.ONE.equals(exportBean.getInclude_triggers())) {
+					if (Constants.ONE.equals(exportBean.getInclude_triggers())) {
 						// dump triggers
 						List<String> triggerList = new ArrayList<String>();
 						statement = apiConnection.getStmtSelect("SHOW TRIGGERS");
@@ -646,54 +649,54 @@ public class ExportLogic extends AbstractLogic {
 
 						if (triggerList.size() > 0) {
 							if (!delimeter) {
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.DELIMITER_$$);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.DELIMITER_$$);
+								bufferedWriter.write(Constants.NEW_LINE);
 								delimeter = true;
 							}
 
 							Iterator<String> iterator = triggerList.iterator();
 							while (iterator.hasNext()) {
 								String trigger = iterator.next();
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
 								bufferedWriter.write(" TRIGGER: `");
 								bufferedWriter.write(trigger);
-								bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_COMMENT);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.SYMBOL_TEN);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_COMMENT);
+								bufferedWriter.write(Constants.NEW_LINE);
 
-								if (FrameworkConstants.ONE.equals(exportBean.getAdd_drop_table())) {
+								if (Constants.ONE.equals(exportBean.getAdd_drop_table())) {
 									bufferedWriter.write("DROP TRIGGER IF EXISTS `");
 									bufferedWriter.write(trigger);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_TEN);
-									bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
-									bufferedWriter.write(FrameworkConstants.NEW_LINE);
+									bufferedWriter.write(Constants.SYMBOL_TEN);
+									bufferedWriter.write(Constants.SYMBOL_$$);
+									bufferedWriter.write(Constants.NEW_LINE);
 								}
-								statement = apiConnection.getStmtSelect(
-										"SHOW CREATE TRIGGER `" + trigger + FrameworkConstants.SYMBOL_TEN);
+								statement = apiConnection
+										.getStmtSelect("SHOW CREATE TRIGGER `" + trigger + Constants.SYMBOL_TEN);
 								resultSet = statement.executeQuery();
 								if (resultSet.next()) {
 									bufferedWriter.write(resultSet.getString(3));
 								}
-								bufferedWriter.write(FrameworkConstants.SYMBOL_$$);
+								bufferedWriter.write(Constants.SYMBOL_$$);
 								close(resultSet);
 								close(statement);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.ONE_LINE_SEPARATOR);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
-								bufferedWriter.write(FrameworkConstants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.ONE_LINE_SEPARATOR);
+								bufferedWriter.write(Constants.NEW_LINE);
+								bufferedWriter.write(Constants.NEW_LINE);
 							}
 						}
 					}
 
 					if (delimeter) {
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
-						bufferedWriter.write(FrameworkConstants.DELIMITER_COMMA);
-						bufferedWriter.write(FrameworkConstants.NEW_LINE);
+						bufferedWriter.write(Constants.NEW_LINE);
+						bufferedWriter.write(Constants.DELIMITER_COMMA);
+						bufferedWriter.write(Constants.NEW_LINE);
 					}
 				}
 			}

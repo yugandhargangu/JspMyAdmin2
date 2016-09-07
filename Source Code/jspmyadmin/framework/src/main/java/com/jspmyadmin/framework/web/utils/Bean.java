@@ -5,7 +5,7 @@ package com.jspmyadmin.framework.web.utils;
 
 import java.io.Serializable;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 
 /**
  * @author Yugandhar Gangu
@@ -175,16 +175,10 @@ public abstract class Bean implements Serializable {
 	 * @return
 	 */
 	protected boolean isEmpty(String val) {
-		if (val == null || FrameworkConstants.BLANK.equals(val.trim())) {
+		if (val == null || Constants.BLANK.equals(val.trim())) {
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * 
-	 */
-	protected void init() {
-		// do nothing
-	}
 }

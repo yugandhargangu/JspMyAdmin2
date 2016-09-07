@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspFactory;
 import com.jspmyadmin.app.common.beans.HomeBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 import com.jspmyadmin.framework.web.utils.DefaultServlet;
 
@@ -36,7 +36,7 @@ public class HomeLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public Map<String, List<String>> getCollationMap() throws ClassNotFoundException, SQLException {
+	public Map<String, List<String>> getCollationMap() throws SQLException {
 		Map<String, List<String>> collationMap = new TreeMap<String, List<String>>();
 
 		ApiConnection apiConnection = null;
@@ -78,10 +78,9 @@ public class HomeLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
-	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 		HomeBean homeBean = null;
 		ApiConnection apiConnection = null;
 		DatabaseMetaData databaseMetaData = null;
@@ -95,7 +94,7 @@ public class HomeLogic extends AbstractLogic {
 			homeBean.setDb_server_user(databaseMetaData.getUserName());
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, FrameworkConstants.COLLATION_SERVER);
+			statement.setString(1, Constants.COLLATION_SERVER);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setCollation(resultSet.getString(2));
@@ -106,7 +105,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, FrameworkConstants.HOSTNAME);
+			statement.setString(1, Constants.HOSTNAME);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_name(resultSet.getString(2));
@@ -117,7 +116,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, FrameworkConstants.VERSION_COMMENT);
+			statement.setString(1, Constants.VERSION_COMMENT);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_type(resultSet.getString(2));
@@ -128,7 +127,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, FrameworkConstants.VERSION);
+			statement.setString(1, Constants.VERSION);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_version(resultSet.getString(2));
@@ -139,7 +138,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, FrameworkConstants.PROTOCOL_VERSION);
+			statement.setString(1, Constants.PROTOCOL_VERSION);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_protocol(resultSet.getString(2));
@@ -150,7 +149,7 @@ public class HomeLogic extends AbstractLogic {
 			statement = null;
 
 			statement = apiConnection.getStmtSelect("SHOW VARIABLES WHERE VARIABLE_NAME = ?");
-			statement.setString(1, FrameworkConstants.CHARACTER_SET_SERVER);
+			statement.setString(1, Constants.CHARACTER_SET_SERVER);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				homeBean.setDb_server_charset(resultSet.getString(2));
@@ -165,7 +164,7 @@ public class HomeLogic extends AbstractLogic {
 			homeBean.setJdbc_version(databaseMetaData.getDriverVersion());
 			homeBean.setJava_version(Runtime.class.getPackage().getImplementationVersion());
 			homeBean.setServelt_version(
-					context.getMajorVersion() + FrameworkConstants.SYMBOL_DOT + context.getMinorVersion());
+					context.getMajorVersion() + Constants.SYMBOL_DOT + context.getMinorVersion());
 			homeBean.setJsp_version(JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion());
 		} finally {
 			close(resultSet);
@@ -177,10 +176,9 @@ public class HomeLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param collation
-	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void saveServerCollation(String collation) throws ClassNotFoundException, SQLException {
+	public void saveServerCollation(String collation) throws SQLException {
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -191,7 +189,7 @@ public class HomeLogic extends AbstractLogic {
 			statement.setString(1, collation);
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				charset = resultSet.getString(FrameworkConstants.CHARSET);
+				charset = resultSet.getString(Constants.CHARSET);
 			}
 			close(resultSet);
 			close(statement);

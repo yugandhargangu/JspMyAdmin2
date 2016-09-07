@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,10 +30,9 @@ public class MessageReader implements Messages {
 	private static final Map<String, Map<String, String>> _MESSAGEMAP = new ConcurrentHashMap<String, Map<String, String>>();
 
 	/**
-	 * @throws IOException
 	 * 
 	 */
-	public static synchronized void read() throws IOException {
+	public static synchronized void read() {
 		if (_MESSAGEMAP.size() > 0) {
 			return;
 		}
@@ -65,7 +65,8 @@ public class MessageReader implements Messages {
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (URISyntaxException e) {
+		} catch (IOException e) {
 		} finally {
 			_properties = null;
 			_equals = null;

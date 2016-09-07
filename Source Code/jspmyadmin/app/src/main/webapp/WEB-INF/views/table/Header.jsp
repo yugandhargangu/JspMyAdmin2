@@ -48,7 +48,9 @@
 				src="${pageContext.request.contextPath}/components/icons/info.png">
 				${lbl_information}</a></li>
 		<m:store name="lbl_export" key="lbl.export" />
-		<li><a href="#"><img alt="${lbl_export}" class="icon"
+		<li><a
+			href="${pageContext.request.contextPath}/table_export.html?token=${requestScope.command.request_token}"><img
+				alt="${lbl_export}" class="icon"
 				src="${pageContext.request.contextPath}/components/icons/send-file-g.png">
 				${lbl_export}</a></li>
 		<m:store name="lbl_import" key="lbl.import" />

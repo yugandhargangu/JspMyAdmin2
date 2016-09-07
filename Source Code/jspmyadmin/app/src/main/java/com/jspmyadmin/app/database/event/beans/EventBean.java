@@ -6,7 +6,7 @@ package com.jspmyadmin.app.database.event.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -42,8 +42,8 @@ public class EventBean extends Bean {
 	private String end_interval = null;
 	private String action = null;
 
-	private List<String> interval_list = new ArrayList<String>(FrameworkConstants.Utils.EVENT_INTERVAL_LIST);
-	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
+	private List<String> interval_list = new ArrayList<String>(Constants.Utils.EVENT_INTERVAL_LIST);
+	private List<String> definer_list = new ArrayList<String>(Constants.Utils.DEFINER_LIST);
 
 	/**
 	 * @return the definer

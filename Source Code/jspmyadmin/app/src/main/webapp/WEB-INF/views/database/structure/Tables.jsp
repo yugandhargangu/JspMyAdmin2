@@ -34,8 +34,9 @@
 							<form id="table-create-form"
 								action="${pageContext.request.contextPath}/database_create_table.html"
 								method="post" accept-charset="utf-8">
-								<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-								<input type="hidden" name="token" class="server-token"
+								<input type="hidden" name="request_db"
+									value="${requestScope.command.request_db}"> <input
+									type="hidden" name="token" class="server-token"
 									value="${requestScope.command.token}">
 								<div class="form-input">
 									<label><m:print key="lbl.table_name" /></label> <input
@@ -52,8 +53,9 @@
 					</div>
 					<form action="#" method="post" accept-charset="utf-8"
 						id="table-list-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="token" class="server-token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="token" class="server-token"
 							value="${requestScope.command.token}"> <input
 							type="hidden" name="action" value="/database_structure.html">
 						<div class="group">
@@ -65,8 +67,7 @@
 									<thead>
 										<tr>
 											<th><input type="checkbox" id="check_all"></th>
-											<th>
-											<a
+											<th><a
 												href="${pageContext.request.contextPath}/database_structure.html?token=${requestScope.command.sortInfo.name}">
 													<m:print key="lbl.table_name" /> <jma:if name="#sort"
 														value="1" scope="command,">
@@ -273,32 +274,31 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-prefix">
-									<m:print key="lbl.prefix" />
-								</button>
-								<button type="button" class="btn" id="btn-suffix">
-									<m:print key="lbl.suffix" />
-								</button>
-								<button type="button" class="btn" id="btn-copy">
-									<m:print key="lbl.copy" />
-								</button>
-								<button type="button" class="btn" id="btn-duplicate">
-									<m:print key="lbl.duplicate" />
-								</button>
-								<button type="button" class="btn" id="btn-show-create">
-									<m:print key="lbl.show_create" />
-								</button>
-								<button type="button" class="btn" id="btn-export">
-									<m:print key="lbl.export" />
-								</button>
-								<button type="button" class="btn" id="btn-truncate">
-									<m:print key="lbl.truncate" />
-								</button>
-								<button type="button" class="btn" id="btn-drop">
-									<m:print key="lbl.drop" />
-								</button>
-							</div>
+							<jma:notEmpty name="#table_list" scope="command">
+								<div class="group-widget group-footer">
+									<button type="button" class="btn" id="btn-prefix">
+										<m:print key="lbl.prefix" />
+									</button>
+									<button type="button" class="btn" id="btn-suffix">
+										<m:print key="lbl.suffix" />
+									</button>
+									<button type="button" class="btn" id="btn-copy">
+										<m:print key="lbl.copy" />
+									</button>
+									<button type="button" class="btn" id="btn-duplicate">
+										<m:print key="lbl.duplicate" />
+									</button>
+									<button type="button" class="btn" id="btn-show-create">
+										<m:print key="lbl.show_create" />
+									</button>
+									<button type="button" class="btn" id="btn-truncate">
+										<m:print key="lbl.truncate" />
+									</button>
+									<button type="button" class="btn" id="btn-drop">
+										<m:print key="lbl.drop" />
+									</button>
+								</div>
+							</jma:notEmpty>
 						</div>
 
 						<div class="group" id="show-create-group" style="display: none;">

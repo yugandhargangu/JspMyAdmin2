@@ -18,10 +18,10 @@ import com.jspmyadmin.app.database.event.beans.EventInfo;
 import com.jspmyadmin.app.database.event.beans.EventListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
-import com.jspmyadmin.framework.web.utils.DefaultServlet;
 import com.jspmyadmin.framework.web.utils.Messages;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 
 /**
  * @author Yugandhar Gangu
@@ -46,7 +46,7 @@ public class EventLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillListBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillListBean(Bean bean) throws SQLException {
 
 		EventListBean eventListBean = null;
 		ApiConnection apiConnection = null;
@@ -92,10 +92,9 @@ public class EventLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
-	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void renameEvent(Bean bean) throws ClassNotFoundException, SQLException {
+	public void renameEvent(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -108,13 +107,13 @@ public class EventLogic extends AbstractLogic {
 				apiConnection = getConnection(bean.getRequest_db());
 				builder = new StringBuilder();
 				builder.append("ALTER EVENT ");
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(eventListBean.getEvents()[0]);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(" RENAME TO ");
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(eventListBean.getNew_event());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				statement = apiConnection.getStmt(builder.toString());
 				statement.execute();
 				apiConnection.commit();
@@ -131,7 +130,7 @@ public class EventLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void enableEvent(Bean bean) throws ClassNotFoundException, SQLException {
+	public void enableEvent(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -147,10 +146,10 @@ public class EventLogic extends AbstractLogic {
 				builder = new StringBuilder();
 				for (int i = 0; i < eventListBean.getEvents().length; i++) {
 					builder.append(alter);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(eventListBean.getEvents()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SPACE);
 					builder.append(enable);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
@@ -171,7 +170,7 @@ public class EventLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void dropEvent(Bean bean) throws ClassNotFoundException, SQLException {
+	public void dropEvent(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -186,9 +185,9 @@ public class EventLogic extends AbstractLogic {
 				builder = new StringBuilder();
 				for (int i = 0; i < eventListBean.getEvents().length; i++) {
 					builder.append(alter);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(eventListBean.getEvents()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement = null;
@@ -208,7 +207,7 @@ public class EventLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void disableEvent(Bean bean) throws ClassNotFoundException, SQLException {
+	public void disableEvent(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -224,10 +223,10 @@ public class EventLogic extends AbstractLogic {
 				builder = new StringBuilder();
 				for (int i = 0; i < eventListBean.getEvents().length; i++) {
 					builder.append(alter);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(eventListBean.getEvents()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SPACE);
 					builder.append(disable);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
@@ -250,7 +249,7 @@ public class EventLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws JSONException
 	 */
-	public String getShowCreate(Bean bean) throws ClassNotFoundException, SQLException, JSONException {
+	public String getShowCreate(Bean bean) throws SQLException, JSONException {
 
 		String result = null;
 
@@ -271,12 +270,12 @@ public class EventLogic extends AbstractLogic {
 				for (int i = 0; i < eventListBean.getEvents().length; i++) {
 					builder.append(temp);
 					builder.append(eventListBean.getEvents()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmtSelect(builder.toString());
 					resultSet = statement.executeQuery();
 					if (resultSet.next()) {
 						jsonObject.put(resultSet.getString(1),
-								resultSet.getString(4) + FrameworkConstants.SYMBOL_SEMI_COLON);
+								resultSet.getString(4) + Constants.SYMBOL_SEMI_COLON);
 					}
 					resultSet.close();
 					resultSet = null;
@@ -333,7 +332,7 @@ public class EventLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public String saveEvent(Bean bean) throws ClassNotFoundException, SQLException {
+	public String saveEvent(Bean bean) throws SQLException {
 
 		String result = null;
 		ApiConnection apiConnection = null;
@@ -349,100 +348,100 @@ public class EventLogic extends AbstractLogic {
 			builder = new StringBuilder();
 			builder.append("CREATE ");
 			if (!isEmpty(eventBean.getDefiner())) {
-				if (FrameworkConstants.CURRENT_USER.equalsIgnoreCase(eventBean.getDefiner())) {
+				if (Constants.CURRENT_USER.equalsIgnoreCase(eventBean.getDefiner())) {
 					builder.append("DEFINER = ");
 					builder.append(eventBean.getDefiner());
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				} else if (!isEmpty(eventBean.getDefiner_name())) {
-					temp = eventBean.getDefiner_name().split(FrameworkConstants.SYMBOL_AT);
+					temp = eventBean.getDefiner_name().split(Constants.SYMBOL_AT);
 					builder.append("DEFINER = ");
 					if (temp.length < 2) {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[0]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SPACE);
 					} else {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[0]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_AT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_AT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[1]);
-						if (!temp[1].endsWith(FrameworkConstants.SYMBOL_TEN)) {
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+						if (!temp[1].endsWith(Constants.SYMBOL_TEN)) {
+							builder.append(Constants.SYMBOL_TEN);
 						}
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
 				}
 			}
 			builder.append("EVENT ");
-			if (FrameworkConstants.YES.equalsIgnoreCase(eventBean.getNot_exists())) {
+			if (Constants.YES.equalsIgnoreCase(eventBean.getNot_exists())) {
 				builder.append("IF NOT EXISTS ");
 			}
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(eventBean.getEvent_name());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SPACE);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SPACE);
 			builder.append("ON SCHEDULE ");
-			if (FrameworkConstants.AT.equalsIgnoreCase(eventBean.getSchedule_type())) {
+			if (Constants.AT.equalsIgnoreCase(eventBean.getSchedule_type())) {
 				// one time
 				builder.append(eventBean.getSchedule_type());
-				builder.append(FrameworkConstants.SPACE);
-				if (FrameworkConstants.CURRENT_TIMESTAMP.equalsIgnoreCase(eventBean.getStart_date_type())) {
-					builder.append(FrameworkConstants.CURRENT_TIMESTAMP);
+				builder.append(Constants.SPACE);
+				if (Constants.CURRENT_TIMESTAMP.equalsIgnoreCase(eventBean.getStart_date_type())) {
+					builder.append(Constants.CURRENT_TIMESTAMP);
 				} else {
-					builder.append(FrameworkConstants.SYMBOL_QUOTE);
+					builder.append(Constants.SYMBOL_QUOTE);
 					builder.append(eventBean.getStart_date());
-					builder.append(FrameworkConstants.SYMBOL_QUOTE);
+					builder.append(Constants.SYMBOL_QUOTE);
 				}
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				if (eventBean.getStart_date_interval_quantity() != null) {
 					for (int i = 0; i < eventBean.getStart_date_interval_quantity().length; i++) {
 						if (!isEmpty(eventBean.getStart_date_interval_quantity()[i])) {
 							if (isInteger(eventBean.getStart_date_interval_quantity()[i])) {
 								builder.append(interval);
 								builder.append(eventBean.getStart_date_interval_quantity()[i]);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SPACE);
 								builder.append(eventBean.getStart_date_interval()[i]);
 							} else {
 								builder.append(interval);
-								builder.append(FrameworkConstants.SYMBOL_QUOTE);
+								builder.append(Constants.SYMBOL_QUOTE);
 								builder.append(eventBean.getStart_date_interval_quantity()[i]);
-								builder.append(FrameworkConstants.SYMBOL_QUOTE);
-								builder.append(FrameworkConstants.SPACE);
+								builder.append(Constants.SYMBOL_QUOTE);
+								builder.append(Constants.SPACE);
 								builder.append(eventBean.getStart_date_interval()[i]);
 							}
 						}
 					}
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				}
-			} else if (FrameworkConstants.EVERY.equalsIgnoreCase(eventBean.getSchedule_type())) {
+			} else if (Constants.EVERY.equalsIgnoreCase(eventBean.getSchedule_type())) {
 				// Recursive
 				builder.append(eventBean.getSchedule_type());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				if (isInteger(eventBean.getInterval_quantity())) {
 					builder.append(eventBean.getInterval_quantity());
 				} else {
-					builder.append(FrameworkConstants.SYMBOL_QUOTE);
+					builder.append(Constants.SYMBOL_QUOTE);
 					builder.append(eventBean.getInterval_quantity());
-					builder.append(FrameworkConstants.SYMBOL_QUOTE);
+					builder.append(Constants.SYMBOL_QUOTE);
 				}
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append(eventBean.getInterval());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				if (!isEmpty(eventBean.getStart_date_type())) {
 					boolean start = false;
-					if (FrameworkConstants.CURRENT_TIMESTAMP.equalsIgnoreCase(eventBean.getStart_date_type())) {
+					if (Constants.CURRENT_TIMESTAMP.equalsIgnoreCase(eventBean.getStart_date_type())) {
 						builder.append("STARTS ");
-						builder.append(FrameworkConstants.CURRENT_TIMESTAMP);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.CURRENT_TIMESTAMP);
+						builder.append(Constants.SPACE);
 						start = true;
 					} else if (!isEmpty(eventBean.getStart_date())) {
 						builder.append("STARTS ");
-						builder.append(FrameworkConstants.SYMBOL_QUOTE);
+						builder.append(Constants.SYMBOL_QUOTE);
 						builder.append(eventBean.getStart_date());
-						builder.append(FrameworkConstants.SYMBOL_QUOTE);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_QUOTE);
+						builder.append(Constants.SPACE);
 						start = true;
 					}
 					if (start && eventBean.getStart_date_interval_quantity() != null) {
@@ -451,14 +450,14 @@ public class EventLogic extends AbstractLogic {
 								if (isInteger(eventBean.getStart_date_interval_quantity()[i])) {
 									builder.append(interval);
 									builder.append(eventBean.getStart_date_interval_quantity()[i]);
-									builder.append(FrameworkConstants.SPACE);
+									builder.append(Constants.SPACE);
 									builder.append(eventBean.getStart_date_interval()[i]);
 								} else {
 									builder.append(interval);
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
+									builder.append(Constants.SYMBOL_QUOTE);
 									builder.append(eventBean.getStart_date_interval_quantity()[i]);
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
-									builder.append(FrameworkConstants.SPACE);
+									builder.append(Constants.SYMBOL_QUOTE);
+									builder.append(Constants.SPACE);
 									builder.append(eventBean.getStart_date_interval()[i]);
 								}
 							}
@@ -467,17 +466,17 @@ public class EventLogic extends AbstractLogic {
 				}
 				if (!isEmpty(eventBean.getEnd_date_type())) {
 					boolean end = false;
-					if (FrameworkConstants.CURRENT_TIMESTAMP.equalsIgnoreCase(eventBean.getEnd_date_type())) {
+					if (Constants.CURRENT_TIMESTAMP.equalsIgnoreCase(eventBean.getEnd_date_type())) {
 						builder.append("ENDS ");
-						builder.append(FrameworkConstants.CURRENT_TIMESTAMP);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.CURRENT_TIMESTAMP);
+						builder.append(Constants.SPACE);
 						end = true;
 					} else if (!isEmpty(eventBean.getEnd_date())) {
 						builder.append("ENDS ");
-						builder.append(FrameworkConstants.SYMBOL_QUOTE);
+						builder.append(Constants.SYMBOL_QUOTE);
 						builder.append(eventBean.getEnd_date());
-						builder.append(FrameworkConstants.SYMBOL_QUOTE);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_QUOTE);
+						builder.append(Constants.SPACE);
 						end = true;
 					}
 					if (end && eventBean.getEnd_date_interval_quantity() != null) {
@@ -486,14 +485,14 @@ public class EventLogic extends AbstractLogic {
 								if (isInteger(eventBean.getEnd_date_interval_quantity()[i])) {
 									builder.append(interval);
 									builder.append(eventBean.getEnd_date_interval_quantity()[i]);
-									builder.append(FrameworkConstants.SPACE);
+									builder.append(Constants.SPACE);
 									builder.append(eventBean.getEnd_date_interval()[i]);
 								} else {
 									builder.append(interval);
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
+									builder.append(Constants.SYMBOL_QUOTE);
 									builder.append(eventBean.getEnd_date_interval_quantity()[i]);
-									builder.append(FrameworkConstants.SYMBOL_QUOTE);
-									builder.append(FrameworkConstants.SPACE);
+									builder.append(Constants.SYMBOL_QUOTE);
+									builder.append(Constants.SPACE);
 									builder.append(eventBean.getEnd_date_interval()[i]);
 								}
 							}
@@ -504,21 +503,21 @@ public class EventLogic extends AbstractLogic {
 			if (!isEmpty(eventBean.getPreserve())) {
 				builder.append("ON COMPLETION ");
 				builder.append(eventBean.getPreserve());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 			}
 			if (!isEmpty(eventBean.getStatus())) {
 				builder.append(eventBean.getStatus());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 			}
 			if (!isEmpty(eventBean.getComment())) {
-				builder.append(FrameworkConstants.SYMBOL_QUOTE);
+				builder.append(Constants.SYMBOL_QUOTE);
 				builder.append(eventBean.getComment());
-				builder.append(FrameworkConstants.SYMBOL_QUOTE);
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SYMBOL_QUOTE);
+				builder.append(Constants.SPACE);
 			}
 			builder.append("DO ");
 			builder.append(eventBean.getBody());
-			if (FrameworkConstants.YES.equalsIgnoreCase(eventBean.getAction())) {
+			if (Constants.YES.equalsIgnoreCase(eventBean.getAction())) {
 				apiConnection = super.getConnection(bean.getRequest_db());
 				statement = apiConnection.getStmt(builder.toString());
 				statement.execute();
@@ -564,7 +563,7 @@ public class EventLogic extends AbstractLogic {
 		builder.append("<img alt=\"\" class=\"icon\" ");
 		builder.append("onclick=\"removeThisInterval(this);\" ");
 		builder.append("src=\"");
-		builder.append(DefaultServlet.REQUEST_MAP.get(Thread.currentThread().getId()).getContextPath());
+		builder.append(RequestAdaptor.REQUEST_MAP.get(Thread.currentThread().getId()).getContextPath());
 		builder.append("/components/icons/minus-r.png\"></div></div>");
 		return builder.toString();
 	}
@@ -601,7 +600,7 @@ public class EventLogic extends AbstractLogic {
 		builder.append("<img alt=\"\" class=\"icon\" ");
 		builder.append("onclick=\"removeThisInterval(this);\" ");
 		builder.append("src=\"");
-		builder.append(DefaultServlet.REQUEST_MAP.get(Thread.currentThread().getId()).getContextPath());
+		builder.append(RequestAdaptor.REQUEST_MAP.get(Thread.currentThread().getId()).getContextPath());
 		builder.append("/components/icons/minus-r.png\"></div></div>");
 		return builder.toString();
 	}

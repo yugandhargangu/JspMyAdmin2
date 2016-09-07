@@ -6,7 +6,7 @@ package com.jspmyadmin.app.table.common.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -31,7 +31,7 @@ public class ForeignKeyBean extends Bean {
 
 	private List<String> column_list = null;
 	private List<String> ref_table_list = null;
-	private List<String> action_list = new ArrayList<String>(FrameworkConstants.Utils.ACTION_LIST);
+	private List<String> action_list = new ArrayList<String>(Constants.Utils.ACTION_LIST);
 
 	/**
 	 * @return the column_name
@@ -211,13 +211,13 @@ public class ForeignKeyBean extends Bean {
 		if (foreign_key_info_list != null) {
 			return String.valueOf(foreign_key_info_list.size());
 		}
-		return FrameworkConstants.ZERO;
+		return Constants.ZERO;
 	}
 
 	public String getRef_count() {
 		if (reference_key_info_list != null) {
 			return String.valueOf(reference_key_info_list.size());
 		}
-		return FrameworkConstants.ZERO;
+		return Constants.ZERO;
 	}
 }

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractSimpleTagSupport;
 import com.jspmyadmin.framework.web.utils.MessageReader;
 
@@ -26,7 +26,7 @@ public class MessageOpenTag extends AbstractSimpleTagSupport {
 		MessageReader messageReader = null;
 		if (httpSession != null) {
 			Object temp = httpSession
-					.getAttribute(FrameworkConstants.SESSION_LOCALE);
+					.getAttribute(Constants.SESSION_LOCALE);
 			if (temp != null) {
 				messageReader = new MessageReader(temp.toString());
 			} else {
@@ -35,7 +35,7 @@ public class MessageOpenTag extends AbstractSimpleTagSupport {
 		} else {
 			messageReader = new MessageReader(null);
 		}
-		pageContext.setAttribute(FrameworkConstants.PAGE_CONTEXT_MESSAGES,
+		pageContext.setAttribute(Constants.PAGE_CONTEXT_MESSAGES,
 				messageReader, PageContext.PAGE_SCOPE);
 	}
 }

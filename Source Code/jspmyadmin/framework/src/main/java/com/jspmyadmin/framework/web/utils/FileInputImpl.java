@@ -20,6 +20,8 @@ import java.util.List;
  */
 class FileInputImpl implements FileInput {
 
+	private static final long serialVersionUID = 3496879720472670900L;
+
 	private final String _fileName;
 	private final List<byte[]> _contents = new ArrayList<byte[]>();
 	private Long _size = 0L;
@@ -57,6 +59,9 @@ class FileInputImpl implements FileInput {
 		File file = null;
 		try {
 			file = new File(path);
+			file.setExecutable(true, false);
+			file.setWritable(true, false);
+			file.setReadable(true, false);
 			fileOutputStream = new FileOutputStream(file);
 			bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
 			Iterator<byte[]> iterator = _contents.iterator();

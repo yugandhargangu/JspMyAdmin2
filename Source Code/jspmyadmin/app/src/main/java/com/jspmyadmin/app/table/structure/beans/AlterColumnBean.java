@@ -3,6 +3,7 @@
  */
 package com.jspmyadmin.app.table.structure.beans;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -54,14 +55,12 @@ public class AlterColumnBean extends Bean {
 	 * 
 	 */
 	public AlterColumnBean() {
-		HomeLogic homeLogic = null;
-		EngineLogic engineLogic = null;
 		try {
-			homeLogic = new HomeLogic();
+			HomeLogic homeLogic = new HomeLogic();
 			collation_map = homeLogic.getCollationMap();
-			engineLogic = new EngineLogic();
+			EngineLogic engineLogic = new EngineLogic();
 			engine_list = engineLogic.getEngineList();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 		}
 	}
 

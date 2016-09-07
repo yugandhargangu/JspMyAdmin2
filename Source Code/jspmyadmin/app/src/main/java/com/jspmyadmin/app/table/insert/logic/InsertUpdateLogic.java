@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,8 +23,8 @@ import com.jspmyadmin.app.table.insert.beans.InsertInfo;
 import com.jspmyadmin.app.table.insert.beans.InsertUpdateBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 import com.jspmyadmin.framework.web.utils.FileInput;
 
@@ -47,34 +48,34 @@ public class InsertUpdateLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws SQLException
+	 * @throws EncodingException
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean) throws Exception {
+	public void fillBean(Bean bean) throws SQLException, EncodingException {
 		InsertUpdateBean insertUpdateBean = (InsertUpdateBean) bean;
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		try {
 			apiConnection = getConnection(bean.getRequest_db());
 			DatabaseMetaData databaseMetaData = apiConnection.getDatabaseMetaData();
 			resultSet = databaseMetaData.getPrimaryKeys(null, null, _table);
 			if (resultSet.next()) {
-				insertUpdateBean.setPk_column(resultSet.getString(FrameworkConstants.COLUMN_NAME));
-				insertUpdateBean.setPk_status(FrameworkConstants.ONE);
+				insertUpdateBean.setPk_column(resultSet.getString(Constants.COLUMN_NAME));
+				insertUpdateBean.setPk_status(Constants.ONE);
 			}
 			close(resultSet);
 
 			if (!isEmpty(bean.getToken())) {
 				try {
-					encDecLogic = new EncDecLogic();
-					JSONObject jsonObject = new JSONObject(encDecLogic.decode(bean.getToken()));
-					if (jsonObject.has(FrameworkConstants.PK_VAL)) {
-						insertUpdateBean.setPk_value(jsonObject.getString(FrameworkConstants.PK_VAL));
-						insertUpdateBean.setUpdate(FrameworkConstants.ONE);
+					JSONObject jsonObject = new JSONObject(encodeObj.decode(bean.getToken()));
+					if (jsonObject.has(Constants.PK_VAL)) {
+						insertUpdateBean.setPk_value(jsonObject.getString(Constants.PK_VAL));
+						insertUpdateBean.setUpdate(Constants.ONE);
 					}
 				} catch (JSONException e) {
 				}
@@ -83,7 +84,7 @@ public class InsertUpdateLogic extends AbstractLogic {
 			StringBuilder builder = new StringBuilder();
 			builder.append("SHOW FULL COLUMNS FROM `");
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			List<InsertInfo> insertInfoList = new ArrayList<InsertInfo>();
@@ -93,8 +94,8 @@ public class InsertUpdateLogic extends AbstractLogic {
 				insertInfo.setDataType(resultSet.getString(2));
 				insertInfo.setCanBeNull(resultSet.getString(4));
 				insertInfo.setExtra(resultSet.getString(7));
-				if (FrameworkConstants.AUTO_INCREMENT.equalsIgnoreCase(insertInfo.getExtra())) {
-					insertInfo.setValue(FrameworkConstants.ZERO);
+				if (Constants.AUTO_INCREMENT.equalsIgnoreCase(insertInfo.getExtra())) {
+					insertInfo.setValue(Constants.ZERO);
 				} else {
 					insertInfo.setValue(resultSet.getString(6));
 				}
@@ -118,17 +119,17 @@ public class InsertUpdateLogic extends AbstractLogic {
 				for (int i = 0; i < metaData.getColumnCount(); i++) {
 					InsertInfo insertInfo = insertInfoList.get(i);
 					String className = metaData.getColumnClassName(i + 1);
-					if (FrameworkConstants.BYTE_TYPE.equals(className)) {
+					if (Constants.BYTE_TYPE.equals(className)) {
 						String typeName = metaData.getColumnTypeName(i + 1);
-						if (FrameworkConstants.Utils.BLOB_LIST.contains(typeName)) {
-							insertInfo.setFile_type(FrameworkConstants.ONE);
+						if (Constants.Utils.BLOB_LIST.contains(typeName)) {
+							insertInfo.setFile_type(Constants.ONE);
 						}
 					}
 				}
 				if (resultSet.next()) {
 					for (int i = 0; i < insertInfoList.size(); i++) {
 						InsertInfo insertInfo = insertInfoList.get(i);
-						if (FrameworkConstants.ONE.equals(insertInfo.getFile_type())) {
+						if (Constants.ONE.equals(insertInfo.getFile_type())) {
 							// do something
 						} else {
 							insertInfo.setValue(resultSet.getString(i + 1));
@@ -146,10 +147,10 @@ public class InsertUpdateLogic extends AbstractLogic {
 				for (int i = 0; i < metaData.getColumnCount(); i++) {
 					InsertInfo insertInfo = insertInfoList.get(i);
 					String className = metaData.getColumnClassName(i + 1);
-					if (FrameworkConstants.BYTE_TYPE.equals(className)) {
+					if (Constants.BYTE_TYPE.equals(className)) {
 						String typeName = metaData.getColumnTypeName(i + 1);
-						if (FrameworkConstants.Utils.BLOB_LIST.contains(typeName)) {
-							insertInfo.setFile_type(FrameworkConstants.ONE);
+						if (Constants.Utils.BLOB_LIST.contains(typeName)) {
+							insertInfo.setFile_type(Constants.ONE);
 						}
 					}
 				}
@@ -170,20 +171,21 @@ public class InsertUpdateLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void insertUpdate(Bean bean) throws IOException, ClassNotFoundException, SQLException {
+	public void insertUpdate(Bean bean) throws IOException, SQLException {
 		InsertUpdateBean insertUpdateBean = (InsertUpdateBean) bean;
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 
-		List<Object> paramList = new ArrayList<Object>();
-		Map<Integer, Object> paramMap = new LinkedHashMap<Integer, Object>();
+		List<Object> paramList = null;
+		Map<Integer, Object> paramMap = null;
 		try {
 			apiConnection = getConnection(bean.getRequest_db());
-			if (FrameworkConstants.ONE.equals(insertUpdateBean.getUpdate())) {
+			StringBuilder builder = new StringBuilder();
+			if (Constants.ONE.equals(insertUpdateBean.getUpdate())) {
 
 				// update
-				StringBuilder builder = new StringBuilder();
+				paramList = new ArrayList<Object>();
 				builder.append("UPDATE `");
 				builder.append(_table);
 				builder.append("` SET ");
@@ -193,23 +195,23 @@ public class InsertUpdateLogic extends AbstractLogic {
 						if (value != null) {
 							if (value instanceof FileInput) {
 								if (paramList.size() > 0) {
-									builder.append(FrameworkConstants.SYMBOL_COMMA);
+									builder.append(Constants.SYMBOL_COMMA);
 								}
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(insertUpdateBean.getColumns()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(" = ?");
 								FileInput fileInput = (FileInput) value;
 								paramList.add(fileInput.getInputStream());
 							} else if (!isEmpty((String) value)) {
 								if (paramList.size() > 0) {
-									builder.append(FrameworkConstants.SYMBOL_COMMA);
+									builder.append(Constants.SYMBOL_COMMA);
 								}
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(insertUpdateBean.getColumns()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								if (insertUpdateBean.getFunctions()[i] != null
-										&& FrameworkConstants.ONE.equals(insertUpdateBean.getFunctions()[i])) {
+										&& Constants.ONE.equals(insertUpdateBean.getFunctions()[i])) {
 									builder.append(" = ");
 									builder.append(value);
 								} else {
@@ -222,7 +224,7 @@ public class InsertUpdateLogic extends AbstractLogic {
 				}
 				builder.append(" WHERE `");
 				builder.append(insertUpdateBean.getPk_column());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(" = ?");
 				paramList.add(insertUpdateBean.getPk_value());
 				statement = apiConnection.getStmt(builder.toString());
@@ -234,12 +236,11 @@ public class InsertUpdateLogic extends AbstractLogic {
 						statement.setObject(i + 1, object);
 					}
 				}
-				statement.executeUpdate();
-				apiConnection.commit();
+
 			} else {
 
 				// insert
-				StringBuilder builder = new StringBuilder();
+				paramMap = new LinkedHashMap<Integer, Object>();
 				builder.append("INSERT INTO `");
 				builder.append(_table);
 				builder.append("` (");
@@ -248,21 +249,21 @@ public class InsertUpdateLogic extends AbstractLogic {
 					if (value != null) {
 						if (value instanceof FileInput) {
 							if (paramMap.size() > 0) {
-								builder.append(FrameworkConstants.SYMBOL_COMMA);
+								builder.append(Constants.SYMBOL_COMMA);
 							}
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(insertUpdateBean.getColumns()[i]);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							FileInput fileInput = (FileInput) value;
 							paramMap.put(i, fileInput.getInputStream());
 						} else if (!isEmpty((String) value)) {
-							if (!FrameworkConstants.CURRENT_TIMESTAMP.equalsIgnoreCase((String) value)) {
+							if (!Constants.CURRENT_TIMESTAMP.equalsIgnoreCase((String) value)) {
 								if (paramMap.size() > 0) {
-									builder.append(FrameworkConstants.SYMBOL_COMMA);
+									builder.append(Constants.SYMBOL_COMMA);
 								}
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(insertUpdateBean.getColumns()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								paramMap.put(i, value);
 							}
 						}
@@ -270,17 +271,17 @@ public class InsertUpdateLogic extends AbstractLogic {
 				}
 				builder.append(") VALUES (");
 				boolean alreadyEntered = false;
-				for (Integer key : paramMap.keySet()) {
+				for (Entry<Integer, Object> entry : paramMap.entrySet()) {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					} else {
 						alreadyEntered = true;
 					}
-					Object value = paramMap.get(key);
-					if (!(value instanceof FileInput) && insertUpdateBean.getFunctions()[key] != null
-							&& FrameworkConstants.ONE.equals(insertUpdateBean.getFunctions()[key])) {
+					Object value = entry.getValue();
+					if (!(value instanceof FileInput) && insertUpdateBean.getFunctions()[entry.getKey()] != null
+							&& Constants.ONE.equals(insertUpdateBean.getFunctions()[entry.getKey()])) {
 						builder.append(value);
-						paramMap.remove(key);
+						paramMap.remove(entry.getKey());
 					} else {
 						builder.append("?");
 					}
@@ -288,29 +289,27 @@ public class InsertUpdateLogic extends AbstractLogic {
 				builder.append(")");
 				statement = apiConnection.getStmt(builder.toString());
 				int i = 1;
-				for (Integer key : paramMap.keySet()) {
-					statement.setObject(i++, paramMap.get(key));
+				for (Entry<Integer, Object> entry : paramMap.entrySet()) {
+					statement.setObject(i++, entry.getValue());
 				}
-				statement.executeUpdate();
-				apiConnection.commit();
 			}
+			statement.executeUpdate();
+			apiConnection.commit();
 
 		} finally {
-			if (paramList.size() > 0) {
+			if (paramList != null && paramList.size() > 0) {
 				for (int i = 0; i < paramList.size(); i++) {
 					Object object = paramList.get(i);
 					if (object instanceof InputStream) {
-						InputStream stream = (InputStream) object;
-						close(stream);
+						close((InputStream) object);
 					}
 				}
 			}
-			if (paramMap.size() > 0) {
-				for (Integer key : paramMap.keySet()) {
-					Object object = paramMap.get(key);
+			if (paramMap != null && paramMap.size() > 0) {
+				for (Entry<Integer, Object> entry : paramMap.entrySet()) {
+					Object object = entry.getValue();
 					if (object instanceof InputStream) {
-						InputStream stream = (InputStream) object;
-						close(stream);
+						close((InputStream) object);
 					}
 				}
 			}

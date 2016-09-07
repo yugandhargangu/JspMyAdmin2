@@ -3,13 +3,18 @@
  */
 package com.jspmyadmin.app.database.trigger.controllers;
 
+import java.sql.SQLException;
+
 import com.jspmyadmin.app.database.trigger.beans.TriggerListBean;
 import com.jspmyadmin.app.database.trigger.logic.TriggerLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.utils.RedirectParams;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -20,25 +25,24 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/database_trigger_drop.html", requestLevel = RequestLevel.DATABASE)
-public class TriggerDropController extends Controller<TriggerListBean> {
+public class TriggerDropController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private RedirectParams redirectParams;
+	@Detect
+	private View view;
+	@Model
+	private TriggerListBean bean;
 
-	@Override
-	protected void handleGet(TriggerListBean bean, View view) throws Exception {
-		view.setType(ViewType.REDIRECT);
-		view.setPath(AppConstants.PATH_HOME);
-	}
-
-	@Override
+	@HandlePost
 	@ValidateToken
-	protected void handlePost(TriggerListBean bean, View view) throws Exception {
+	private void dropTrigger() {
 		try {
 			TriggerLogic triggerLogic = new TriggerLogic();
 			triggerLogic.drop(bean);
-			redirectParams.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_TRIGGER_DROP_SUCCESS);
-		} catch (Exception e) {
-			redirectParams.put(FrameworkConstants.ERR, e.getMessage());
+			redirectParams.put(Constants.MSG_KEY, AppConstants.MSG_TRIGGER_DROP_SUCCESS);
+		} catch (SQLException e) {
+			redirectParams.put(Constants.ERR, e.getMessage());
 		}
 		view.setType(ViewType.REDIRECT);
 		view.setPath(AppConstants.PATH_DATABASE_TRIGGERS);

@@ -13,7 +13,7 @@ import com.jspmyadmin.app.view.structure.beans.ColumnInfo;
 import com.jspmyadmin.app.view.structure.beans.ColumnListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -45,7 +45,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void fillStructureBean(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void fillStructureBean(Bean bean) throws SQLException {
 		ColumnListBean columnListBean = null;
 
 		ApiConnection apiConnection = null;
@@ -63,7 +63,7 @@ public class StructureLogic extends AbstractLogic {
 			builder = new StringBuilder();
 			builder.append("SHOW FULL COLUMNS FROM `");
 			builder.append(_view);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			columnInfoList = new ArrayList<ColumnInfo>();

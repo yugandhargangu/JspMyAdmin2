@@ -3,16 +3,18 @@
  */
 package com.jspmyadmin.app.common.controllers;
 
-import java.io.PrintWriter;
+import javax.servlet.http.HttpServletResponse;
 
 import com.jspmyadmin.app.common.beans.SideBarBean;
 import com.jspmyadmin.app.common.logic.SideBarLogic;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.annotations.ResponseBody;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
+import com.jspmyadmin.framework.web.annotations.Rest;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
-import com.jspmyadmin.framework.web.utils.View;
 
 /**
  * @author Yugandhar Gangu
@@ -20,7 +22,8 @@ import com.jspmyadmin.framework.web.utils.View;
  *
  */
 @WebController(authentication = true, path = "/sidebar.text", requestLevel = RequestLevel.DEFAULT)
-public class SideBarController extends Controller<SideBarBean> {
+@Rest
+public class SideBarController {
 
 	private static final String _TYPE_MENUBARMAIN = "menubarMain";
 	private static final String _TYPE_CALLCOLUMN = "callColumn";
@@ -31,21 +34,20 @@ public class SideBarController extends Controller<SideBarBean> {
 	private static final String _TYPE_CALLTRIGGER = "callTrigger";
 	private static final String _TYPE_CALLFUNCTION = "callFunction";
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private EncodeHelper encodeObj;
+	@Detect
+	private HttpServletResponse response;
+	@Model
+	private SideBarBean bean;
 
-	@Override
-	@ResponseBody
-	protected void handleGet(SideBarBean bean, View view) throws Exception {
-		this.handlePost(bean, view);
-	}
-
-	@Override
-	@ResponseBody
-	protected void handlePost(SideBarBean bean, View view) throws Exception {
+	@HandleGetOrPost
+	private String getJson() {
 		String result = null;
 		SideBarLogic sideBarLogic = null;
 		try {
 			sideBarLogic = new SideBarLogic();
+			sideBarLogic.setEncodeObj(encodeObj);
 			if (_TYPE_MENUBARMAIN.equals(bean.getType())) {
 				result = sideBarLogic.menubarMain();
 			} else if (_TYPE_CALLCOLUMN.equals(bean.getType())) {
@@ -63,18 +65,11 @@ public class SideBarController extends Controller<SideBarBean> {
 			} else if (_TYPE_CALLFUNCTION.equals(bean.getType())) {
 				result = sideBarLogic.callFunction(bean.getToken());
 			} else {
-				result = FrameworkConstants.BLANK;
+				result = Constants.BLANK;
 			}
 		} catch (Exception e) {
-			result = FrameworkConstants.BLANK;
-		} finally {
-			sideBarLogic = null;
+			result = Constants.BLANK;
 		}
-		PrintWriter writer = response.getWriter();
-		try {
-			writer.print(super.encrypt(result));
-		} finally {
-			writer.close();
-		}
+		return result;
 	}
 }

@@ -18,7 +18,7 @@ import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
 import com.jspmyadmin.framework.constants.AppConstants;
 import com.jspmyadmin.framework.constants.BeanConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 import com.jspmyadmin.framework.web.utils.Messages;
 
@@ -51,7 +51,7 @@ public class StatusLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 		StatusBean statusBean = null;
 
 		ApiConnection apiConnection = null;
@@ -140,19 +140,19 @@ public class StatusLogic extends AbstractLogic {
 	private String _getInDays(long temp) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(((temp / 60 / 60 / 24) % 24));
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(messages.getMessage(AppConstants.VAL_DAYS));
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(((temp / 60 / 60) % 60));
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(messages.getMessage(AppConstants.VAL_HOURS));
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(((temp / 60) % 60));
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(messages.getMessage(AppConstants.VAL_MINS));
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(temp % 60);
-		builder.append(FrameworkConstants.SPACE);
+		builder.append(Constants.SPACE);
 		builder.append(messages.getMessage(AppConstants.VAL_SECS));
 		return builder.toString();
 	}
@@ -177,7 +177,7 @@ public class StatusLogic extends AbstractLogic {
 			calendar.add(Calendar.HOUR, hours * -1);
 			int days = (int) ((temp / 60 / 60 / 24) % 24);
 			calendar.add(Calendar.DATE, days * -1);
-			dateFormat = new SimpleDateFormat(FrameworkConstants.DATE_FORMAT_FULL);
+			dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_FULL);
 			date = dateFormat.format(calendar.getTime());
 		} finally {
 			dateFormat = null;

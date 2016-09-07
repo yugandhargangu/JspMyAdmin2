@@ -47,34 +47,41 @@
 			<div id="main-body">
 				<div style="padding: 0.1em 0.2em;">
 					<div class="page-head">
-						<h3>Export</h3>
+						<h3>
+							<m:print key="lbl.export" />
+						</h3>
 					</div>
 					<form
 						action="${pageContext.request.contextPath}/database_export.html"
 						accept-charset="utf-8" method="post" id="export-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="token" id="token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="token" id="token"
 							value="${requestScope.command.token}">
 
 						<div class="group">
-							<div class="group-widget group-header">Export SQL File</div>
+							<div class="group-widget group-header">
+								<m:print key="lbl.export_sql_file" />
+							</div>
 							<div class="group-widget group-content">
 								<div class="div-inline-item">
-									<h4>Select Tables</h4>
+									<h4>
+										<m:print key="lbl.select_tables" />
+									</h4>
 									<div>
 										<table class="tbl" id="table-list">
 											<thead>
 												<tr>
-													<th>Table Name</th>
-													<th>Export Structure</th>
-													<th>Export Data</th>
+													<th><m:print key="lbl.table_name" /></th>
+													<th><m:print key="lbl.export_structure" /></th>
+													<th><m:print key="lbl.export_data" /></th>
 												</tr>
 											</thead>
 											<tfoot>
 												<tr>
-													<th>Table Name</th>
-													<th>Export Structure</th>
-													<th>Export Data</th>
+													<th><m:print key="lbl.table_name" /></th>
+													<th><m:print key="lbl.export_structure" /></th>
+													<th><m:print key="lbl.export_data" /></th>
 												</tr>
 											</tfoot>
 											<tbody>
@@ -97,50 +104,62 @@
 									</div>
 								</div>
 								<div class="div-inline-item">
-									<h4>Structure Options</h4>
+									<h4>
+										<m:print key="lbl.structure_options" />
+									</h4>
 
 									<div>
 										<label><input type="checkbox" name="disable_fks"
-											value="1"> Disable Foreign Key Checks</label>
+											value="1"> <m:print
+												key="lbl.disable_foreign_key_checks" /></label>
 									</div>
 
 									<br>
 									<div class="form-input">
-										<label>File Name</label><input type="text" name="filename"
-											class="form-control" value="${requestScope.command.filename}">
+										<label><m:print key="lbl.file_name" /> </label><input
+											type="text" name="filename" class="form-control"
+											value="${requestScope.command.filename}">
 									</div>
 								</div>
 								<div class="div-inline-item">
-									<h4>Include Options</h4>
+									<h4>
+										<m:print key="lbl.include_options" />
+									</h4>
 									<div>
 										<label><input type="checkbox" name="include_views"
-											checked="checked" value="1"> Include VIEWS</label>
+											checked="checked" value="1"> <m:print
+												key="lbl.include" /> VIEWS</label>
 									</div>
 									<div>
 										<label><input type="checkbox"
 											name="include_procedures" checked="checked" value="1">
-											Include PROCEDURES</label>
+											<m:print key="lbl.include" /> PROCEDURES</label>
 									</div>
 									<div>
 										<label><input type="checkbox" name="include_functions"
-											checked="checked" value="1"> Include FUNCTIONS</label>
+											checked="checked" value="1"> <m:print
+												key="lbl.include" /> FUNCTIONS</label>
 									</div>
 									<div>
 										<label><input type="checkbox" name="include_events"
-											checked="checked" value="1"> Include EVENTS</label>
+											checked="checked" value="1"> <m:print
+												key="lbl.include" /> EVENTS</label>
 									</div>
 									<div>
 										<label><input type="checkbox" name="include_triggers"
-											checked="checked" value="1"> Include TRIGGERS</label>
+											checked="checked" value="1"> <m:print
+												key="lbl.include" /> TRIGGERS</label>
 									</div>
 									<div>
 										<label><input type="checkbox" name="add_drop_db"
-											value="1"> Include Drop DATABASE Statements</label>
+											value="1"> <m:print key="lbl.include" /> Drop
+											DATABASE Statements</label>
 									</div>
 									<div>
 										<label><input type="checkbox" name="add_drop_table"
-											value="1"> Include Drop TABLE/VIEW / PROCEDURE /
-											FUNCTION / EVENT / TRIGGER Statements</label>
+											value="1"> <m:print key="lbl.include" /> Drop
+											TABLE/VIEW / PROCEDURE / FUNCTION / EVENT / TRIGGER
+											Statements</label>
 									</div>
 								</div>
 							</div>
@@ -158,7 +177,8 @@
 			</div>
 		</div>
 	</div>
-
+	<m:store name="msg_export_atleast_one_table"
+		key="msg.export_atleast_one_table" />
 	<script type="text/javascript">
 		$("#header-menu li:nth-child(8)").addClass('active');
 		applyEvenOdd('#table-list');
@@ -168,7 +188,7 @@
 				if ($('.tbl-structure:checked').length > 0) {
 					$('#export-form').submit();
 				} else {
-					$('#sidebar-error-msg').text('Please Select at least one table to export.');
+					$('#sidebar-error-msg').text('${msg_export_atleast_one_table}');
 					$('#sidebar-error-dialog').show();
 				}
 			});

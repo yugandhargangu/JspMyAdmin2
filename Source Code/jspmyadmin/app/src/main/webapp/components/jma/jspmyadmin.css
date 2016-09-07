@@ -378,6 +378,12 @@ input[type="text"], input[type="password"], select, input[type="number"]
 	width: auto;
 }
 
+input[type="text"], input[type="password"], select, input[type="number"],
+	textarea {
+	font-family: inherit;
+	font-size: inherit;
+}
+
 select option, select optgroup {
 	padding-left: 0.4em;
 }

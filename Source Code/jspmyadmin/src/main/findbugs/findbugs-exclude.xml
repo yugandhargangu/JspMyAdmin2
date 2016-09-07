@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+	<Match>
+		<Package name="org.apache.commons.codec" />
+	</Match>
+	<Match>
+		<Package name="org.apache.commons.codec.binary" />
+	</Match>
+	<Match>
+		<Package name="org.json" />
+	</Match>
+
+	<Match>
+		<Field type="java.util.Map" />
+		<Bug pattern="SE_BAD_FIELD" />
+	</Match>
+	<Match>
+		<Field type="java.util.Set" />
+		<Bug pattern="SE_BAD_FIELD" />
+	</Match>
+	<Match>
+		<Field type="java.util.List" />
+		<Bug pattern="SE_BAD_FIELD" />
+	</Match>
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP" />
+	</Match>
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2" />
+	</Match>
+</FindBugsFilter>

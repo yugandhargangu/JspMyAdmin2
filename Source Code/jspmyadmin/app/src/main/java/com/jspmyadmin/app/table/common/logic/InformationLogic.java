@@ -16,7 +16,7 @@ import java.util.Map;
 import com.jspmyadmin.app.table.common.beans.InformationBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -38,7 +38,7 @@ public class InformationLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 
 		InformationBean informationBean = (InformationBean) bean;
 
@@ -57,7 +57,7 @@ public class InformationLogic extends AbstractLogic {
 				for (int i = 1; i <= metaData.getColumnCount(); i++) {
 					String value = resultSet.getString(i);
 					if (value == null) {
-						info_map.put(metaData.getColumnLabel(i), FrameworkConstants.DATABASE_NULL);
+						info_map.put(metaData.getColumnLabel(i), Constants.DATABASE_NULL);
 					} else {
 						info_map.put(metaData.getColumnLabel(i), value);
 					}
@@ -66,10 +66,10 @@ public class InformationLogic extends AbstractLogic {
 			}
 			close(resultSet);
 			close(statement);
-			statement = apiConnection.getStmtSelect("SHOW CREATE TABLE `" + _table + FrameworkConstants.SYMBOL_TEN);
+			statement = apiConnection.getStmtSelect("SHOW CREATE TABLE `" + _table + Constants.SYMBOL_TEN);
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				informationBean.setCreate_syn(resultSet.getString(2) + FrameworkConstants.SYMBOL_SEMI_COLON);
+				informationBean.setCreate_syn(resultSet.getString(2) + Constants.SYMBOL_SEMI_COLON);
 			}
 			close(resultSet);
 			close(statement);
@@ -84,40 +84,40 @@ public class InformationLogic extends AbstractLogic {
 			String start = "<{";
 			String end = ": }>";
 			String equals = " = ";
-			String new_row = FrameworkConstants.SPACE;
+			String new_row = Constants.SPACE;
 
 			StringBuilder builder = new StringBuilder("INSERT INTO `");
 			builder.append(bean.getRequest_db());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SYMBOL_DOT);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_DOT);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(new_row);
-			builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+			builder.append(Constants.SYMBOL_BRACKET_OPEN);
 			Iterator<String> iterator = columnList.iterator();
 			boolean isEntered = false;
 			while (iterator.hasNext()) {
 				if (isEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 					builder.append(new_row);
 				} else {
 					isEntered = true;
 				}
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(iterator.next());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 			}
-			builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+			builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 			builder.append(new_row);
 			builder.append(" VALUES ");
 			builder.append(new_row);
-			builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+			builder.append(Constants.SYMBOL_BRACKET_OPEN);
 			iterator = columnList.iterator();
 			isEntered = false;
 			while (iterator.hasNext()) {
 				if (isEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 					builder.append(new_row);
 				} else {
 					isEntered = true;
@@ -126,33 +126,33 @@ public class InformationLogic extends AbstractLogic {
 				builder.append(iterator.next());
 				builder.append(end);
 			}
-			builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
-			builder.append(FrameworkConstants.SYMBOL_SEMI_COLON);
+			builder.append(Constants.SYMBOL_BRACKET_CLOSE);
+			builder.append(Constants.SYMBOL_SEMI_COLON);
 			informationBean.setInsert_syn(builder.toString());
 
 			builder.delete(0, builder.length());
 			builder.append("UPDATE `");
 			builder.append(bean.getRequest_db());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SYMBOL_DOT);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_DOT);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(" SET ");
 			builder.append(new_row);
 			iterator = columnList.iterator();
 			isEntered = false;
 			while (iterator.hasNext()) {
 				if (isEntered) {
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_COMMA);
 					builder.append(new_row);
 				} else {
 					isEntered = true;
 				}
 				String column = iterator.next();
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(column);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(equals);
 				builder.append(start);
 				builder.append(column);
@@ -165,11 +165,11 @@ public class InformationLogic extends AbstractLogic {
 			builder.delete(0, builder.length());
 			builder.append("DELETE FROM `");
 			builder.append(bean.getRequest_db());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SYMBOL_DOT);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_DOT);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(_table);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(" WHERE <{where_expression}>;");
 			informationBean.setDelete_syn(builder.toString());
 		} finally {

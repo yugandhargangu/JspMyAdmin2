@@ -22,8 +22,8 @@ import com.jspmyadmin.app.server.users.beans.UserInfoBean;
 import com.jspmyadmin.app.server.users.beans.UserListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -36,15 +36,17 @@ public class UserLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws SQLException
+	 * @throws JSONException
+	 * @throws EncodingException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean) throws Exception {
+	public void fillBean(Bean bean) throws SQLException, JSONException, EncodingException {
 		UserListBean userListBean = (UserListBean) bean;
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		EncDecLogic encDecLogic = null;
 		try {
 			apiConnection = getConnection();
 			StringBuilder builder = new StringBuilder();
@@ -52,22 +54,21 @@ public class UserLogic extends AbstractLogic {
 			builder.append("max_user_connections,plugin FROM mysql.user ORDER BY user");
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
-			encDecLogic = new EncDecLogic();
 			List<UserInfo> userInfoList = new ArrayList<UserInfo>();
 			while (resultSet.next()) {
 				builder.delete(0, builder.length());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(resultSet.getString(1));
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_AT);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_AT);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(resultSet.getString(2));
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				UserInfo userInfo = new UserInfo();
 				userInfo.setUser(builder.toString());
 				JSONObject jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.USER, userInfo.getUser());
-				userInfo.setToken(encDecLogic.encode(jsonObject.toString()));
+				jsonObject.put(Constants.USER, userInfo.getUser());
+				userInfo.setToken(encodeObj.encode(jsonObject.toString()));
 				userInfo.setMax_questions(resultSet.getString(3));
 				userInfo.setMax_updates(resultSet.getString(4));
 				userInfo.setMax_connections(resultSet.getString(5));
@@ -101,17 +102,19 @@ public class UserLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param token
+	 * @throws EncodingException
+	 * @throws JSONException
+	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void dropUser(String token) throws Exception {
+	public void dropUser(String token) throws JSONException, EncodingException, SQLException {
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		try {
-			EncDecLogic encDecLogic = new EncDecLogic();
-			JSONObject jsonObject = new JSONObject(encDecLogic.decode(token));
+			JSONObject jsonObject = new JSONObject(encodeObj.decode(token));
 			String user = null;
-			if (jsonObject.has(FrameworkConstants.USER)) {
-				user = jsonObject.getString(FrameworkConstants.USER);
+			if (jsonObject.has(Constants.USER)) {
+				user = jsonObject.getString(Constants.USER);
 			} else {
 				throw new NullPointerException();
 			}
@@ -128,27 +131,28 @@ public class UserLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws JSONException
+	 * @throws EncodingException
+	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void fillGlobalPrivileges(Bean bean) throws Exception {
+	public void fillGlobalPrivileges(Bean bean) throws JSONException, EncodingException, SQLException {
 		GlobalPrivilegeBean globalPrivilegeBean = (GlobalPrivilegeBean) bean;
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			JSONObject jsonObject = new JSONObject(encDecLogic.decode(globalPrivilegeBean.getToken()));
+			JSONObject jsonObject = new JSONObject(encodeObj.decode(globalPrivilegeBean.getToken()));
 			String user = null;
-			if (jsonObject.has(FrameworkConstants.USER)) {
-				user = jsonObject.getString(FrameworkConstants.USER);
+			if (jsonObject.has(Constants.USER)) {
+				user = jsonObject.getString(Constants.USER);
 			} else {
 				throw new NullPointerException();
 			}
 			globalPrivilegeBean.setUser(user);
-			user = user.replaceAll(FrameworkConstants.SYMBOL_TEN, "\'");
+			user = user.replaceAll(Constants.SYMBOL_TEN, "\'");
 			apiConnection = getConnection();
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT privilege_type FROM ");
@@ -166,12 +170,12 @@ public class UserLogic extends AbstractLogic {
 			resultSet = statement.executeQuery();
 			boolean grant = false;
 			if (resultSet.next()) {
-				grant = resultSet.getString(1).endsWith(FrameworkConstants.GRANT_OPTION);
+				grant = resultSet.getString(1).endsWith(Constants.GRANT_OPTION);
 			}
 			close(resultSet);
 			close(statement);
 			if (grant) {
-				privilegeList.add(FrameworkConstants.GRANT_OPTION);
+				privilegeList.add(Constants.GRANT_OPTION);
 			}
 			statement = apiConnection.getStmtSelect("SHOW PRIVILEGES");
 			resultSet = statement.executeQuery();
@@ -179,11 +183,11 @@ public class UserLogic extends AbstractLogic {
 			while (resultSet.next()) {
 				PrivilegeInfo privilegeInfo = new PrivilegeInfo();
 				privilegeInfo.setPrivilege(resultSet.getString(1).toUpperCase());
-				if (!FrameworkConstants.PROXY.equals(privilegeInfo.getPrivilege())) {
+				if (!Constants.PROXY.equals(privilegeInfo.getPrivilege())) {
 					privilegeInfo.setContext(resultSet.getString(2));
 					privilegeInfo.setComment(resultSet.getString(3));
 					if (privilegeList.contains(privilegeInfo.getPrivilege())) {
-						privilegeInfo.setValue(FrameworkConstants.ONE);
+						privilegeInfo.setValue(Constants.ONE);
 					}
 					privilegeInfoList.add(privilegeInfo);
 				}
@@ -202,7 +206,7 @@ public class UserLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void saveGlobalPrivileges(Bean bean) throws ClassNotFoundException, SQLException {
+	public void saveGlobalPrivileges(Bean bean) throws SQLException {
 		GlobalPrivilegeBean globalPrivilegeBean = (GlobalPrivilegeBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -210,12 +214,12 @@ public class UserLogic extends AbstractLogic {
 		ResultSet resultSet = null;
 		try {
 			apiConnection = getConnection();
-			if (FrameworkConstants.ONE.equals(globalPrivilegeBean.getRevoke_all())) {
+			if (Constants.ONE.equals(globalPrivilegeBean.getRevoke_all())) {
 				statement = apiConnection
 						.getStmt("REVOKE ALL PRIVILEGES, GRANT OPTION FROM " + globalPrivilegeBean.getUser());
 				statement.executeQuery();
 			} else {
-				String user = globalPrivilegeBean.getUser().replaceAll(FrameworkConstants.SYMBOL_TEN, "\'");
+				String user = globalPrivilegeBean.getUser().replaceAll(Constants.SYMBOL_TEN, "\'");
 				StringBuilder builder = new StringBuilder();
 				builder.append("SELECT privilege_type FROM ");
 				builder.append("information_schema.user_privileges WHERE grantee = ?");
@@ -232,24 +236,24 @@ public class UserLogic extends AbstractLogic {
 				resultSet = statement.executeQuery();
 				boolean grant = false;
 				if (resultSet.next()) {
-					grant = resultSet.getString(1).endsWith(FrameworkConstants.GRANT_OPTION);
+					grant = resultSet.getString(1).endsWith(Constants.GRANT_OPTION);
 				}
 				close(resultSet);
 				close(statement);
 				if (grant) {
-					privilegeList.add(FrameworkConstants.GRANT_OPTION);
+					privilegeList.add(Constants.GRANT_OPTION);
 				}
 				if (globalPrivilegeBean.getPrivileges() != null && globalPrivilegeBean.getPrivileges().length > 0) {
 					builder.delete(0, builder.length());
 					builder.append("GRANT ");
 					boolean alreadyEntered = false;
 					for (int i = 0; i < globalPrivilegeBean.getPrivileges().length; i++) {
-						if (!FrameworkConstants.PROXY.equals(globalPrivilegeBean.getPrivileges()[i])) {
+						if (!Constants.PROXY.equals(globalPrivilegeBean.getPrivileges()[i])) {
 							if (privilegeList.contains(globalPrivilegeBean.getPrivileges()[i])) {
 								privilegeList.remove(globalPrivilegeBean.getPrivileges()[i]);
 							} else {
 								if (alreadyEntered) {
-									builder.append(FrameworkConstants.SYMBOL_COMMA);
+									builder.append(Constants.SYMBOL_COMMA);
 								} else {
 									alreadyEntered = true;
 								}
@@ -277,7 +281,7 @@ public class UserLogic extends AbstractLogic {
 					boolean alreadyEntered = false;
 					while (iterator.hasNext()) {
 						if (alreadyEntered) {
-							builder.append(FrameworkConstants.SYMBOL_COMMA);
+							builder.append(Constants.SYMBOL_COMMA);
 						} else {
 							alreadyEntered = true;
 						}
@@ -302,27 +306,28 @@ public class UserLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws EncodingException
+	 * @throws JSONException
+	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void fillSchemaPrivileges(Bean bean) throws Exception {
+	public void fillSchemaPrivileges(Bean bean) throws JSONException, EncodingException, SQLException {
 		SchemaPrivilegeBean schemaPrivilegeBean = (SchemaPrivilegeBean) bean;
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			JSONObject jsonObject = new JSONObject(encDecLogic.decode(schemaPrivilegeBean.getToken()));
+			JSONObject jsonObject = new JSONObject(encodeObj.decode(schemaPrivilegeBean.getToken()));
 			String user = null;
-			if (jsonObject.has(FrameworkConstants.USER)) {
-				user = jsonObject.getString(FrameworkConstants.USER);
+			if (jsonObject.has(Constants.USER)) {
+				user = jsonObject.getString(Constants.USER);
 			} else {
 				throw new NullPointerException();
 			}
 			schemaPrivilegeBean.setUser(user);
-			user = user.replaceAll(FrameworkConstants.SYMBOL_TEN, "\'");
+			user = user.replaceAll(Constants.SYMBOL_TEN, "\'");
 			apiConnection = getConnection();
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT table_schema,privilege_type,is_grantable FROM ");
@@ -357,20 +362,20 @@ public class UserLogic extends AbstractLogic {
 					ddl_rights = new String[schemaPrivilegeBean.getPrivilege_ddl_list().size()];
 					other_rights = new String[schemaPrivilegeBean.getPrivilege_admn_list().size()];
 
-					if (FrameworkConstants.YES.equalsIgnoreCase(resultSet.getString(3))) {
-						other_rights[0] = FrameworkConstants.ONE;
+					if (Constants.YES.equalsIgnoreCase(resultSet.getString(3))) {
+						other_rights[0] = Constants.ONE;
 					}
 				}
 				String privilegeType = resultSet.getString(2);
 				if (schemaPrivilegeBean.getPrivilege_obj_list().contains(privilegeType)) {
 					obj_rights[schemaPrivilegeBean.getPrivilege_obj_list()
-							.indexOf(privilegeType)] = FrameworkConstants.ONE;
+							.indexOf(privilegeType)] = Constants.ONE;
 				} else if (schemaPrivilegeBean.getPrivilege_ddl_list().contains(privilegeType)) {
 					ddl_rights[schemaPrivilegeBean.getPrivilege_ddl_list()
-							.indexOf(privilegeType)] = FrameworkConstants.ONE;
+							.indexOf(privilegeType)] = Constants.ONE;
 				} else if (schemaPrivilegeBean.getPrivilege_admn_list().contains(privilegeType)) {
 					other_rights[schemaPrivilegeBean.getPrivilege_admn_list()
-							.indexOf(privilegeType)] = FrameworkConstants.ONE;
+							.indexOf(privilegeType)] = Constants.ONE;
 				}
 				lastSchema = currentSchema;
 			}
@@ -407,7 +412,7 @@ public class UserLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void saveSchemaPrivileges(Bean bean) throws ClassNotFoundException, SQLException {
+	public void saveSchemaPrivileges(Bean bean) throws SQLException {
 		SchemaPrivilegeBean schemaPrivilegeBean = (SchemaPrivilegeBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -416,7 +421,7 @@ public class UserLogic extends AbstractLogic {
 
 		try {
 			apiConnection = getConnection();
-			String user = schemaPrivilegeBean.getUser().replaceAll(FrameworkConstants.SYMBOL_TEN, "\'");
+			String user = schemaPrivilegeBean.getUser().replaceAll(Constants.SYMBOL_TEN, "\'");
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT privilege_type,is_grantable FROM ");
 			builder.append("information_schema.schema_privileges WHERE grantee = ?");
@@ -435,8 +440,8 @@ public class UserLogic extends AbstractLogic {
 			}
 			close(resultSet);
 			close(statement);
-			if (FrameworkConstants.YES.equalsIgnoreCase(grant)) {
-				privilegeList.add(FrameworkConstants.GRANT_OPTION);
+			if (Constants.YES.equalsIgnoreCase(grant)) {
+				privilegeList.add(Constants.GRANT_OPTION);
 			}
 			if (schemaPrivilegeBean.getPrivileges() != null && schemaPrivilegeBean.getPrivileges().length > 0) {
 				boolean alreadyEntered = false;
@@ -447,7 +452,7 @@ public class UserLogic extends AbstractLogic {
 						privilegeList.remove(privilege);
 					} else {
 						if (alreadyEntered) {
-							builder.append(FrameworkConstants.SYMBOL_COMMA);
+							builder.append(Constants.SYMBOL_COMMA);
 						} else {
 							alreadyEntered = true;
 						}
@@ -456,9 +461,9 @@ public class UserLogic extends AbstractLogic {
 				}
 				if (alreadyEntered) {
 					builder.append(" ON ");
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(schemaPrivilegeBean.getDatabase());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(".* TO ");
 					builder.append(schemaPrivilegeBean.getUser());
 					statement = apiConnection.getStmt(builder.toString());
@@ -472,16 +477,16 @@ public class UserLogic extends AbstractLogic {
 				boolean alreadyEntered = false;
 				while (iterator.hasNext()) {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					} else {
 						alreadyEntered = true;
 					}
 					builder.append(iterator.next());
 				}
 				builder.append(" ON ");
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(schemaPrivilegeBean.getDatabase());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(".* FROM ");
 				builder.append(schemaPrivilegeBean.getUser());
 				statement = apiConnection.getStmt(builder.toString());
@@ -500,23 +505,23 @@ public class UserLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws EncodingException
 	 * @throws JSONException
+	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void fillUserInfo(Bean bean) throws JSONException, Exception {
+	public void fillUserInfo(Bean bean) throws JSONException, EncodingException, SQLException {
 		UserInfoBean userInfoBean = (UserInfoBean) bean;
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		try {
 			if (!isEmpty(userInfoBean.getToken())) {
-				encDecLogic = new EncDecLogic();
-				JSONObject jsonObject = new JSONObject(encDecLogic.decode(userInfoBean.getToken()));
-				if (jsonObject.has(FrameworkConstants.USER)) {
-					String user = jsonObject.getString(FrameworkConstants.USER);
+				JSONObject jsonObject = new JSONObject(encodeObj.decode(userInfoBean.getToken()));
+				if (jsonObject.has(Constants.USER)) {
+					String user = jsonObject.getString(Constants.USER);
 					userInfoBean.setUser(user);
 					user = user.substring(1, user.length() - 1);
 					String[] temp = user.split("`@`");
@@ -533,7 +538,7 @@ public class UserLogic extends AbstractLogic {
 						resultSet = statement.executeQuery();
 						if (resultSet.next()) {
 							String password = resultSet.getString(1);
-							if (password != null && !FrameworkConstants.BLANK.equals(password.trim())) {
+							if (password != null && !Constants.BLANK.equals(password.trim())) {
 								userInfoBean.setPassword(password);
 								userInfoBean.setPassword_confirm(password);
 							}
@@ -556,7 +561,7 @@ public class UserLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void saveUserInfo(Bean bean) throws ClassNotFoundException, SQLException {
+	public void saveUserInfo(Bean bean) throws SQLException {
 		UserInfoBean userInfoBean = (UserInfoBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -571,24 +576,24 @@ public class UserLogic extends AbstractLogic {
 					builder.append("RENAME USER ");
 					builder.append(userInfoBean.getUser());
 					builder.append(" TO ");
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(userInfoBean.getLogin_name());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_AT);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_AT);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(userInfoBean.getHost_name());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					close(statement);
 					builder.delete(0, builder.length());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(userInfoBean.getLogin_name());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_AT);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_AT);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(userInfoBean.getHost_name());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					userInfoBean.setOld_user(userInfoBean.getLogin_name());
 					userInfoBean.setOld_host(userInfoBean.getHost_name());
 				}
@@ -615,13 +620,13 @@ public class UserLogic extends AbstractLogic {
 			} else {
 				StringBuilder builder = new StringBuilder();
 				builder.append("CREATE USER ");
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(userInfoBean.getLogin_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_AT);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_AT);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(userInfoBean.getHost_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				if (!isEmpty(userInfoBean.getPassword())) {
 					builder.append(" IDENTIFIED BY ?");
 				}
@@ -631,13 +636,13 @@ public class UserLogic extends AbstractLogic {
 				}
 				statement.execute();
 				builder.delete(0, builder.length());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(userInfoBean.getLogin_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_AT);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_AT);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(userInfoBean.getHost_name());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				userInfoBean.setUser(builder.toString());
 			}
 		} finally {

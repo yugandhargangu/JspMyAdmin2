@@ -3,11 +3,19 @@
  */
 package com.jspmyadmin.app.server.common.controllers;
 
+import java.sql.SQLException;
+
+import org.json.JSONException;
+
 import com.jspmyadmin.app.server.common.beans.CommonListBean;
 import com.jspmyadmin.app.server.common.logic.EngineLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -18,26 +26,22 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/server_engines.html", requestLevel = RequestLevel.SERVER)
-public class EngineController extends Controller<CommonListBean> {
+public class EngineController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private EncodeHelper encodeObj;
+	@Detect
+	private View view;
+	@Model
+	private CommonListBean bean;
 
-	@Override
-	protected void handleGet(CommonListBean bean, View view) throws Exception {
-		EngineLogic engineLogic = null;
-		try {
-			engineLogic = new EngineLogic();
-			engineLogic.fillBean(bean);
-		} finally {
-			engineLogic = null;
-		}
+	@HandleGetOrPost
+	private void engines() throws SQLException, JSONException, EncodingException {
+		EngineLogic engineLogic = new EngineLogic();
+		engineLogic.setEncodeObj(encodeObj);
+		engineLogic.fillBean(bean);
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_SERVER_COMMON_ENGINELIST);
-	}
-
-	@Override
-	protected void handlePost(CommonListBean bean, View view) throws Exception {
-		this.handleGet(bean, view);
 	}
 
 }

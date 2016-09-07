@@ -31,14 +31,17 @@
 			<div id="main-body">
 				<div style="padding: 0.1em 0.2em;">
 					<div class="page-head">
-						<h3>Import SQL script file</h3>
+						<h3>
+							<m:print key="lbl.import_sql_script_file" />
+						</h3>
 					</div>
 					<form
 						action="${pageContext.request.contextPath}/database_import.html"
 						accept-charset="utf-8" method="post" id="import-form"
 						enctype="multipart/form-data">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="token" id="token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="token" id="token"
 							value="${requestScope.command.token}">
 
 						<div class="group">
@@ -48,15 +51,18 @@
 							<div class="group-widget group-content">
 								<div class="form-input">
 									<label><input type="checkbox" name="disable_fks"
-										value="1"> Disable Foreign Keys</label>
+										value="1"> <m:print key="lbl.disable_foreign_keys" />
+									</label>
 								</div>
 								<div class="form-input">
 									<label><input type="checkbox" name="continue_errors"
-										value="1"> Continue Execution with Errors</label>
+										value="1"> <m:print
+											key="lbl.continue_execution_with_errors" /></label>
 								</div>
 								<div class="form-input">
 									<label><input type="checkbox" name="import_to_db"
-										value="1"> Use ${requestScope.command.request_db} database</label>
+										value="1"> Use ${requestScope.command.request_db} <m:print
+											key="lbl.database" /></label>
 								</div>
 								<div class="form-input">
 									<input type="file" name="import_file">

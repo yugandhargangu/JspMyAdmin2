@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -20,7 +20,7 @@ public class DataSelectBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private String query = null;
-	private String limit = FrameworkConstants.LIMIT;
+	private String limit = Constants.LIMIT;
 	private Map<String, String> column_name_map = null;
 	private String[] search_columns = null;
 	private String[] search_list = null;
@@ -37,7 +37,7 @@ public class DataSelectBean extends Bean {
 
 	private String[] ids = null;
 
-	private List<String> limit_list = new ArrayList<String>(FrameworkConstants.Utils.LIMIT_LIST);
+	private List<String> limit_list = new ArrayList<String>(Constants.Utils.LIMIT_LIST);
 
 	/**
 	 * @return the query

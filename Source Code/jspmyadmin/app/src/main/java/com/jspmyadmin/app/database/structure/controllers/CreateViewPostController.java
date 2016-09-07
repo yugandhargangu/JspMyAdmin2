@@ -3,20 +3,28 @@
  */
 package com.jspmyadmin.app.database.structure.controllers;
 
-import java.io.PrintWriter;
+import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.database.structure.beans.CreateViewBean;
 import com.jspmyadmin.app.database.structure.logic.StructureLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.annotations.ResponseBody;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
+import com.jspmyadmin.framework.web.annotations.Rest;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
+import com.jspmyadmin.framework.web.utils.Messages;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
-import com.jspmyadmin.framework.web.utils.View;
 
 /**
  * @author Yugandhar Gangu
@@ -24,51 +32,45 @@ import com.jspmyadmin.framework.web.utils.View;
  *
  */
 @WebController(authentication = true, path = "/database_create_view_post.text", requestLevel = RequestLevel.DATABASE)
-public class CreateViewPostController extends Controller<CreateViewBean> {
+@Rest
+public class CreateViewPostController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private Messages messages;
+	@Detect
+	private EncodeHelper encodeObj;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private HttpServletResponse response;
+	@Model
+	private CreateViewBean bean;
 
-	@Override
-	@ResponseBody
-	protected void handleGet(CreateViewBean bean, View view) throws Exception {
-	}
-
-	@Override
+	@HandlePost
 	@ValidateToken
-	@ResponseBody
-	protected void handlePost(CreateViewBean bean, View view) throws Exception {
+	private JSONObject createView() throws JSONException, EncodingException {
 
 		StructureLogic structureLogic = null;
 		JSONObject jsonObject = new JSONObject();
 		try {
 			structureLogic = new StructureLogic();
 			if (structureLogic.isTableExisted(bean.getView_name(), bean.getRequest_db())) {
-				jsonObject.put(FrameworkConstants.ERR, messages.getMessage(AppConstants.MSG_VIEW_ALREADY_EXISTED));
+				jsonObject.put(Constants.ERR, messages.getMessage(AppConstants.MSG_VIEW_ALREADY_EXISTED));
 			} else {
 				String result = structureLogic.createView(bean);
-				jsonObject.append(FrameworkConstants.ERR, FrameworkConstants.BLANK);
+				jsonObject.append(Constants.ERR, Constants.BLANK);
 				if (result != null) {
-					jsonObject.append(FrameworkConstants.DATA, result);
+					jsonObject.append(Constants.DATA, result);
 				} else {
 					JSONObject msg = new JSONObject();
-					msg.put(FrameworkConstants.MSG_KEY, AppConstants.MSG_VIEW_CREATED);
-					jsonObject.append(FrameworkConstants.MSG, super.encode(msg.toString()));
+					msg.put(Constants.MSG_KEY, AppConstants.MSG_VIEW_CREATED);
+					jsonObject.append(Constants.MSG, encodeObj.encode(msg.toString()));
 				}
 			}
-		} catch (Exception e) {
-			jsonObject.append(FrameworkConstants.ERR, e.getMessage());
-		} finally {
-			structureLogic = null;
-		}
-
-		jsonObject.put(FrameworkConstants.TOKEN, super.generateToken());
-		PrintWriter writer = response.getWriter();
-		try {
-			writer.print(super.encrypt(jsonObject));
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-		}
+		} catch (SQLException e) {
+			jsonObject.append(Constants.ERR, e.getMessage());
+		} 
+		jsonObject.put(Constants.TOKEN, requestAdaptor.generateToken());
+		return jsonObject;
 	}
 }

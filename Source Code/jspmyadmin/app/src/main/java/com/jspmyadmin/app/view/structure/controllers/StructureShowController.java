@@ -3,11 +3,17 @@
  */
 package com.jspmyadmin.app.view.structure.controllers;
 
+import java.sql.SQLException;
+
 import com.jspmyadmin.app.view.structure.beans.ColumnListBean;
 import com.jspmyadmin.app.view.structure.logic.StructureLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -18,22 +24,22 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/view_structure.html", requestLevel = RequestLevel.VIEW)
-public class StructureShowController extends Controller<ColumnListBean> {
+public class StructureShowController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private View view;
+	@Model
+	private ColumnListBean bean;
 
-	@Override
-	protected void handleGet(ColumnListBean bean, View view) throws Exception {
-		super.fillBasics(bean);
+	@HandleGetOrPost
+	private void structure() throws SQLException, EncodingException {
 		StructureLogic structureLogic = new StructureLogic(bean.getRequest_view());
 		structureLogic.fillStructureBean(bean);
-		bean.setToken(super.generateToken());
+		bean.setToken(requestAdaptor.generateToken());
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_VIEW_STRUCTURE_STRUCTURE);
 	}
 
-	@Override
-	protected void handlePost(ColumnListBean bean, View view) throws Exception {
-		this.handleGet(bean, view);
-	}
 }

@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import com.jspmyadmin.app.server.common.beans.CommonListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -33,9 +33,10 @@ public class PluginLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws JSONException
+	 * @throws EncodingException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException, JSONException, Exception {
+	public void fillBean(Bean bean) throws SQLException, JSONException, EncodingException {
 
 		CommonListBean pluginBean = null;
 		List<String[]> pluginInfoList = null;
@@ -45,7 +46,6 @@ public class PluginLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		ResultSetMetaData resultSetMetaData = null;
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		String orderBy = "PLUGIN_NAME";
 		String sort = " ASC";
@@ -53,14 +53,13 @@ public class PluginLogic extends AbstractLogic {
 		try {
 			pluginBean = (CommonListBean) bean;
 			apiConnection = getConnection();
-			encDecLogic = new EncDecLogic();
 			if (!super.isEmpty(pluginBean.getToken())) {
-				jsonObject = new JSONObject(encDecLogic.decode(pluginBean.getToken()));
-				if (jsonObject.has(FrameworkConstants.NAME)) {
-					orderBy = jsonObject.getString(FrameworkConstants.NAME);
+				jsonObject = new JSONObject(encodeObj.decode(pluginBean.getToken()));
+				if (jsonObject.has(Constants.NAME)) {
+					orderBy = jsonObject.getString(Constants.NAME);
 				}
-				if (jsonObject.has(FrameworkConstants.TYPE)) {
-					type = jsonObject.getBoolean(FrameworkConstants.TYPE);
+				if (jsonObject.has(Constants.TYPE)) {
+					type = jsonObject.getBoolean(Constants.TYPE);
 				}
 			}
 			if (type) {
@@ -81,13 +80,13 @@ public class PluginLogic extends AbstractLogic {
 			pluginInfo = new String[length];
 			for (int i = 0; i < length; i++) {
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, resultSetMetaData.getColumnName(i + 1));
+				jsonObject.put(Constants.NAME, resultSetMetaData.getColumnName(i + 1));
 				if (orderBy.equalsIgnoreCase(resultSetMetaData.getColumnName(i + 1))) {
-					jsonObject.put(FrameworkConstants.TYPE, !type);
+					jsonObject.put(Constants.TYPE, !type);
 				} else {
-					jsonObject.put(FrameworkConstants.TYPE, false);
+					jsonObject.put(Constants.TYPE, false);
 				}
-				pluginInfo[i] = encDecLogic.encode(jsonObject.toString());
+				pluginInfo[i] = encodeObj.encode(jsonObject.toString());
 			}
 			pluginBean.setSortInfo(pluginInfo);
 

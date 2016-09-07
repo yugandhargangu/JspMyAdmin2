@@ -3,60 +3,55 @@
  */
 package com.jspmyadmin.app.database.structure.controllers;
 
-import java.io.PrintWriter;
+import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.database.structure.beans.StructureBean;
 import com.jspmyadmin.app.database.structure.logic.StructureLogic;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.annotations.ResponseBody;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
+import com.jspmyadmin.framework.web.annotations.Rest;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
-import com.jspmyadmin.framework.web.utils.View;
 
 /**
  * @author Yugandhar Gangu
  * @created_at 2016/02/23
  *
  */
-@WebController(authentication = true, path = "/database_structure_utils.text", requestLevel = RequestLevel.DATABASE)
-public class UtilsController extends Controller<StructureBean> {
+@WebController(authentication = true, path = "/database_structure_utils.text", requestLevel = RequestLevel.DEFAULT)
+@Rest
+public class UtilsController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private HttpServletResponse response;
+	@Model
+	private StructureBean bean;
 
-	@Override
-	@ResponseBody
-	protected void handleGet(StructureBean bean, View view) throws Exception {
-	}
-
-	@Override
-	@ResponseBody
-	protected void handlePost(StructureBean bean, View view) throws Exception {
+	@HandlePost
+	private JSONObject getColumnCreate() throws Exception {
 		StructureLogic structureLogic = null;
 		JSONObject jsonObject = new JSONObject();
 		try {
 			structureLogic = new StructureLogic();
-			if (FrameworkConstants.COLUMN.equalsIgnoreCase(bean.getType())) {
+			if (Constants.COLUMN.equalsIgnoreCase(bean.getType())) {
 				String result = structureLogic.getNewColumn(bean);
-				jsonObject.put(FrameworkConstants.ERR, FrameworkConstants.BLANK);
-				jsonObject.put(FrameworkConstants.DATA, result);
+				jsonObject.put(Constants.ERR, Constants.BLANK);
+				jsonObject.put(Constants.DATA, result);
 			}
-		} catch (Exception e) {
-			jsonObject.put(FrameworkConstants.ERR, e.getMessage());
-		} finally {
-			structureLogic = null;
+		} catch (SQLException e) {
+			jsonObject.put(Constants.ERR, e.getMessage());
 		}
-		jsonObject.put(FrameworkConstants.TOKEN, super.generateToken());
-		PrintWriter writer = response.getWriter();
-		try {
-			writer.print(super.encrypt(jsonObject));
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-		}
+		jsonObject.put(Constants.TOKEN, requestAdaptor.generateToken());
+		return jsonObject;
 	}
 
 }

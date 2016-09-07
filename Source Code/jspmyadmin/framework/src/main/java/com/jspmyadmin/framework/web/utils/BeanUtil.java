@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 
 /**
  * @author Yugandhar Gangu
@@ -24,14 +25,14 @@ import com.jspmyadmin.framework.constants.FrameworkConstants;
  */
 class BeanUtil {
 
-	private Bean _bean = null;
+	private Object _bean = null;
 
 	/**
 	 * 
 	 * @param request
 	 * @param bean
 	 */
-	public void populate(HttpServletRequest request, Bean bean) {
+	public void populate(HttpServletRequest request, Object bean) {
 		_bean = bean;
 		Map<?, ?> paramMap = null;
 		Iterator<?> paramIterator = null;
@@ -50,7 +51,7 @@ class BeanUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void populateMultipart(HttpServletRequest request, Bean bean, int i) throws IOException {
+	public void populateMultipart(HttpServletRequest request, Object bean, int i) throws IOException {
 		_bean = bean;
 		String boundaryStart = _getBoundryStart(request.getContentType());
 		ServletInputStream inputStream = request.getInputStream();
@@ -77,7 +78,7 @@ class BeanUtil {
 					name = _getName(temp);
 					fileName = _getFileName(temp);
 					isText = false;
-					if (null != fileName && !FrameworkConstants.BLANK.equals(fileName)) {
+					if (null != fileName && !Constants.BLANK.equals(fileName)) {
 						fileInputImpl = new FileInputImpl(fileName);
 					}
 				} else if (temp.startsWith(Utils._CONTENT_TYPE)) {
@@ -90,7 +91,7 @@ class BeanUtil {
 					name = _getName(temp);
 					isText = true;
 				} else if (!temp.startsWith(boundaryStart) && null != name && isText
-						&& !FrameworkConstants.BLANK.equals(temp.trim())) {
+						&& !Constants.BLANK.equals(temp.trim())) {
 
 					List<Object> tempList = null;
 					if (paramMap.containsKey(name)) {
@@ -109,14 +110,14 @@ class BeanUtil {
 		}
 
 		if (paramMap.size() > 0) {
-			for (String key : paramMap.keySet()) {
-				_setFileInput(key, paramMap.get(key));
+			for (Entry<String, List<?>> entry : paramMap.entrySet()) {
+				_setFileInput(entry.getKey(), entry.getValue());
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public void populateMultipart(HttpServletRequest request, Bean bean) throws IOException {
+	public void populateMultipart(HttpServletRequest request, Object bean) throws IOException {
 		_bean = bean;
 		String boundaryStart = _getBoundryStart(request.getContentType());
 		String boundaryEnd = boundaryStart + Utils._BOUNDARY_PREFIX;
@@ -149,7 +150,7 @@ class BeanUtil {
 					name = _getName(temp);
 					fileName = _getFileName(temp);
 					isText = false;
-					if (null != fileName && !FrameworkConstants.BLANK.equals(fileName)) {
+					if (null != fileName && !Constants.BLANK.equals(fileName)) {
 						fileInputImpl = new FileInputImpl(fileName);
 					}
 				} else if (temp.startsWith(Utils._CONTENT_TYPE)) {
@@ -162,7 +163,7 @@ class BeanUtil {
 					name = _getName(temp);
 					isText = true;
 				} else if (!temp.startsWith(boundaryStart) && null != name && isText
-						&& !FrameworkConstants.BLANK.equals(temp.trim())) {
+						&& !Constants.BLANK.equals(temp.trim())) {
 					List<Object> tempList = null;
 					if (paramMap.containsKey(name)) {
 						tempList = (List<Object>) paramMap.get(name);
@@ -209,8 +210,8 @@ class BeanUtil {
 		}
 
 		if (paramMap.size() > 0) {
-			for (String key : paramMap.keySet()) {
-				_setFileInput(key, paramMap.get(key));
+			for (Entry<String, List<?>> entry : paramMap.entrySet()) {
+				_setFileInput(entry.getKey(), entry.getValue());
 			}
 		}
 	}
@@ -223,8 +224,7 @@ class BeanUtil {
 	private void _setValue(String name, Object value) {
 		Method method = null;
 		try {
-			name = FrameworkConstants.SET + new String(name.substring(0, 1)).toUpperCase()
-					+ new String(name.substring(1));
+			name = Constants.SET + name.substring(0, 1).toUpperCase() + name.substring(1);
 			try {
 				method = _bean.getClass().getMethod(name, String[].class);
 				if (method != null) {
@@ -263,8 +263,7 @@ class BeanUtil {
 			if (value == null) {
 				return;
 			}
-			name = FrameworkConstants.SET + new String(name.substring(0, 1)).toUpperCase()
-					+ new String(name.substring(1));
+			name = Constants.SET + name.substring(0, 1).toUpperCase() + name.substring(1);
 			// check for string arrays
 			try {
 				method = _bean.getClass().getMethod(name, String[].class);
@@ -358,7 +357,7 @@ class BeanUtil {
 	 */
 	private String _getBoundryStart(String contentType) {
 		return Utils._BOUNDARY_PREFIX
-				+ new String(contentType.substring(contentType.indexOf(Utils._BOUNDARY) + Utils._BOUNDARY.length()));
+				+ contentType.substring(contentType.indexOf(Utils._BOUNDARY) + Utils._BOUNDARY.length());
 	}
 
 	/**
@@ -367,8 +366,8 @@ class BeanUtil {
 	 * @return
 	 */
 	private String _getName(String temp) {
-		temp = new String(temp.substring(temp.indexOf(Utils._NAME) + Utils._NAME.length() + 1));
-		return new String(temp.substring(0, temp.indexOf(Utils._DOUBLE_QUOTE)));
+		temp = temp.substring(temp.indexOf(Utils._NAME) + Utils._NAME.length() + 1);
+		return temp.substring(0, temp.indexOf(Utils._DOUBLE_QUOTE));
 	}
 
 	/**
@@ -377,8 +376,8 @@ class BeanUtil {
 	 * @return
 	 */
 	private String _getFileName(String temp) {
-		temp = new String(temp.substring(temp.indexOf(Utils._FILENAME) + Utils._FILENAME.length() + 1));
-		return new String(temp.substring(0, temp.indexOf(Utils._DOUBLE_QUOTE)));
+		temp = temp.substring(temp.indexOf(Utils._FILENAME) + Utils._FILENAME.length() + 1);
+		return temp.substring(0, temp.indexOf(Utils._DOUBLE_QUOTE));
 	}
 
 	/**

@@ -20,7 +20,7 @@ import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
 import com.jspmyadmin.framework.connection.QuerySeparator;
 import com.jspmyadmin.framework.constants.BeanConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -30,7 +30,7 @@ import com.jspmyadmin.framework.web.utils.Bean;
  */
 public class SqlLogic extends AbstractLogic {
 
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException, JSONException {
+	public void fillBean(Bean bean) throws SQLException, JSONException {
 
 		SqlBean sqlBean = (SqlBean) bean;
 
@@ -41,7 +41,7 @@ public class SqlLogic extends AbstractLogic {
 			apiConnection = getConnection();
 
 			if (!isEmpty(sqlBean.getQuery())) {
-				if (FrameworkConstants.ONE.equals(sqlBean.getDisable_fks())) {
+				if (Constants.ONE.equals(sqlBean.getDisable_fks())) {
 					statement = apiConnection.getStmt("SET foreign_key_checks = ?");
 					statement.setInt(1, 0);
 					statement.execute();
@@ -59,7 +59,7 @@ public class SqlLogic extends AbstractLogic {
 						long end_time = System.nanoTime();
 						long exec_time = end_time - start_time;
 						double final_exec_time = ((double) exec_time) / 1000000000.0;
-						DecimalFormat decimalFormat = new DecimalFormat(FrameworkConstants.ZERO);
+						DecimalFormat decimalFormat = new DecimalFormat(Constants.ZERO);
 						decimalFormat.setMaximumFractionDigits(6);
 						sqlBean.setExec_time(decimalFormat.format(final_exec_time));
 						if (result) {
@@ -70,9 +70,9 @@ public class SqlLogic extends AbstractLogic {
 							List<Integer> byteList = new ArrayList<Integer>(0);
 							for (int i = 0; i < metaData.getColumnCount(); i++) {
 								String className = metaData.getColumnClassName(i + 1);
-								if (FrameworkConstants.BYTE_TYPE.equals(className)) {
+								if (Constants.BYTE_TYPE.equals(className)) {
 									String typeName = metaData.getColumnTypeName(i + 1);
-									if (FrameworkConstants.Utils.BLOB_LIST.contains(typeName)) {
+									if (Constants.Utils.BLOB_LIST.contains(typeName)) {
 										blobList.add(i);
 									} else {
 										byteList.add(i);
@@ -95,13 +95,13 @@ public class SqlLogic extends AbstractLogic {
 												double final_length = ((double) length) / 1000.0;
 												StringBuilder blobVal = new StringBuilder();
 												blobVal.append("<b class=\"blob-download\">");
-												blobVal.append(FrameworkConstants.DATABASE_BLOB);
+												blobVal.append(Constants.DATABASE_BLOB);
 												blobVal.append(final_length);
 												blobVal.append(BeanConstants._KIB);
 												blobVal.append("</b>");
 												rowList.add(blobVal.toString());
 											} else {
-												rowList.add(FrameworkConstants.DATABASE_NULL);
+												rowList.add(Constants.DATABASE_NULL);
 											}
 										} else if (byteList.contains(i)) {
 											byte[] bytes = resultSet.getBytes(i + 1);
@@ -112,12 +112,12 @@ public class SqlLogic extends AbstractLogic {
 												}
 												rowList.add(byteData.toString());
 											} else {
-												rowList.add(FrameworkConstants.DATABASE_NULL);
+												rowList.add(Constants.DATABASE_NULL);
 											}
 										} else {
 											String value = resultSet.getString(i + 1);
 											if (value == null) {
-												rowList.add(FrameworkConstants.DATABASE_NULL);
+												rowList.add(Constants.DATABASE_NULL);
 											} else {
 												rowList.add(value);
 											}
@@ -129,7 +129,7 @@ public class SqlLogic extends AbstractLogic {
 							}
 							sqlBean.setFetch_list(fetchList);
 							if (count > 1000) {
-								sqlBean.setMax_rows(FrameworkConstants.ONE);
+								sqlBean.setMax_rows(Constants.ONE);
 							}
 							break;
 						} else {

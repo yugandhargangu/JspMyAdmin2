@@ -6,7 +6,7 @@ package com.jspmyadmin.app.server.users.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -17,10 +17,10 @@ import com.jspmyadmin.framework.web.utils.Bean;
 public class SchemaPrivilegeBean extends Bean {
 
 	private static final long serialVersionUID = 1L;
-	private final List<String> privilege_obj_list = new ArrayList<String>(FrameworkConstants.Utils.PRIVILEGE_OBJ_LIST);
-	private final List<String> privilege_ddl_list = new ArrayList<String>(FrameworkConstants.Utils.PRIVILEGE_DDL_LIST);
+	private final List<String> privilege_obj_list = new ArrayList<String>(Constants.Utils.PRIVILEGE_OBJ_LIST);
+	private final List<String> privilege_ddl_list = new ArrayList<String>(Constants.Utils.PRIVILEGE_DDL_LIST);
 	private final List<String> privilege_admn_list = new ArrayList<String>(
-			FrameworkConstants.Utils.PRIVILEGE_ADMN_LIST);
+			Constants.Utils.PRIVILEGE_ADMN_LIST);
 
 	private String user = null;
 	private String database = null;

@@ -3,11 +3,17 @@
  */
 package com.jspmyadmin.app.server.sql.controllers;
 
+import java.sql.SQLException;
+
+import org.json.JSONException;
+
 import com.jspmyadmin.app.server.sql.beans.SqlBean;
 import com.jspmyadmin.app.server.sql.logic.SqlLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -18,29 +24,25 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/server_sql.html", requestLevel = RequestLevel.SERVER)
-public class ServerSqlController extends Controller<SqlBean> {
+public class ServerSqlController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private View view;
+	@Model
+	private SqlBean bean;
 
-	@Override
-	protected void handleGet(SqlBean bean, View view) throws Exception {
+	@HandleGetOrPost
+	private void sqlEditor() throws JSONException {
 
 		SqlLogic sqlLogic = null;
 		try {
-			super.fillBasics(bean);
 			sqlLogic = new SqlLogic();
 			sqlLogic.fillBean(bean);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			bean.setError(e.getMessage());
-		} finally {
-			sqlLogic = null;
 		}
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_SERVER_SQL_SQL);
 	}
 
-	@Override
-	protected void handlePost(SqlBean bean, View view) throws Exception {
-		this.handleGet(bean, view);
-	}
 }

@@ -22,7 +22,7 @@ public final class ConnectionTypeCheck {
 	 * @return
 	 */
 	public static ConnectionType check() {
-		return ApiConnectionImpl.connectionType;
+		return ConnectionFactory.connectionType;
 	}
 
 }

@@ -15,6 +15,7 @@ public class LanguageBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private String language = null;
+	private String redirect = null;
 
 	/**
 	 * @return the language
@@ -30,4 +31,27 @@ public class LanguageBean extends Bean {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
+	/**
+	 * @return the redirect
+	 */
+	public String getRedirect() {
+		return redirect;
+	}
+
+	/**
+	 * @param redirect
+	 *            the redirect to set
+	 */
+	public void setRedirect(String redirect) {
+		this.redirect = redirect;
+	}
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }

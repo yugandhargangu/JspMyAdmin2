@@ -10,7 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 import com.jspmyadmin.framework.web.utils.DefaultServlet;
 
 /**
@@ -20,13 +21,23 @@ import com.jspmyadmin.framework.web.utils.DefaultServlet;
  */
 public abstract class AbstractLogic {
 
+	protected EncodeHelper encodeObj;
+
+	/**
+	 * @param encodeObj
+	 *            the encodeObj to set
+	 */
+	public void setEncodeObj(EncodeHelper encodeObj) {
+		this.encodeObj = encodeObj;
+	}
+
 	/**
 	 * 
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	protected ApiConnection getConnection() throws ClassNotFoundException, SQLException {
+	protected ApiConnection getConnection() throws SQLException {
 		ApiConnection connection = new ApiConnectionImpl();
 		return connection;
 	}
@@ -38,7 +49,7 @@ public abstract class AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	protected ApiConnection getConnection(String dbName) throws ClassNotFoundException, SQLException {
+	protected ApiConnection getConnection(String dbName) throws SQLException {
 		ApiConnection connection = new ApiConnectionImpl(dbName);
 		return connection;
 	}
@@ -49,7 +60,7 @@ public abstract class AbstractLogic {
 	 * @return
 	 */
 	protected boolean isEmpty(String val) {
-		if (val == null || FrameworkConstants.BLANK.equals(val.trim())) {
+		if (val == null || Constants.BLANK.equals(val.trim())) {
 			return true;
 		}
 		return false;
@@ -102,8 +113,8 @@ public abstract class AbstractLogic {
 	 */
 	protected boolean isValidSqlString(String str, boolean withQuotes) {
 
-		if (withQuotes && (!str.startsWith(FrameworkConstants.SYMBOL_QUOTE)
-				|| !str.endsWith(FrameworkConstants.SYMBOL_QUOTE))) {
+		if (withQuotes && (!str.startsWith(Constants.SYMBOL_QUOTE)
+				|| !str.endsWith(Constants.SYMBOL_QUOTE))) {
 			return false;
 		}
 
@@ -111,7 +122,7 @@ public abstract class AbstractLogic {
 		int count2 = 0;
 		int lastIndex = 0;
 		while (lastIndex != -1) {
-			lastIndex = str.indexOf(FrameworkConstants.SYMBOL_QUOTE, lastIndex);
+			lastIndex = str.indexOf(Constants.SYMBOL_QUOTE, lastIndex);
 
 			if (lastIndex != -1) {
 				count1++;
@@ -120,7 +131,7 @@ public abstract class AbstractLogic {
 		}
 		lastIndex = 0;
 		while (lastIndex != -1) {
-			lastIndex = str.indexOf(FrameworkConstants.SYMBOL_QUOTE_ESCAPE, lastIndex);
+			lastIndex = str.indexOf(Constants.SYMBOL_QUOTE_ESCAPE, lastIndex);
 
 			if (lastIndex != -1) {
 				count2++;
@@ -197,9 +208,9 @@ public abstract class AbstractLogic {
 		 */
 		public QueryExtracter(PreparedStatement statement) {
 			String query = statement.toString();
-			int index = query.indexOf(FrameworkConstants.SYMBOL_COLON) + 1;
+			int index = query.indexOf(Constants.SYMBOL_COLON) + 1;
 			if (index != -1) {
-				_query = new String(query.substring(index));
+				_query = query.substring(index);
 			} else {
 				_query = null;
 			}

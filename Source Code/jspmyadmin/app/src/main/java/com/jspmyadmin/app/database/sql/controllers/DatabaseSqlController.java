@@ -3,14 +3,21 @@
  */
 package com.jspmyadmin.app.database.sql.controllers;
 
+import java.sql.SQLException;
+
+import javax.servlet.http.HttpSession;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.database.sql.beans.SqlBean;
 import com.jspmyadmin.app.database.sql.logic.SqlLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -21,42 +28,40 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/database_sql.html", requestLevel = RequestLevel.DATABASE)
-public class DatabaseSqlController extends Controller<SqlBean> {
+public class DatabaseSqlController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private HttpSession session;
+	@Detect
+	private View view;
+	@Model
+	private SqlBean bean;
 
-	@Override
-	protected void handleGet(SqlBean bean, View view) throws Exception {
+	@HandleGetOrPost
+	private void sqlEditor() throws Exception {
 
 		SqlLogic sqlLogic = null;
 		try {
-			super.fillBasics(bean);
 			boolean fetch = true;
-			Object temp = session.getAttribute(FrameworkConstants.QUERY);
+			Object temp = session.getAttribute(Constants.QUERY);
 			if (temp != null) {
-				session.removeAttribute(FrameworkConstants.QUERY);
+				session.removeAttribute(Constants.QUERY);
 				try {
 					JSONObject jsonObject = new JSONObject(temp.toString());
-					if (jsonObject.has(FrameworkConstants.QUERY)) {
-						bean.setQuery(jsonObject.getString(FrameworkConstants.QUERY));
+					if (jsonObject.has(Constants.QUERY)) {
+						bean.setQuery(jsonObject.getString(Constants.QUERY));
 						fetch = false;
 					}
-				} catch (Exception e) {
+				} catch (JSONException e) {
 				}
 			}
 			sqlLogic = new SqlLogic();
 			sqlLogic.fillBean(bean, fetch);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			bean.setError(e.getMessage());
-		} finally {
-			sqlLogic = null;
 		}
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_DATABASE_SQL_SQL);
 	}
 
-	@Override
-	protected void handlePost(SqlBean bean, View view) throws Exception {
-		this.handleGet(bean, view);
-	}
 }

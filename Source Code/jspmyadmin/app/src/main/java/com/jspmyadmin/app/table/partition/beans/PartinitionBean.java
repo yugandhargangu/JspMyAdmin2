@@ -6,7 +6,7 @@ package com.jspmyadmin.app.table.partition.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -26,7 +26,7 @@ public class PartinitionBean extends Bean {
 
 	private List<PartitionInfo> partition_list = null;
 
-	private List<String> type_list = new ArrayList<String>(FrameworkConstants.Utils.PARTITION_LIST);
+	private List<String> type_list = new ArrayList<String>(Constants.Utils.PARTITION_LIST);
 
 	/**
 	 * @return the partition
@@ -134,6 +134,6 @@ public class PartinitionBean extends Bean {
 		if (partition_list != null) {
 			return String.valueOf(partition_list.size());
 		}
-		return FrameworkConstants.ZERO;
+		return Constants.ZERO;
 	}
 }

@@ -3,6 +3,10 @@
  */
 package com.jspmyadmin.framework.web.utils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 /**
  * @author Yugandhar Gangu
  * @created_at 2016/01/29
@@ -11,17 +15,18 @@ package com.jspmyadmin.framework.web.utils;
 class PathInfo {
 
 	private Class<?> controller = null;
-	private Class<?> bean = null;
 	private RequestLevel requestLevel = RequestLevel.DEFAULT;
+	private Method anyMethod = null;
+	private Method getMethod = null;
+	private Method postMethod = null;
 	private boolean isAuthRequired = false;
-	private boolean isGetMultiPart = false;
-	private boolean isGetDownload = false;
-	private boolean isPostMultiPart = false;
+	private boolean isResponseBody = false;
+	private boolean isDownload = false;
+	private boolean isValidateToken = false;
 	private boolean isPostDownload = false;
-	private boolean isGetValidateToken = false;
 	private boolean isPostValidateToken = false;
-	private boolean isGetResponseBody = false;
-	private boolean isPostResponseBody = false;
+	private Field model = null;
+	private Map<Field, DetectType> detectMap = null;
 
 	/**
 	 * @return the controller
@@ -36,21 +41,6 @@ class PathInfo {
 	 */
 	public void setController(Class<?> controller) {
 		this.controller = controller;
-	}
-
-	/**
-	 * @return the bean
-	 */
-	public Class<?> getBean() {
-		return bean;
-	}
-
-	/**
-	 * @param bean
-	 *            the bean to set
-	 */
-	public void setBean(Class<?> bean) {
-		this.bean = bean;
 	}
 
 	/**
@@ -69,6 +59,51 @@ class PathInfo {
 	}
 
 	/**
+	 * @return the anyMethod
+	 */
+	public Method getAnyMethod() {
+		return anyMethod;
+	}
+
+	/**
+	 * @param anyMethod
+	 *            the anyMethod to set
+	 */
+	public void setAnyMethod(Method anyMethod) {
+		this.anyMethod = anyMethod;
+	}
+
+	/**
+	 * @return the getMethod
+	 */
+	public Method getGetMethod() {
+		return getMethod;
+	}
+
+	/**
+	 * @param getMethod
+	 *            the getMethod to set
+	 */
+	public void setGetMethod(Method getMethod) {
+		this.getMethod = getMethod;
+	}
+
+	/**
+	 * @return the postMethod
+	 */
+	public Method getPostMethod() {
+		return postMethod;
+	}
+
+	/**
+	 * @param postMethod
+	 *            the postMethod to set
+	 */
+	public void setPostMethod(Method postMethod) {
+		this.postMethod = postMethod;
+	}
+
+	/**
 	 * @return the isAuthRequired
 	 */
 	public boolean isAuthRequired() {
@@ -84,48 +119,48 @@ class PathInfo {
 	}
 
 	/**
-	 * @return the isGetMultiPart
+	 * @return the isResponseBody
 	 */
-	public boolean isGetMultiPart() {
-		return isGetMultiPart;
+	public boolean isResponseBody() {
+		return isResponseBody;
 	}
 
 	/**
-	 * @param isGetMultiPart
-	 *            the isGetMultiPart to set
+	 * @param isResponseBody
+	 *            the isResponseBody to set
 	 */
-	public void setGetMultiPart(boolean isGetMultiPart) {
-		this.isGetMultiPart = isGetMultiPart;
+	public void setResponseBody(boolean isResponseBody) {
+		this.isResponseBody = isResponseBody;
 	}
 
 	/**
-	 * @return the isGetDownload
+	 * @return the isDownload
 	 */
-	public boolean isGetDownload() {
-		return isGetDownload;
+	public boolean isDownload() {
+		return isDownload;
 	}
 
 	/**
-	 * @param isGetDownload
-	 *            the isGetDownload to set
+	 * @param isDownload
+	 *            the isDownload to set
 	 */
-	public void setGetDownload(boolean isGetDownload) {
-		this.isGetDownload = isGetDownload;
+	public void setDownload(boolean isDownload) {
+		this.isDownload = isDownload;
 	}
 
 	/**
-	 * @return the isPostMultiPart
+	 * @return the isValidateToken
 	 */
-	public boolean isPostMultiPart() {
-		return isPostMultiPart;
+	public boolean isValidateToken() {
+		return isValidateToken;
 	}
 
 	/**
-	 * @param isPostMultiPart
-	 *            the isPostMultiPart to set
+	 * @param isValidateToken
+	 *            the isValidateToken to set
 	 */
-	public void setPostMultiPart(boolean isPostMultiPart) {
-		this.isPostMultiPart = isPostMultiPart;
+	public void setValidateToken(boolean isValidateToken) {
+		this.isValidateToken = isValidateToken;
 	}
 
 	/**
@@ -144,21 +179,6 @@ class PathInfo {
 	}
 
 	/**
-	 * @return the isGetValidateToken
-	 */
-	public boolean isGetValidateToken() {
-		return isGetValidateToken;
-	}
-
-	/**
-	 * @param isGetValidateToken
-	 *            the isGetValidateToken to set
-	 */
-	public void setGetValidateToken(boolean isGetValidateToken) {
-		this.isGetValidateToken = isGetValidateToken;
-	}
-
-	/**
 	 * @return the isPostValidateToken
 	 */
 	public boolean isPostValidateToken() {
@@ -174,33 +194,33 @@ class PathInfo {
 	}
 
 	/**
-	 * @return the isGetResponseBody
+	 * @return the model
 	 */
-	public boolean isGetResponseBody() {
-		return isGetResponseBody;
+	public Field getModel() {
+		return model;
 	}
 
 	/**
-	 * @param isGetResponseBody
-	 *            the isGetResponseBody to set
+	 * @param model
+	 *            the model to set
 	 */
-	public void setGetResponseBody(boolean isGetResponseBody) {
-		this.isGetResponseBody = isGetResponseBody;
+	public void setModel(Field model) {
+		this.model = model;
 	}
 
 	/**
-	 * @return the isPostResponseBody
+	 * @return the detectMap
 	 */
-	public boolean isPostResponseBody() {
-		return isPostResponseBody;
+	public Map<Field, DetectType> getDetectMap() {
+		return detectMap;
 	}
 
 	/**
-	 * @param isPostResponseBody
-	 *            the isPostResponseBody to set
+	 * @param detectMap
+	 *            the detectMap to set
 	 */
-	public void setPostResponseBody(boolean isPostResponseBody) {
-		this.isPostResponseBody = isPostResponseBody;
+	public void setDetectMap(Map<Field, DetectType> detectMap) {
+		this.detectMap = detectMap;
 	}
 
 }

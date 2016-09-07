@@ -20,7 +20,11 @@ html {
 <title><m:print key="title" /></title>
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/components/jma/jspmyadmin.css">
-
+<style type="text/css">
+html {
+	overflow: auto;
+}
+</style>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/components/jma/jquery.js"></script>
 </head>
@@ -71,39 +75,28 @@ html {
 		<form action="${pageContext.request.contextPath}/login.html"
 			method="post" id="login-form" accept-charset="UTF-8">
 			<input type="hidden" name="token"
-				value="${requestScope.command.token}">
+				value="${requestScope.command.token}"> <input type="hidden"
+				id="halfconfig" value="${requestScope.command.halfconfig}">
 			<div class="group-widget group-content">
-				<div class="form-input">
-					<label><m:print key="lbl.hostname" /></label>
-					<jma:switch>
-						<jma:case value="Yes" name="#halfconfig" scope="command,">
-							<input type="text" name="hostname" id="hostname"
-								class="form-control" maxlength="50" readonly="readonly"
-								value="${requestScope.command.hostname}">
-						</jma:case>
-						<jma:default>
-							<input type="text" name="hostname" id="hostname"
-								class="form-control" maxlength="50"
-								value="${requestScope.command.hostname}">
-						</jma:default>
-					</jma:switch>
 
-				</div>
-				<div class="form-input">
-					<label><m:print key="lbl.port" /></label>
-					<jma:switch>
-						<jma:case value="Yes" name="#halfconfig" scope="command,">
-							<input type="text" name="portnumber" id="portnumber"
-								class="form-control" maxlength="50" readonly="readonly"
-								value="${requestScope.command.portnumber}">
-						</jma:case>
-						<jma:default>
-							<input type="text" name="portnumber" id="portnumber"
-								class="form-control" maxlength="50"
-								value="${requestScope.command.portnumber}">
-						</jma:default>
-					</jma:switch>
-				</div>
+				<jma:switch>
+					<jma:case value="Yes" name="#halfconfig" scope="command,">
+						<input type="hidden" name="hostname" id="hostname">
+						<input type="hidden" name="portnumber" id="portnumber">
+					</jma:case>
+					<jma:default>
+						<div class="form-input">
+							<label><m:print key="lbl.hostname" /></label> <input type="text"
+								name="hostname" id="hostname" class="form-control"
+								maxlength="50" value="${requestScope.command.hostname}">
+						</div>
+						<div class="form-input">
+							<label><m:print key="lbl.port" /></label> <input type="text"
+								name="portnumber" id="portnumber" class="form-control"
+								maxlength="50" value="${requestScope.command.portnumber}">
+						</div>
+					</jma:default>
+				</jma:switch>
 				<div class="form-input">
 					<label><m:print key="lbl.user" /></label> <input type="text"
 						name="username" id="username" class="form-control" maxlength="50"
@@ -156,15 +149,17 @@ html {
 		$(function() {
 			$('#go_btn').click(function() {
 				var isValid = true;
-				if ($('#hostname').val().trim() == '') {
-					$('#error-content').text('${err_hostname_is_blank}');
-					$('#error-dialog').show();
-					isValid = false;
-				}
-				if ($('#portnumber').val().trim() == '') {
-					$('#error-content').text('${err_port_is_blank}');
-					$('#error-dialog').show();
-					isValid = false;
+				if ($('#halfconfig').val() != 'Yes') {
+					if ($('#hostname').val().trim() == '') {
+						$('#error-content').text('${err_hostname_is_blank}');
+						$('#error-dialog').show();
+						isValid = false;
+					}
+					if ($('#portnumber').val().trim() == '') {
+						$('#error-content').text('${err_port_is_blank}');
+						$('#error-dialog').show();
+						isValid = false;
+					}
 				}
 				if ($('#username').val().trim() == '') {
 					$('#error-content').text('${err_user_is_blank}');

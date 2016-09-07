@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -23,7 +25,7 @@ public class DataSelectBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private String query = null;
-	private String limit = FrameworkConstants.FETCH_LIMIT;
+	private String limit = Constants.FETCH_LIMIT;
 	private Map<String, String> column_name_map = null;
 	private String[] search_columns = null;
 	private String[] search_list = null;
@@ -42,7 +44,8 @@ public class DataSelectBean extends Bean {
 
 	private String[] ids = null;
 
-	private List<String> limit_list = new ArrayList<String>(FrameworkConstants.Utils.LIMIT_LIST);
+	private List<String> limit_list = new ArrayList<String>(Constants.Utils.LIMIT_LIST);
+	private EncodeHelper encodeObj = null;
 
 	/**
 	 * @return the query
@@ -370,6 +373,14 @@ public class DataSelectBean extends Bean {
 	}
 
 	/**
+	 * @param encodeObj
+	 *            the encodeObj to set
+	 */
+	public void setEncodeObj(EncodeHelper encodeObj) {
+		this.encodeObj = encodeObj;
+	}
+
+	/**
 	 * 
 	 * @param index
 	 * @return
@@ -378,10 +389,10 @@ public class DataSelectBean extends Bean {
 		if (primary_key_list != null && index < primary_key_list.size()) {
 			JSONObject jsonObject = new JSONObject();
 			try {
-				jsonObject.put(FrameworkConstants.PK_VAL, primary_key_list.get(index));
-				EncDecLogic encDecLogic = new EncDecLogic();
-				return encDecLogic.encode(jsonObject.toString());
-			} catch (Exception e) {
+				jsonObject.put(Constants.PK_VAL, primary_key_list.get(index));
+				return encodeObj.encode(jsonObject.toString());
+			} catch (JSONException e) {
+			} catch (EncodingException e) {
 			}
 		}
 		return null;

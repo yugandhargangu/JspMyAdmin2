@@ -315,11 +315,6 @@
 								</table>
 							</div>
 							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="user_btn">
-									<img alt="" class="icon"
-										src="${pageContext.request.contextPath}/components/icons/user-priveleges-w.png">
-									<m:print key="lbl.user_privileges" />
-								</button>
 								<button type="button" class="btn" id="drop_btn"
 									value="${pageContext.request.contextPath}/server_database_drop.html">
 									<img alt="" class="icon"

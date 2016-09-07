@@ -6,7 +6,7 @@ package com.jspmyadmin.app.database.users.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -19,7 +19,7 @@ public class TablePrivilegeBean extends Bean {
 	private static final long serialVersionUID = 1L;
 
 	private final List<String> privilege_table_list = new ArrayList<String>(
-			FrameworkConstants.Utils.PRIVILEGE_TABLE_LIST);
+			Constants.Utils.PRIVILEGE_TABLE_LIST);
 
 	private String user = null;
 	private List<String> table_list = null;

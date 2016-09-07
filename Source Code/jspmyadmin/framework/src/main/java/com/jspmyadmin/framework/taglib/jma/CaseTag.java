@@ -6,7 +6,7 @@ package com.jspmyadmin.framework.taglib.jma;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractTagSupport;
 
 /**
@@ -64,17 +64,17 @@ public class CaseTag extends AbstractTagSupport {
 		// checking values from SwitchTag object
 		if (name == null) {
 			Object temp2 = null;
-			if (value.startsWith(FrameworkConstants.SYMBOL_HASH)) {
+			if (value.startsWith(Constants.SYMBOL_HASH)) {
 
-				String[] split = new String(value.substring(1)).split(FrameworkConstants.SYMBOL_DOT_EXPR);
-				if (FrameworkConstants.COMMAND.equals(scope)) {
+				String[] split = value.substring(1).split(Constants.SYMBOL_DOT_EXPR);
+				if (Constants.COMMAND.equals(scope)) {
 					for (int i = 0; i < split.length; i++) {
 						if (temp2 == null) {
-							temp2 = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
+							temp2 = pageContext.getRequest().getAttribute(Constants.COMMAND);
 						}
 						temp2 = super.getReflectValue(temp2, split[i]);
 					}
-				} else if (FrameworkConstants.REQUEST.equals(scope)) {
+				} else if (Constants.REQUEST.equals(scope)) {
 					for (int i = 0; i < split.length; i++) {
 						if (temp2 == null) {
 							temp2 = pageContext.getRequest().getAttribute(split[i]);
@@ -82,7 +82,7 @@ public class CaseTag extends AbstractTagSupport {
 							temp2 = super.getReflectValue(temp2, split[i]);
 						}
 					}
-				} else if (FrameworkConstants.PAGE.equals(scope)) {
+				} else if (Constants.PAGE.equals(scope)) {
 					for (int i = 0; i < split.length; i++) {
 						if (temp2 == null) {
 							temp2 = pageContext.getAttribute(split[i]);
@@ -90,7 +90,7 @@ public class CaseTag extends AbstractTagSupport {
 							temp2 = super.getReflectValue(temp2, split[i]);
 						}
 					}
-				} else if (FrameworkConstants.SESSION.equals(scope)) {
+				} else if (Constants.SESSION.equals(scope)) {
 					for (int i = 0; i < split.length; i++) {
 						if (temp2 == null) {
 							temp2 = pageContext.getSession().getAttribute(split[i]);
@@ -114,37 +114,37 @@ public class CaseTag extends AbstractTagSupport {
 		// checking values in same CaseTag object
 		String[] scopes = new String[2];
 		if (!isEmpty(scope)) {
-			scopes = scope.split(FrameworkConstants.SYMBOL_COMMA);
+			scopes = scope.split(Constants.SYMBOL_COMMA);
 		}
 		Object temp1 = null;
-		if (name.startsWith(FrameworkConstants.SYMBOL_HASH)) {
+		if (name.startsWith(Constants.SYMBOL_HASH)) {
 
-			if (FrameworkConstants.COMMAND.equals(scopes[0])) {
-				temp1 = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
-				temp1 = super.getReflectValue(temp1, new String(name.substring(1)));
-			} else if (FrameworkConstants.REQUEST.equals(scopes[0])) {
-				temp1 = pageContext.getRequest().getAttribute(new String(name.substring(1)));
-			} else if (FrameworkConstants.PAGE.equals(scopes[0])) {
-				temp1 = pageContext.getAttribute(new String(name.substring(1)));
-			} else if (FrameworkConstants.SESSION.equals(scopes[0])) {
-				temp1 = pageContext.getSession().getAttribute(new String(name.substring(1)));
+			if (Constants.COMMAND.equals(scopes[0])) {
+				temp1 = pageContext.getRequest().getAttribute(Constants.COMMAND);
+				temp1 = super.getReflectValue(temp1, name.substring(1));
+			} else if (Constants.REQUEST.equals(scopes[0])) {
+				temp1 = pageContext.getRequest().getAttribute(name.substring(1));
+			} else if (Constants.PAGE.equals(scopes[0])) {
+				temp1 = pageContext.getAttribute(name.substring(1));
+			} else if (Constants.SESSION.equals(scopes[0])) {
+				temp1 = pageContext.getSession().getAttribute(name.substring(1));
 			}
 		} else {
 			temp1 = name;
 		}
 
 		Object temp2 = null;
-		if (value.startsWith(FrameworkConstants.SYMBOL_HASH)) {
+		if (value.startsWith(Constants.SYMBOL_HASH)) {
 
-			if (FrameworkConstants.COMMAND.equals(scopes[1])) {
-				temp2 = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
-				temp2 = super.getReflectValue(temp2, new String(value.substring(1)));
-			} else if (FrameworkConstants.REQUEST.equals(scopes[1])) {
-				temp2 = pageContext.getRequest().getAttribute(new String(value.substring(1)));
-			} else if (FrameworkConstants.PAGE.equals(scopes[1])) {
-				temp2 = pageContext.getAttribute(new String(value.substring(1)));
-			} else if (FrameworkConstants.SESSION.equals(scopes[1])) {
-				temp2 = pageContext.getSession().getAttribute(new String(value.substring(1)));
+			if (Constants.COMMAND.equals(scopes[1])) {
+				temp2 = pageContext.getRequest().getAttribute(Constants.COMMAND);
+				temp2 = super.getReflectValue(temp2, value.substring(1));
+			} else if (Constants.REQUEST.equals(scopes[1])) {
+				temp2 = pageContext.getRequest().getAttribute(value.substring(1));
+			} else if (Constants.PAGE.equals(scopes[1])) {
+				temp2 = pageContext.getAttribute(value.substring(1));
+			} else if (Constants.SESSION.equals(scopes[1])) {
+				temp2 = pageContext.getSession().getAttribute(value.substring(1));
 			}
 		} else {
 			temp2 = value;

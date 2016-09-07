@@ -3,11 +3,20 @@
  */
 package com.jspmyadmin.app.database.structure.controllers;
 
+import java.sql.SQLException;
+
+import org.json.JSONException;
+
 import com.jspmyadmin.app.database.structure.beans.StructureBean;
 import com.jspmyadmin.app.database.structure.logic.StructureLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -18,30 +27,26 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/database_view_list.html", requestLevel = RequestLevel.DATABASE)
-public class ViewListController extends Controller<StructureBean> {
+public class ViewListController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private EncodeHelper encodeObj;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private View view;
+	@Model
+	private StructureBean bean;
 
-	@Override
-	protected void handleGet(StructureBean bean, View view) throws Exception {
+	@HandleGetOrPost
+	private void views() throws SQLException, JSONException, EncodingException {
 
-		StructureLogic structureLogic = null;
-		try {
-			super.fillBasics(bean);
-			super.setDatabase(bean);
-			structureLogic = new StructureLogic();
-			structureLogic.fillBean(bean, false);
-			bean.setToken(super.generateToken());
-		} finally {
-			structureLogic = null;
-		}
+		StructureLogic structureLogic = new StructureLogic();
+		structureLogic.setEncodeObj(encodeObj);
+		structureLogic.fillBean(bean, false);
+		bean.setToken(requestAdaptor.generateToken());
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_DATABASE_STRUCTURE_VIEWS);
-	}
-
-	@Override
-	protected void handlePost(StructureBean bean, View view) throws Exception {
-		this.handleGet(bean, view);
 	}
 
 }

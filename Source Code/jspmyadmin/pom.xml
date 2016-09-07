@@ -59,11 +59,34 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
+					<fork>true</fork>
 					<source>${java_version}</source>
 					<target>${java_version}</target>
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.5</version>
+				<configuration>
+					<fork>true</fork>
+					<failOnError>false</failOnError>
+					<excludeFilterFile>src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
+					<xmlOutput>true</xmlOutput>
+					<xmlOutputDirectory>target/findbugs</xmlOutputDirectory>
+					<jvmArgs>-Duser.language=en_IN -Duser.country=IN</jvmArgs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<failOnViolation>false</failOnViolation>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -96,6 +119,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<modules>
 		<module>support</module>
 		<module>framework</module>

@@ -6,7 +6,7 @@ package com.jspmyadmin.framework.taglib.messages;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractSimpleTagSupport;
 import com.jspmyadmin.framework.web.utils.MessageReader;
 
@@ -50,19 +50,19 @@ public class StoreTag extends AbstractSimpleTagSupport {
 	public void doTag() throws JspException {
 		PageContext pageContext = (PageContext) super.getJspContext();
 		MessageReader messageReader = (MessageReader) pageContext
-				.getAttribute(FrameworkConstants.PAGE_CONTEXT_MESSAGES);
+				.getAttribute(Constants.PAGE_CONTEXT_MESSAGES);
 		Object temp = null;
 		if (scope == null) {
 			key = messageReader.getMessage(key);
 			pageContext.setAttribute(name, key, PageContext.PAGE_SCOPE);
 			return;
-		} else if (FrameworkConstants.COMMAND.equals(scope)) {
+		} else if (Constants.COMMAND.equals(scope)) {
 			temp = pageContext.getRequest().getAttribute(
-					FrameworkConstants.COMMAND);
+					Constants.COMMAND);
 			temp = super.getReflectValue(temp, key);
-		} else if (FrameworkConstants.PAGE.equals(scope)) {
+		} else if (Constants.PAGE.equals(scope)) {
 			temp = pageContext.getAttribute(key);
-		} else if (FrameworkConstants.REQUEST.equals(scope)) {
+		} else if (Constants.REQUEST.equals(scope)) {
 			temp = pageContext.getRequest().getAttribute(key);
 		}
 		if (temp != null) {

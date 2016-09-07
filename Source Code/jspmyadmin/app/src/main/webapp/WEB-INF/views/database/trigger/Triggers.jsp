@@ -34,8 +34,9 @@
 							<form id="trigger-create-form"
 								action="${pageContext.request.contextPath}/database_trigger_create.html"
 								method="post" accept-charset="utf-8">
-								<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-								<input type="hidden" name="token" class="server-token"
+								<input type="hidden" name="request_db"
+									value="${requestScope.command.request_db}"> <input
+									type="hidden" name="token" class="server-token"
 									value="${requestScope.command.token}">
 								<div class="form-input">
 									<label><m:print key="lbl.trigger_name" /></label> <input
@@ -52,8 +53,9 @@
 					</div>
 					<form action="#" method="post" accept-charset="utf-8"
 						id="trigger-list-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="token" class="server-token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="token" class="server-token"
 							value="${requestScope.command.token}">
 						<div class="group">
 							<div class="group-widget group-header">
@@ -105,16 +107,17 @@
 										</jma:empty>
 									</tbody>
 								</table>
-
 							</div>
-							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-show-create">
-									<m:print key="lbl.show_create" />
-								</button>
-								<button type="button" class="btn" id="btn-drop">
-									<m:print key="lbl.drop" />
-								</button>
-							</div>
+							<jma:notEmpty name="#trigger_list" scope="command">
+								<div class="group-widget group-footer">
+									<button type="button" class="btn" id="btn-show-create">
+										<m:print key="lbl.show_create" />
+									</button>
+									<button type="button" class="btn" id="btn-drop">
+										<m:print key="lbl.drop" />
+									</button>
+								</div>
+							</jma:notEmpty>
 						</div>
 
 						<div class="group" id="show-create-group" style="display: none;">

@@ -9,5 +9,5 @@ package com.jspmyadmin.framework.connection;
  *
  */
 public enum ConnectionType {
-	CONFIG, HALF_CONFIG, SESSION;
+	CONFIG, HALF_CONFIG, LOGIN;
 }

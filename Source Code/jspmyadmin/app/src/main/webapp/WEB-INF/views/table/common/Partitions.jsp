@@ -29,9 +29,11 @@
 					<form
 						action="${pageContext.request.contextPath}/table_partition_add.html"
 						method="post" id="add-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-							<input type="hidden" name="request_table" value="${requestScope.command.request_table}">
-						<input type="hidden" name="token" id="token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="request_table"
+							value="${requestScope.command.request_table}"> <input
+							type="hidden" name="token" id="token"
 							value="${requestScope.command.token}">
 
 						<div class="group">
@@ -68,10 +70,11 @@
 					<form
 						action="${pageContext.request.contextPath}/table_partition_drop.html"
 						method="post" id="drop-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-							<input type="hidden" name="request_table" value="${requestScope.command.request_table}">
-						<input type="hidden" name="token"
-							value="${requestScope.command.token}">
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="request_table"
+							value="${requestScope.command.request_table}"> <input
+							type="hidden" name="token" value="${requestScope.command.token}">
 						<div class="group">
 							<div class="group-widget group-header">
 								<m:print key="lbl.partition_list" />
@@ -128,11 +131,13 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="group-widget group-footer">
-								<button type="button" id="drop-btn" class="btn">
-									<m:print key="lbl.drop" />
-								</button>
-							</div>
+							<jma:notEmpty name="#partition_list" scope="command">
+								<div class="group-widget group-footer">
+									<button type="button" id="drop-btn" class="btn">
+										<m:print key="lbl.drop" />
+									</button>
+								</div>
+							</jma:notEmpty>
 						</div>
 					</form>
 				</div>

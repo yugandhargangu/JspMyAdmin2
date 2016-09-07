@@ -3,11 +3,15 @@
  */
 package com.jspmyadmin.app.table.common.controllers;
 
+import java.sql.SQLException;
+
 import com.jspmyadmin.app.table.common.beans.InformationBean;
 import com.jspmyadmin.app.table.common.logic.InformationLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -18,30 +22,25 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/table_info.html", requestLevel = RequestLevel.TABLE)
-public class InformationController extends Controller<InformationBean> {
+public class InformationController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private View view;
+	@Model
+	private InformationBean bean;
 
-	@Override
-	protected void handleGet(InformationBean bean, View view) throws Exception {
+	@HandleGetOrPost
+	private void tableInfo() {
 
 		InformationLogic informationLogic = null;
 		try {
-			super.fillBasics(bean);
-			super.setTable(bean);
 			informationLogic = new InformationLogic(bean.getRequest_table());
 			informationLogic.fillBean(bean);
 			view.setType(ViewType.FORWARD);
 			view.setPath(AppConstants.JSP_TABLE_COMMON_INFORMATION);
-		} catch (Exception e) {
-			view.setType(ViewType.REDIRECT);
-			view.setPath(AppConstants.PATH_HOME);
+		} catch (SQLException e) {
+			view.handleDefault();
 		}
-	}
-
-	@Override
-	protected void handlePost(InformationBean bean, View view) throws Exception {
-		this.handleGet(bean, view);
 	}
 
 }

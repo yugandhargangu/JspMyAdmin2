@@ -13,7 +13,7 @@ import com.jspmyadmin.app.table.partition.beans.PartinitionBean;
 import com.jspmyadmin.app.table.partition.beans.PartitionInfo;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -39,7 +39,7 @@ public class PartitionLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 		PartinitionBean partinitionBean = (PartinitionBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -88,7 +88,7 @@ public class PartitionLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void addPartition(Bean bean) throws ClassNotFoundException, SQLException {
+	public void addPartition(Bean bean) throws SQLException {
 		PartinitionBean partinitionBean = (PartinitionBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -101,9 +101,9 @@ public class PartitionLogic extends AbstractLogic {
 				builder.append(_table);
 				builder.append("` PARTITION BY ");
 				builder.append(partinitionBean.getPartition());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append(partinitionBean.getPartition_val());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				if (!isEmpty(partinitionBean.getPartitions())) {
 					builder.append("PARTITIONS ");
 					builder.append(partinitionBean.getPartitions());
@@ -124,7 +124,7 @@ public class PartitionLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void dropPartitions(Bean bean) throws ClassNotFoundException, SQLException {
+	public void dropPartitions(Bean bean) throws SQLException {
 		PartinitionBean partinitionBean = (PartinitionBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -139,13 +139,13 @@ public class PartitionLogic extends AbstractLogic {
 				boolean alreadyEntered = false;
 				for (String partition : partinitionBean.getNames()) {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					} else {
 						alreadyEntered = true;
 					}
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(partition);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 				}
 				statement = apiConnection.getStmtSelect(builder.toString());
 				statement.execute();

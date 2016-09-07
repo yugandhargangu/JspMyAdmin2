@@ -3,13 +3,15 @@
  */
 package com.jspmyadmin.app.common.logic;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpSession;
 
 import com.jspmyadmin.app.common.beans.LoginBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.utils.DefaultServlet;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 
 /**
  * @author Yugandhar Gangu
@@ -25,19 +27,19 @@ public class LoginLogic extends AbstractLogic {
 	 */
 	public boolean isValidConnection(LoginBean bean) {
 		ApiConnection apiConnection = null;
-		HttpSession httpSession = DefaultServlet.REQUEST_MAP.get(Thread.currentThread().getId()).getSession();
+		HttpSession httpSession = RequestAdaptor.REQUEST_MAP.get(Thread.currentThread().getId()).getSession();
 		try {
-			httpSession.setAttribute(FrameworkConstants.SESSION_HOST, bean.getHostname());
-			httpSession.setAttribute(FrameworkConstants.SESSION_PORT, bean.getPortnumber());
-			httpSession.setAttribute(FrameworkConstants.SESSION_USER, bean.getUsername());
-			httpSession.setAttribute(FrameworkConstants.SESSION_PASS, bean.getPassword());
+			httpSession.setAttribute(Constants.SESSION_HOST, bean.getHostname());
+			httpSession.setAttribute(Constants.SESSION_PORT, bean.getPortnumber());
+			httpSession.setAttribute(Constants.SESSION_USER, bean.getUsername());
+			httpSession.setAttribute(Constants.SESSION_PASS, bean.getPassword());
 			apiConnection = super.getConnection();
 			if (apiConnection != null) {
-				httpSession.setAttribute(FrameworkConstants.SESSION, true);
+				httpSession.setAttribute(Constants.SESSION, true);
 				return true;
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 		} finally {
 			close(apiConnection);
 		}

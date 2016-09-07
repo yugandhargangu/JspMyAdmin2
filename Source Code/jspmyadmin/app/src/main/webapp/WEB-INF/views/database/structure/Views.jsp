@@ -34,8 +34,9 @@
 							<form id="view-create-form"
 								action="${pageContext.request.contextPath}/database_create_view.html"
 								method="post" accept-charset="utf-8">
-								<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-								<input type="hidden" name="token" class="server-token"
+								<input type="hidden" name="request_db"
+									value="${requestScope.command.request_db}"> <input
+									type="hidden" name="token" class="server-token"
 									value="${requestScope.command.token}">
 								<div class="form-input">
 									<label><m:print key="lbl.view_name" /></label> <input
@@ -52,8 +53,9 @@
 					</div>
 					<form action="#" method="post" accept-charset="utf-8"
 						id="table-list-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="token" class="server-token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="token" class="server-token"
 							value="${requestScope.command.token}"><input
 							type="hidden" name="action" value="/database_view_list.html">
 						<div class="group">
@@ -146,26 +148,25 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="group-widget group-footer">
-								<button type="button" class="btn" id="btn-prefix">
-									<m:print key="lbl.prefix" />
-								</button>
-								<button type="button" class="btn" id="btn-suffix">
-									<m:print key="lbl.suffix" />
-								</button>
-								<button type="button" class="btn" id="btn-show-create">
-									<m:print key="lbl.show_create" />
-								</button>
-								<button type="button" class="btn" id="btn-edit">
-									<m:print key="lbl.alter" />
-								</button>
-								<button type="button" class="btn" id="btn-export">
-									<m:print key="lbl.export" />
-								</button>
-								<button type="button" class="btn" id="btn-drop">
-									<m:print key="lbl.drop" />
-								</button>
-							</div>
+							<jma:notEmpty name="#table_list" scope="command">
+								<div class="group-widget group-footer">
+									<button type="button" class="btn" id="btn-prefix">
+										<m:print key="lbl.prefix" />
+									</button>
+									<button type="button" class="btn" id="btn-suffix">
+										<m:print key="lbl.suffix" />
+									</button>
+									<button type="button" class="btn" id="btn-show-create">
+										<m:print key="lbl.show_create" />
+									</button>
+									<button type="button" class="btn" id="btn-edit">
+										<m:print key="lbl.alter" />
+									</button>
+									<button type="button" class="btn" id="btn-drop">
+										<m:print key="lbl.drop" />
+									</button>
+								</div>
+							</jma:notEmpty>
 						</div>
 
 						<div class="group" id="show-create-group" style="display: none;">
@@ -435,8 +436,9 @@
 		<form
 			action="${pageContext.request.contextPath}/database_ext_sql.html"
 			method="post" id="sql-form">
-			<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-			<input type="hidden" name="token" class="server-token"
+			<input type="hidden" name="request_db"
+				value="${requestScope.command.request_db}"> <input
+				type="hidden" name="token" class="server-token"
 				value="${requestScope.command.token}"> <input type="hidden"
 				name="edit_type" value="2"> <input type="hidden"
 				name="edit_name">

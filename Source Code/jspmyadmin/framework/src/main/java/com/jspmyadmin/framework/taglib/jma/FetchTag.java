@@ -9,7 +9,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractSimpleTagSupport;
 
 /**
@@ -73,7 +73,7 @@ public class FetchTag extends AbstractSimpleTagSupport {
 			return;
 		}
 		int indexVal = -1;
-		if (index.startsWith(FrameworkConstants.SYMBOL_HASH)) {
+		if (index.startsWith(Constants.SYMBOL_HASH)) {
 			index = new String(index.substring(1));
 			Object temp = pageContext.getAttribute(index);
 			if (temp == null) {
@@ -92,18 +92,18 @@ public class FetchTag extends AbstractSimpleTagSupport {
 			return;
 		}
 		Object temp = null;
-		if (FrameworkConstants.PAGE.equalsIgnoreCase(scope)) {
+		if (Constants.PAGE.equalsIgnoreCase(scope)) {
 			temp = pageContext.getAttribute(object);
 			temp = super.getReflectValue(temp, name, indexVal);
 		} else {
-			temp = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
+			temp = pageContext.getRequest().getAttribute(Constants.COMMAND);
 			temp = super.getReflectValue(temp, name, indexVal);
 		}
 		if (temp == null) {
 			pageContext.setAttribute(key, null, PageContext.PAGE_SCOPE);
 			return;
 		}
-		if (key == null || FrameworkConstants.BLANK.equals(key.trim()))
+		if (key == null || Constants.BLANK.equals(key.trim()))
 
 		{
 			JspWriter jspWriter = pageContext.getOut();

@@ -58,9 +58,11 @@ input[readonly] {
 					</div>
 					<form action="#" accept-charset="utf-8" method="post"
 						id="data-form">
-						<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-						<input type="hidden" name="request_table" value="${requestScope.command.request_table}">
-						<input type="hidden" name="token" id="token" class="server-token"
+						<input type="hidden" name="request_db"
+							value="${requestScope.command.request_db}"> <input
+							type="hidden" name="request_table"
+							value="${requestScope.command.request_table}"> <input
+							type="hidden" name="token" id="token" class="server-token"
 							value="${requestScope.command.token}">
 
 						<div class="group">
@@ -315,13 +317,15 @@ input[readonly] {
 									</jma:notEmpty>
 								</div>
 							</div>
-							<div class="group-widget group-footer">
-								<jma:notEmpty name="#primary_key" scope="command">
-									<button type="button" class="btn" id="btn-delete">
-										<m:print key="lbl.delete" />
-									</button>
-								</jma:notEmpty>
-							</div>
+							<jma:notEmpty name="#select_list" scope="command">
+								<div class="group-widget group-footer">
+									<jma:notEmpty name="#primary_key" scope="command">
+										<button type="button" class="btn" id="btn-delete">
+											<m:print key="lbl.delete" />
+										</button>
+									</jma:notEmpty>
+								</div>
+							</jma:notEmpty>
 						</div>
 					</form>
 				</div>
@@ -388,9 +392,11 @@ input[readonly] {
 			<form
 				action="${pageContext.request.contextPath}/table_insert_update.html"
 				method="get" id="update-form">
-				<input type="hidden" name="request_db" value="${requestScope.command.request_db}">
-				<input type="hidden" name="request_table" value="${requestScope.command.request_table}">
-				<input type="hidden" name="token" id="update-form-input">
+				<input type="hidden" name="request_db"
+					value="${requestScope.command.request_db}"> <input
+					type="hidden" name="request_table"
+					value="${requestScope.command.request_table}"> <input
+					type="hidden" name="token" id="update-form-input">
 			</form>
 		</div>
 	</jma:notEmpty>

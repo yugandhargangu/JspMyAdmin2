@@ -5,7 +5,7 @@ package com.jspmyadmin.framework.taglib.jma;
 
 import javax.servlet.jsp.JspException;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractTagSupport;
 
 /**
@@ -24,7 +24,7 @@ public class SwitchTag extends AbstractTagSupport {
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(String name) {
+	public synchronized void setName(String name) {
 		this.name = name;
 	}
 
@@ -32,7 +32,7 @@ public class SwitchTag extends AbstractTagSupport {
 	 * @param scope
 	 *            the scope to set
 	 */
-	public void setScope(String scope) {
+	public synchronized void setScope(String scope) {
 		this.scope = scope;
 	}
 
@@ -64,50 +64,54 @@ public class SwitchTag extends AbstractTagSupport {
 
 	@Override
 	public int doStartTag() {
-		if (name != null && name.startsWith(FrameworkConstants.SYMBOL_HASH)) {
-			String[] split = new String(name.substring(1)).split(FrameworkConstants.SYMBOL_DOT_EXPR);
-			if (scope == null || FrameworkConstants.PAGE.equals(scope)) {
-				for (int i = 0; i < split.length; i++) {
-					if (_value == null) {
-						_value = pageContext.getAttribute(split[i]);
-					} else {
+		synchronized (this) {
+			if (name != null && name.startsWith(Constants.SYMBOL_HASH)) {
+				String[] split = name.substring(1).split(Constants.SYMBOL_DOT_EXPR);
+				if (scope == null || Constants.PAGE.equals(scope)) {
+					for (int i = 0; i < split.length; i++) {
+						if (_value == null) {
+							_value = pageContext.getAttribute(split[i]);
+						} else {
+							_value = super.getReflectValue(_value, split[i]);
+						}
+					}
+				} else if (Constants.COMMAND.equals(scope)) {
+					for (int i = 0; i < split.length; i++) {
+						if (_value == null) {
+							_value = pageContext.getRequest().getAttribute(Constants.COMMAND);
+						}
 						_value = super.getReflectValue(_value, split[i]);
 					}
-				}
-			} else if (FrameworkConstants.COMMAND.equals(scope)) {
-				for (int i = 0; i < split.length; i++) {
-					if (_value == null) {
-						_value = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
+				} else if (Constants.REQUEST.equals(scope)) {
+					for (int i = 0; i < split.length; i++) {
+						if (_value == null) {
+							_value = pageContext.getRequest().getAttribute(split[i]);
+						} else {
+							_value = super.getReflectValue(_value, split[i]);
+						}
 					}
-					_value = super.getReflectValue(_value, split[i]);
-				}
-			} else if (FrameworkConstants.REQUEST.equals(scope)) {
-				for (int i = 0; i < split.length; i++) {
-					if (_value == null) {
-						_value = pageContext.getRequest().getAttribute(split[i]);
-					} else {
-						_value = super.getReflectValue(_value, split[i]);
-					}
-				}
-			} else if (FrameworkConstants.SESSION.equals(scope)) {
-				for (int i = 0; i < split.length; i++) {
-					if (_value == null) {
-						_value = pageContext.getSession().getAttribute(split[i]);
-					} else {
-						_value = super.getReflectValue(_value, split[i]);
+				} else if (Constants.SESSION.equals(scope)) {
+					for (int i = 0; i < split.length; i++) {
+						if (_value == null) {
+							_value = pageContext.getSession().getAttribute(split[i]);
+						} else {
+							_value = super.getReflectValue(_value, split[i]);
+						}
 					}
 				}
+			} else {
+				_value = name;
 			}
-		} else {
-			_value = name;
 		}
 		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
-		_isSubDone = false;
-		_value = null;
+		synchronized (this) {
+			_isSubDone = false;
+			_value = null;
+		}
 		return EVAL_PAGE;
 	}
 }

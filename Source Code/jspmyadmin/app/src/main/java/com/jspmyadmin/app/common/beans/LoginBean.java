@@ -8,10 +8,8 @@ import java.util.Map;
 
 import com.jspmyadmin.framework.connection.ConnectionType;
 import com.jspmyadmin.framework.connection.ConnectionTypeCheck;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
-import com.jspmyadmin.framework.web.utils.DefaultServlet;
-import com.jspmyadmin.framework.web.utils.DefaultServlet.Config;
 
 /**
  * @author Yugandhar Gangu
@@ -28,14 +26,11 @@ public class LoginBean extends Bean {
 	private String username = "root";
 	private String password = "";
 
-	private Map<String, String> language_map = new LinkedHashMap<String, String>(FrameworkConstants.Utils.LANGUAGE_MAP);
+	private Map<String, String> language_map = new LinkedHashMap<String, String>(Constants.Utils.LANGUAGE_MAP);
 
 	public LoginBean() {
 		if (ConnectionType.HALF_CONFIG.equals(ConnectionTypeCheck.check())) {
-			Config config = (Config) DefaultServlet.getContext().getAttribute("config");
-			hostname = config.getHost();
-			portnumber = config.getPort();
-			halfconfig = FrameworkConstants.YES;
+			halfconfig = Constants.YES;
 		}
 	}
 

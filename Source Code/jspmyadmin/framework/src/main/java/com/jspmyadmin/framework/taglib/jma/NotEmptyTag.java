@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractTagSupport;
 
 /**
@@ -42,19 +42,19 @@ public class NotEmptyTag extends AbstractTagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 		boolean isEmpty = true;
-		if (name.startsWith(FrameworkConstants.SYMBOL_HASH)) {
+		if (name.startsWith(Constants.SYMBOL_HASH)) {
 			Object temp = null;
-			String[] parts = new String(name.substring(1)).split(FrameworkConstants.SYMBOL_DOT_EXPR);
-			if (FrameworkConstants.COMMAND.equals(scope)) {
+			String[] parts = name.substring(1).split(Constants.SYMBOL_DOT_EXPR);
+			if (Constants.COMMAND.equals(scope)) {
 				for (int i = 0; i < parts.length; i++) {
 					if (temp == null) {
-						temp = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
+						temp = pageContext.getRequest().getAttribute(Constants.COMMAND);
 						temp = super.getReflectValue(temp, parts[i]);
 					} else {
 						temp = super.getReflectValue(temp, parts[i]);
 					}
 				}
-			} else if (FrameworkConstants.REQUEST.equals(scope)) {
+			} else if (Constants.REQUEST.equals(scope)) {
 				for (int i = 0; i < parts.length; i++) {
 					if (temp == null) {
 						temp = pageContext.getRequest().getAttribute(parts[i]);
@@ -62,7 +62,7 @@ public class NotEmptyTag extends AbstractTagSupport {
 						temp = super.getReflectValue(temp, parts[i]);
 					}
 				}
-			} else if (FrameworkConstants.PAGE.equals(scope)) {
+			} else if (Constants.PAGE.equals(scope)) {
 				for (int i = 0; i < parts.length; i++) {
 					if (temp == null) {
 						temp = pageContext.getAttribute(parts[i]);
@@ -70,7 +70,7 @@ public class NotEmptyTag extends AbstractTagSupport {
 						temp = super.getReflectValue(temp, parts[i]);
 					}
 				}
-			} else if (FrameworkConstants.SESSION.equals(scope)) {
+			} else if (Constants.SESSION.equals(scope)) {
 				for (int i = 0; i < parts.length; i++) {
 					if (temp == null) {
 						temp = pageContext.getSession().getAttribute(parts[i]);

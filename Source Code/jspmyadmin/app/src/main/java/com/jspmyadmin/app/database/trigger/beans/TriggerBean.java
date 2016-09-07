@@ -6,7 +6,7 @@ package com.jspmyadmin.app.database.trigger.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -30,10 +30,10 @@ public class TriggerBean extends Bean {
 	private String trigger_body = null;
 	private String action = null;
 
-	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
-	private List<String> trigger_time_list = new ArrayList<String>(FrameworkConstants.Utils.TRIGGER_TIME_LIST);
-	private List<String> trigger_event_list = new ArrayList<String>(FrameworkConstants.Utils.TRIGGER_EVENT_LIST);
-	private List<String> trigger_order_list = new ArrayList<String>(FrameworkConstants.Utils.TRIGGER_ORDER_LIST);
+	private List<String> definer_list = new ArrayList<String>(Constants.Utils.DEFINER_LIST);
+	private List<String> trigger_time_list = new ArrayList<String>(Constants.Utils.TRIGGER_TIME_LIST);
+	private List<String> trigger_event_list = new ArrayList<String>(Constants.Utils.TRIGGER_EVENT_LIST);
+	private List<String> trigger_order_list = new ArrayList<String>(Constants.Utils.TRIGGER_ORDER_LIST);
 	private List<String> database_name_list = null;
 	private List<String> other_trigger_name_list = null;
 

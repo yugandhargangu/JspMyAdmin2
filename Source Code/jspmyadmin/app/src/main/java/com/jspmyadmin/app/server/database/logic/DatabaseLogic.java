@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.server.database.beans.DatabaseInfo;
-import com.jspmyadmin.app.server.database.beans.DatabaseListBean;
 import com.jspmyadmin.app.server.database.beans.DatabaseInfo.DatabaseInfoComparator;
+import com.jspmyadmin.app.server.database.beans.DatabaseListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -31,9 +32,12 @@ public class DatabaseLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws SQLException
+	 * @throws JSONException
+	 * @throws EncodingException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean) throws Exception {
+	public void fillBean(Bean bean) throws SQLException, JSONException, EncodingException {
 		DatabaseListBean databaseListBean = null;
 		List<DatabaseInfo> databaseInfoList = null;
 		DatabaseInfo databaseInfo = null;
@@ -43,7 +47,6 @@ public class DatabaseLogic extends AbstractLogic {
 		ResultSet resultSet = null;
 		StringBuilder builder = null;
 		JSONObject jsonObject = null;
-		EncDecLogic encDecLogic = null;
 		int count = 0;
 		int tables = 0;
 		int rows = 0;
@@ -70,7 +73,6 @@ public class DatabaseLogic extends AbstractLogic {
 			statement = apiConnection.getStmtSelect(builder.toString());
 			resultSet = statement.executeQuery();
 			databaseInfoList = new ArrayList<DatabaseInfo>();
-			encDecLogic = new EncDecLogic();
 			while (resultSet.next()) {
 				databaseInfo = new DatabaseInfo();
 				databaseInfo.setDatabase(resultSet.getString(1));
@@ -83,8 +85,8 @@ public class DatabaseLogic extends AbstractLogic {
 				databaseInfo.setIndexes(strIndex);
 				databaseInfo.setTotal(resultSet.getString(7));
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.DATABASE, databaseInfo.getDatabase());
-				databaseInfo.setAction(encDecLogic.encode(jsonObject.toString()));
+				jsonObject.put(Constants.REQUEST_DB, databaseInfo.getDatabase());
+				databaseInfo.setAction(encodeObj.encode(jsonObject.toString()));
 				count++;
 				tables += Integer.parseInt(databaseInfo.getTables());
 				rows += Integer.parseInt(databaseInfo.getRows());
@@ -93,10 +95,10 @@ public class DatabaseLogic extends AbstractLogic {
 				databaseInfoList.add(databaseInfo);
 
 			}
-			DatabaseInfoComparator comparator = new DatabaseInfoComparator(databaseListBean.getToken());
+			DatabaseInfoComparator comparator = new DatabaseInfoComparator(databaseListBean.getToken(), encodeObj);
 			Collections.sort(databaseInfoList, comparator);
 			databaseListBean.setDatabase_list(databaseInfoList);
-			databaseListBean.setSortInfo(comparator.getSortInfo());
+			databaseListBean.setSortInfo(comparator.getSortInfo(encodeObj));
 			databaseListBean.setSort(Integer.toString(comparator.getField()));
 			databaseListBean.setType(Boolean.toString(!comparator.getType()));
 			databaseInfo = new DatabaseInfo();
@@ -120,7 +122,7 @@ public class DatabaseLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void createDatabase(Bean bean) throws ClassNotFoundException, SQLException {
+	public void createDatabase(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -130,9 +132,9 @@ public class DatabaseLogic extends AbstractLogic {
 			databaseListBean = (DatabaseListBean) bean;
 			apiConnection = getConnection();
 			query = new StringBuilder("CREATE DATABASE ");
-			query.append(FrameworkConstants.SYMBOL_TEN);
+			query.append(Constants.SYMBOL_TEN);
 			query.append(databaseListBean.getDatabase());
-			query.append(FrameworkConstants.SYMBOL_TEN);
+			query.append(Constants.SYMBOL_TEN);
 			if (!super.isEmpty(databaseListBean.getCollation())) {
 				query.append(" COLLATE ");
 				query.append(databaseListBean.getCollation());
@@ -141,7 +143,9 @@ public class DatabaseLogic extends AbstractLogic {
 			statement.executeUpdate();
 			apiConnection.commit();
 		} catch (SQLException e) {
-			apiConnection.rollback();
+			if (apiConnection != null) {
+				apiConnection.rollback();
+			}
 			throw e;
 		} finally {
 			close(statement);
@@ -155,7 +159,7 @@ public class DatabaseLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void dropDatabase(Bean bean) throws ClassNotFoundException, SQLException {
+	public void dropDatabase(Bean bean) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -168,16 +172,18 @@ public class DatabaseLogic extends AbstractLogic {
 			if (databaseListBean.getDatabases() != null) {
 				for (int i = 0; i < databaseListBean.getDatabases().length; i++) {
 					query.append("DROP DATABASE IF EXISTS ");
-					query.append(FrameworkConstants.SYMBOL_TEN);
+					query.append(Constants.SYMBOL_TEN);
 					query.append(databaseListBean.getDatabases()[i]);
-					query.append(FrameworkConstants.SYMBOL_TEN);
+					query.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(query.toString());
 					statement.executeUpdate();
 				}
 			}
 			apiConnection.commit();
 		} catch (SQLException e) {
-			apiConnection.rollback();
+			if (apiConnection != null) {
+				apiConnection.rollback();
+			}
 			throw e;
 		} finally {
 			close(statement);

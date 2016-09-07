@@ -9,9 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
-import com.jspmyadmin.framework.web.utils.DefaultServlet;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 
 /**
  * @author Yugandhar Gangu
@@ -41,13 +41,15 @@ public class RoutineBean extends Bean {
 	private String alter = null;
 	private String new_column = null;
 
-	private List<String> definer_list = new ArrayList<String>(FrameworkConstants.Utils.DEFINER_LIST);
+	private List<String> definer_list = new ArrayList<String>(Constants.Utils.DEFINER_LIST);
 	private Map<String, List<String>> data_types_map = new LinkedHashMap<String, List<String>>(
-			FrameworkConstants.Utils.DATA_TYPES_MAP);
-	private List<String> sql_type_list = new ArrayList<String>(FrameworkConstants.Utils.SQL_TYPE_LIST);
-	private List<String> security_type_list = new ArrayList<String>(FrameworkConstants.Utils.SECURITY_TYPE_LIST);
+			Constants.Utils.DATA_TYPES_MAP);
+	private List<String> sql_type_list = new ArrayList<String>(Constants.Utils.SQL_TYPE_LIST);
+	private List<String> security_type_list = new ArrayList<String>(Constants.Utils.SECURITY_TYPE_LIST);
 
-	@Override
+	/**
+	 * 
+	 */
 	public void init() {
 
 		StringBuilder builder = new StringBuilder();
@@ -59,11 +61,11 @@ public class RoutineBean extends Bean {
 		builder.append("</select></td>");
 		builder.append("<td><input type=\"text\" name=\"params\"></td>");
 		builder.append("<td><select name=\"param_data_types\">");
-		for (String key : FrameworkConstants.Utils.DATA_TYPES_MAP.keySet()) {
+		for (String key : Constants.Utils.DATA_TYPES_MAP.keySet()) {
 			builder.append("<optgroup value=\"");
 			builder.append(key);
 			builder.append("\">");
-			Iterator<String> iterator = FrameworkConstants.Utils.DATA_TYPES_MAP.get(key).iterator();
+			Iterator<String> iterator = Constants.Utils.DATA_TYPES_MAP.get(key).iterator();
 			while (iterator.hasNext()) {
 				String val = iterator.next();
 				builder.append("<option value=\"");
@@ -79,7 +81,7 @@ public class RoutineBean extends Bean {
 		builder.append("<td style=\"text-align: center;\">");
 		builder.append("<img alt=\"\" class=\"icon\" ");
 		builder.append("onclick=\"removeThisTr(this);\" src=\"");
-		builder.append(DefaultServlet.REQUEST_MAP.get(Thread.currentThread().getId()).getContextPath());
+		builder.append(RequestAdaptor.REQUEST_MAP.get(Thread.currentThread().getId()).getContextPath());
 		builder.append("/components/icons/minus-r.png\">");
 		builder.append("</td></tr>");
 		new_column = builder.toString();

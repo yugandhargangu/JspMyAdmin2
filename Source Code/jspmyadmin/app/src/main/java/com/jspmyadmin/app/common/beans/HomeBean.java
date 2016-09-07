@@ -10,9 +10,9 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import com.jspmyadmin.app.common.logic.HomeLogic;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
-import com.jspmyadmin.framework.web.utils.DefaultServlet;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 
 /**
  * @author Yugandhar Gangu
@@ -26,7 +26,7 @@ public class HomeBean extends Bean {
 	private static final String _ADDON = " %";
 
 	private String collation = null;
-	private String language = FrameworkConstants.DEFAULT_LOCALE;
+	private String language = Constants.DEFAULT_LOCALE;
 	private String fontsize = "100";
 
 	private String db_server_name = null;
@@ -47,7 +47,7 @@ public class HomeBean extends Bean {
 	private String action = null;
 
 	private Map<String, List<String>> collation_map = null;
-	private Map<String, String> language_map = new LinkedHashMap<String, String>(FrameworkConstants.Utils.LANGUAGE_MAP);
+	private Map<String, String> language_map = new LinkedHashMap<String, String>(Constants.Utils.LANGUAGE_MAP);
 	private Map<String, String> fontsize_map = null;
 
 	public HomeBean() {
@@ -65,8 +65,8 @@ public class HomeBean extends Bean {
 			fontsize_map.put(Integer.toString(i), i + _ADDON);
 		}
 
-		HttpSession httpSession = DefaultServlet.REQUEST_MAP.get(Thread.currentThread().getId()).getSession();
-		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_FONTSIZE);
+		HttpSession httpSession = RequestAdaptor.REQUEST_MAP.get(Thread.currentThread().getId()).getSession();
+		Object temp = httpSession.getAttribute(Constants.SESSION_FONTSIZE);
 		if (temp != null) {
 			fontsize = temp.toString();
 		}

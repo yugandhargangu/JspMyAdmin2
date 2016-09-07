@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import com.jspmyadmin.app.server.common.beans.CommonListBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -33,9 +33,10 @@ public class EngineLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws JSONException
+	 * @throws EncodingException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException, JSONException, Exception {
+	public void fillBean(Bean bean) throws SQLException, JSONException, EncodingException {
 
 		CommonListBean engineBean = null;
 		List<String[]> engineInfoList = null;
@@ -45,7 +46,6 @@ public class EngineLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		ResultSetMetaData resultSetMetaData = null;
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		String orderBy = "ENGINE";
 		String sort = " ASC";
@@ -53,14 +53,13 @@ public class EngineLogic extends AbstractLogic {
 		try {
 			engineBean = (CommonListBean) bean;
 			apiConnection = getConnection();
-			encDecLogic = new EncDecLogic();
 			if (!super.isEmpty(engineBean.getToken())) {
-				jsonObject = new JSONObject(encDecLogic.decode(engineBean.getToken()));
-				if (jsonObject.has(FrameworkConstants.NAME)) {
-					orderBy = jsonObject.getString(FrameworkConstants.NAME);
+				jsonObject = new JSONObject(encodeObj.decode(engineBean.getToken()));
+				if (jsonObject.has(Constants.NAME)) {
+					orderBy = jsonObject.getString(Constants.NAME);
 				}
-				if (jsonObject.has(FrameworkConstants.TYPE)) {
-					type = jsonObject.getBoolean(FrameworkConstants.TYPE);
+				if (jsonObject.has(Constants.TYPE)) {
+					type = jsonObject.getBoolean(Constants.TYPE);
 				}
 			}
 			if (type) {
@@ -81,13 +80,13 @@ public class EngineLogic extends AbstractLogic {
 			engineInfo = new String[length];
 			for (int i = 0; i < length; i++) {
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, resultSetMetaData.getColumnName(i + 1));
+				jsonObject.put(Constants.NAME, resultSetMetaData.getColumnName(i + 1));
 				if (orderBy.equalsIgnoreCase(resultSetMetaData.getColumnName(i + 1))) {
-					jsonObject.put(FrameworkConstants.TYPE, !type);
+					jsonObject.put(Constants.TYPE, !type);
 				} else {
-					jsonObject.put(FrameworkConstants.TYPE, false);
+					jsonObject.put(Constants.TYPE, false);
 				}
-				engineInfo[i] = encDecLogic.encode(jsonObject.toString());
+				engineInfo[i] = encodeObj.encode(jsonObject.toString());
 			}
 			engineBean.setSortInfo(engineInfo);
 
@@ -112,12 +111,9 @@ public class EngineLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @return
-	 * @throws ClassNotFoundException
 	 * @throws SQLException
-	 * @throws JSONException
-	 * @throws Exception
 	 */
-	public List<String> getEngineList() throws ClassNotFoundException, SQLException, JSONException, Exception {
+	public List<String> getEngineList() throws SQLException {
 
 		List<String> engineList = null;
 		ApiConnection apiConnection = null;

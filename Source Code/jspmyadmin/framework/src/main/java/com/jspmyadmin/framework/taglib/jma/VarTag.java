@@ -6,7 +6,7 @@ package com.jspmyadmin.framework.taglib.jma;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.taglib.support.AbstractSimpleTagSupport;
 
 /**
@@ -47,14 +47,14 @@ public class VarTag extends AbstractSimpleTagSupport {
 	@Override
 	public void doTag() throws JspException {
 		PageContext pageContext = (PageContext) super.getJspContext();
-		if (value.startsWith(FrameworkConstants.SYMBOL_HASH)) {
+		if (value.startsWith(Constants.SYMBOL_HASH)) {
 			Object temp = null;
-			if (scope == null || FrameworkConstants.PAGE.equals(scope)) {
+			if (scope == null || Constants.PAGE.equals(scope)) {
 				temp = pageContext.getAttribute(new String(value.substring(1)));
-			} else if (FrameworkConstants.COMMAND.equals(scope)) {
-				temp = pageContext.getRequest().getAttribute(FrameworkConstants.COMMAND);
+			} else if (Constants.COMMAND.equals(scope)) {
+				temp = pageContext.getRequest().getAttribute(Constants.COMMAND);
 				temp = super.getReflectValue(temp, new String(value.substring(1)));
-			} else if (FrameworkConstants.REQUEST.equals(scope)) {
+			} else if (Constants.REQUEST.equals(scope)) {
 				temp = pageContext.getRequest().getAttribute(new String(value.substring(1)));
 			}
 			if (temp != null) {

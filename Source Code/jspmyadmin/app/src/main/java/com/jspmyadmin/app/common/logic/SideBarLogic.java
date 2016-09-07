@@ -14,8 +14,7 @@ import org.json.JSONObject;
 
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
 
 /**
  * @author Yugandhar Gangu
@@ -36,7 +35,6 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONArray jsonArray = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
@@ -44,19 +42,18 @@ public class SideBarLogic extends AbstractLogic {
 			apiConnection = getConnection();
 			statement = apiConnection.getStmtSelect("SHOW DATABASES");
 			resultSet = statement.executeQuery();
-			encDecLogic = new EncDecLogic();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
 				result = resultSet.getString(1);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject();
-				tempJsonObject.put(FrameworkConstants.DATABASE, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.REQUEST_DB, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -107,29 +104,27 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			jsonObject = new JSONObject(token);
-			String table = jsonObject.getString(FrameworkConstants.TABLE);
-			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
+			String table = jsonObject.getString(Constants.REQUEST_TABLE);
+			apiConnection = getConnection(jsonObject.getString(Constants.REQUEST_DB));
 			statement = apiConnection.getStmtSelect("SHOW COLUMNS FROM " + table);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(FrameworkConstants.FIELD);
+				result = resultSet.getString(Constants.FIELD);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -152,29 +147,27 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			jsonObject = new JSONObject(token);
-			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
+			apiConnection = getConnection(jsonObject.getString(Constants.REQUEST_DB));
 			statement = apiConnection.getStmtSelect("SHOW EVENTS");
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(FrameworkConstants.NAME);
+				result = resultSet.getString(Constants.NAME);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.EVENT, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.EVENT, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -197,31 +190,29 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			jsonObject = new JSONObject(token);
-			String database = jsonObject.getString(FrameworkConstants.DATABASE);
-			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
+			String database = jsonObject.getString(Constants.REQUEST_DB);
+			apiConnection = getConnection(database);
 			statement = apiConnection.getStmtSelect("SHOW PROCEDURE STATUS WHERE DB = ?");
 			statement.setString(1, database);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(FrameworkConstants.NAME);
+				result = resultSet.getString(Constants.NAME);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.NAME, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.NAME, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -244,31 +235,29 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			jsonObject = new JSONObject(token);
-			String database = jsonObject.getString(FrameworkConstants.DATABASE);
-			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
+			String database = jsonObject.getString(Constants.REQUEST_DB);
+			apiConnection = getConnection(database);
 			statement = apiConnection.getStmtSelect("SHOW FUNCTION STATUS WHERE DB = ?");
 			statement.setString(1, database);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(FrameworkConstants.NAME);
+				result = resultSet.getString(Constants.NAME);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.NAME, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.NAME, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -291,30 +280,28 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			jsonObject = new JSONObject(token);
-			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
+			apiConnection = getConnection(jsonObject.getString(Constants.REQUEST_DB));
 			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE = ?");
-			statement.setString(1, FrameworkConstants.VIEW_UPPER_CASE);
+			statement.setString(1, Constants.VIEW_UPPER_CASE);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
 				result = resultSet.getString(1);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.VIEW, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.REQUEST_VIEW, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -337,31 +324,29 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject oldJsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			oldJsonObject = new JSONObject(token);
-			apiConnection = getConnection(oldJsonObject.getString(FrameworkConstants.DATABASE));
+			apiConnection = getConnection(oldJsonObject.getString(Constants.REQUEST_DB));
 			statement = apiConnection.getStmtSelect("SHOW FULL TABLES WHERE TABLE_TYPE = ?");
-			statement.setString(1, FrameworkConstants.BASE_TABLE);
+			statement.setString(1, Constants.BASE_TABLE);
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
 				result = resultSet.getString(1);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.TABLE, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.REQUEST_TABLE, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);
@@ -384,29 +369,27 @@ public class SideBarLogic extends AbstractLogic {
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		EncDecLogic encDecLogic = null;
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONArray jsonArray = null;
 		try {
-			encDecLogic = new EncDecLogic();
-			token = encDecLogic.decode(token);
+			token = encodeObj.decode(token);
 			jsonObject = new JSONObject(token);
-			apiConnection = getConnection(jsonObject.getString(FrameworkConstants.DATABASE));
+			apiConnection = getConnection(jsonObject.getString(Constants.REQUEST_DB));
 			statement = apiConnection.getStmtSelect("SHOW TRIGGERS");
 			resultSet = statement.executeQuery();
 			jsonArray = new JSONArray();
 			while (resultSet.next()) {
-				result = resultSet.getString(FrameworkConstants.TRIGGER);
+				result = resultSet.getString(Constants.TRIGGER);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.NAME, result);
+				jsonObject.put(Constants.NAME, result);
 				tempJsonObject = new JSONObject(token);
-				tempJsonObject.put(FrameworkConstants.NAME, result);
-				jsonObject.put(FrameworkConstants.TOKEN, encDecLogic.encode(tempJsonObject.toString()));
+				tempJsonObject.put(Constants.NAME, result);
+				jsonObject.put(Constants.TOKEN, encodeObj.encode(tempJsonObject.toString()));
 				jsonArray.put(jsonObject);
 			}
 			jsonObject = new JSONObject();
-			jsonObject.put(FrameworkConstants.DATA, jsonArray);
+			jsonObject.put(Constants.DATA, jsonArray);
 			result = jsonObject.toString();
 		} finally {
 			close(resultSet);

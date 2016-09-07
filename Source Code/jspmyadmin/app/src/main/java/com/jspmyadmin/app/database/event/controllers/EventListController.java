@@ -3,11 +3,17 @@
  */
 package com.jspmyadmin.app.database.event.controllers;
 
+import java.sql.SQLException;
+
 import com.jspmyadmin.app.database.event.beans.EventListBean;
 import com.jspmyadmin.app.database.event.logic.EventLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -18,22 +24,20 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/database_events.html", requestLevel = RequestLevel.DATABASE)
-public class EventListController extends Controller<EventListBean> {
+public class EventListController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private View view;
+	@Model
+	private EventListBean bean;
 
-	@Override
-	protected void handleGet(EventListBean bean, View view) throws Exception {
-		this.handlePost(bean, view);
-	}
-
-	@Override
-	protected void handlePost(EventListBean bean, View view) throws Exception {
-		super.fillBasics(bean);
-		super.setDatabase(bean);
+	@HandleGetOrPost
+	private void events() throws SQLException, EncodingException {
 		EventLogic eventLogic = new EventLogic();
 		eventLogic.fillListBean(bean);
-		bean.setToken(super.generateToken());
+		bean.setToken(requestAdaptor.generateToken());
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_DATABASE_EVENT_EVENTS);
 	}

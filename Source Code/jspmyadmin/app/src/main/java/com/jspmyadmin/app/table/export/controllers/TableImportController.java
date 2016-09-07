@@ -3,13 +3,22 @@
  */
 package com.jspmyadmin.app.table.export.controllers;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 import com.jspmyadmin.app.table.export.beans.ImportBean;
 import com.jspmyadmin.app.table.export.logic.ImportLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGet;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.utils.RedirectParams;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -20,43 +29,49 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/table_import.html", requestLevel = RequestLevel.TABLE)
-public class TableImportController extends Controller<ImportBean> {
+public class TableImportController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private RedirectParams redirectParams;
+	@Detect
+	private View view;
+	@Model
+	private ImportBean bean;
 
-	@Override
-	protected void handleGet(ImportBean bean, View view) throws Exception {
+	@HandleGet
+	private void loadImport() throws EncodingException {
 
-		super.fillBasics(bean);
-		bean.setToken(super.generateToken());
+		bean.setToken(requestAdaptor.generateToken());
 		view.setType(ViewType.FORWARD);
 		view.setPath(AppConstants.JSP_TABLE_EXPORT_IMPORT);
 	}
 
-	@Override
+	@HandlePost
 	@ValidateToken
-	protected void handlePost(ImportBean bean, View view) throws Exception {
+	private void importFile() throws IOException, EncodingException {
 		try {
 			if (bean.getImport_file() == null) {
-				redirectParams.put(FrameworkConstants.ERR_KEY, "msg.import_file_blank");
+				redirectParams.put(Constants.ERR_KEY, AppConstants.MSG_IMPORT_FILE_BLANK);
 				view.setType(ViewType.REDIRECT);
 				view.setPath(AppConstants.PATH_TABLE_IMPORT);
-			} else if (!bean.getImport_file().getFileName().toLowerCase().endsWith(".sql")) {
-				redirectParams.put(FrameworkConstants.ERR_KEY, "msg.import_invalid_file");
+			} else if (!bean.getImport_file().getFileName().toLowerCase().endsWith(Constants.FILE_EXT_SQL)) {
+				redirectParams.put(Constants.ERR_KEY, AppConstants.MSG_IMPORT_INVALID_FILE);
 				view.setType(ViewType.REDIRECT);
 				view.setPath(AppConstants.PATH_TABLE_IMPORT);
 			} else if (bean.getImport_file().getFileSize() == 0) {
-				redirectParams.put(FrameworkConstants.ERR_KEY, "msg.import_file_empty");
+				redirectParams.put(Constants.ERR_KEY, AppConstants.MSG_IMPORT_FILE_EMPTY);
 				view.setType(ViewType.REDIRECT);
 				view.setPath(AppConstants.PATH_TABLE_IMPORT);
 			} else {
-				bean.setToken(super.generateToken());
+				bean.setToken(requestAdaptor.generateToken());
 				ImportLogic importLogic = new ImportLogic();
 				importLogic.importFile(bean);
 				view.setType(ViewType.FORWARD);
 				view.setPath(AppConstants.JSP_TABLE_EXPORT_IMPORT_RESULT);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			bean.setError(e.getMessage());
 			view.setType(ViewType.FORWARD);
 			view.setPath(AppConstants.JSP_TABLE_EXPORT_IMPORT_RESULT);

@@ -3,13 +3,14 @@
  */
 package com.jspmyadmin.app.database.structure.beans;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import com.jspmyadmin.app.common.logic.HomeLogic;
 import com.jspmyadmin.app.database.structure.logic.StructureLogic;
 import com.jspmyadmin.app.server.common.logic.EngineLogic;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -46,28 +47,21 @@ public class CreateTableBean extends Bean {
 	private Map<String, List<String>> data_types_map = null;
 	private Map<String, List<String>> collation_map = null;
 	private List<String> engine_list = null;
-	private List<String> partition_list = FrameworkConstants.Utils.PARTITION_LIST;
+	private List<String> partition_list = Constants.Utils.PARTITION_LIST;
 	private String partition_support = null;
 
 	/**
 	 * 
 	 */
 	public CreateTableBean() {
-		HomeLogic homeLogic = null;
-		EngineLogic engineLogic = null;
-		StructureLogic structureLogic = null;
 		try {
-			homeLogic = new HomeLogic();
+			HomeLogic homeLogic = new HomeLogic();
 			collation_map = homeLogic.getCollationMap();
-			engineLogic = new EngineLogic();
+			EngineLogic engineLogic = new EngineLogic();
 			engine_list = engineLogic.getEngineList();
-			structureLogic = new StructureLogic();
+			StructureLogic structureLogic = new StructureLogic();
 			partition_support = Boolean.toString(structureLogic.isSupportsPartition());
-		} catch (Exception e) {
-
-		} finally {
-			homeLogic = null;
-			engineLogic = null;
+		} catch (SQLException e) {
 		}
 	}
 

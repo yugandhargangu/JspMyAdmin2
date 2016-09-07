@@ -3,13 +3,23 @@
  */
 package com.jspmyadmin.app.common.controllers;
 
+import java.sql.SQLException;
+
+import javax.servlet.http.HttpSession;
+
 import com.jspmyadmin.app.common.beans.HomeBean;
 import com.jspmyadmin.app.common.logic.HomeLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.annotations.Detect;
+import com.jspmyadmin.framework.web.annotations.HandleGet;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
-import com.jspmyadmin.framework.web.utils.Controller;
+import com.jspmyadmin.framework.web.utils.RedirectParams;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -20,15 +30,24 @@ import com.jspmyadmin.framework.web.utils.ViewType;
  *
  */
 @WebController(authentication = true, path = "/home.html", requestLevel = RequestLevel.SERVER)
-public class HomeController extends Controller<HomeBean> {
+public class HomeController {
 
-	private static final long serialVersionUID = 1L;
+	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
+	private HttpSession session;
+	@Detect
+	private RedirectParams redirectParams;
+	@Detect
+	private View view;
+	@Model
+	private HomeBean bean;
 
-	@Override
-	protected void handleGet(HomeBean bean, View view) throws Exception {
+	@HandleGet
+	private void home() throws EncodingException, SQLException {
 		HomeLogic homeLogic = null;
 		try {
-			bean.setToken(super.generateToken());
+			bean.setToken(requestAdaptor.generateToken());
 			homeLogic = new HomeLogic();
 			homeLogic.fillBean(bean);
 		} finally {
@@ -38,36 +57,36 @@ public class HomeController extends Controller<HomeBean> {
 		view.setPath(AppConstants.JSP_COMMON_HOME);
 	}
 
-	@Override
+	@HandlePost
 	@ValidateToken
-	protected void handlePost(HomeBean bean, View view) throws Exception {
+	private void save() {
 
 		try {
-			if (bean.getAction() != null && !FrameworkConstants.BLANK.equals(bean.getAction().trim())) {
+			if (bean.getAction() != null && !Constants.BLANK.equals(bean.getAction().trim())) {
 				int i = _getInteger(bean.getAction());
 				switch (i) {
 				case 1:
-					if (bean.getCollation() != null && !FrameworkConstants.BLANK.equals(bean.getCollation().trim())) {
+					if (bean.getCollation() != null && !Constants.BLANK.equals(bean.getCollation().trim())) {
 						HomeLogic homeLogic = new HomeLogic();
 						homeLogic.saveServerCollation(bean.getCollation());
 					}
 					break;
 				case 2:
-					if (bean.getLanguage() != null && !FrameworkConstants.BLANK.equals(bean.getLanguage().trim())) {
-						session.setAttribute(FrameworkConstants.SESSION_LOCALE, bean.getLanguage());
+					if (bean.getLanguage() != null && !Constants.BLANK.equals(bean.getLanguage().trim())) {
+						session.setAttribute(Constants.SESSION_LOCALE, bean.getLanguage());
 					}
 					break;
 				case 3:
-					if (bean.getFontsize() != null && !FrameworkConstants.BLANK.equals(bean.getFontsize().trim())) {
-						session.setAttribute(FrameworkConstants.SESSION_FONTSIZE, bean.getFontsize());
+					if (bean.getFontsize() != null && !Constants.BLANK.equals(bean.getFontsize().trim())) {
+						session.setAttribute(Constants.SESSION_FONTSIZE, bean.getFontsize());
 					}
 					break;
 				default:
 					break;
 				}
 			}
-		} catch (Exception e) {
-			redirectParams.put(FrameworkConstants.ERR, e.getMessage());
+		} catch (SQLException e) {
+			redirectParams.put(Constants.ERR, e.getMessage());
 		}
 		view.setType(ViewType.REDIRECT);
 		view.setPath(AppConstants.PATH_HOME);

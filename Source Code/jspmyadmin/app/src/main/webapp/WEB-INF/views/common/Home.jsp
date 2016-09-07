@@ -183,6 +183,21 @@
 			</div>
 		</div>
 	</div>
+	<jma:notEmpty name="#err_key" scope="command">
+		<div class="dialog">
+			<div class="dialog-widget dialog-error">
+				<div class="close" id="error-close1">&#10005;</div>
+				<div class="dialog-header">
+					<m:print key="lbl.errors" />
+				</div>
+				<div class="dialog-content">
+					<p>
+						<m:print key="err_key" scope="command" />
+					</p>
+				</div>
+			</div>
+		</div>
+	</jma:notEmpty>
 	<script type="text/javascript">
 		$(function() {
 			$('#server_collation').change(function() {
@@ -196,6 +211,9 @@
 			$('#fontsize').change(function() {
 				$('#action-input').val('3');
 				$('#server-form').submit();
+			});
+			$('#error-close1').click(function() {
+				$(this).parent().parent().empty().remove();
 			});
 		});
 	</script>

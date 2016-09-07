@@ -5,10 +5,13 @@ package com.jspmyadmin.framework.web.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,12 +23,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jspmyadmin.framework.connection.ConnectionFactory;
 import com.jspmyadmin.framework.connection.ConnectionType;
 import com.jspmyadmin.framework.connection.ConnectionTypeCheck;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.AppConstants;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 
 /**
  * @author Yugandhar Gangu
@@ -36,9 +43,23 @@ public class DefaultServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger _LOGGER = Logger.getLogger(DefaultServlet.class.getName());
+	private static final EncodeHelper ENCODE_HELPER = new EncodeHelperImpl();
+	private static final String INSTALL_URL = "/install.html";
 
 	private static ServletContext _context = null;
+	private static String _web_inf_path = null;
 	private static String _root_path = null;
+
+	/**
+	 * 
+	 * @param val
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 * @throws EncodingException
+	 */
+	public static synchronized String decodeInstall(String val) throws UnsupportedEncodingException, EncodingException {
+		return ENCODE_HELPER.decodeInstall(val);
+	}
 
 	/**
 	 * @return the _root_path
@@ -55,21 +76,56 @@ public class DefaultServlet extends HttpServlet {
 		return _context;
 	}
 
-	public static final Map<Long, HttpServletRequest> REQUEST_MAP = Collections
-			.synchronizedMap(new WeakHashMap<Long, HttpServletRequest>());
+	/**
+	 * @return the _web_inf_path
+	 */
+	public static String getWebInfPath() {
+		return _web_inf_path;
+	}
+
+	/**
+	 * @param _web_inf_path
+	 *            the _web_inf_path to set
+	 */
+	private static void setWebInfPath(String _web_inf_path) {
+		DefaultServlet._web_inf_path = _web_inf_path;
+	}
+
+	/**
+	 * 
+	 * @param context
+	 */
+	private static void setContext(ServletContext context) {
+		_context = context;
+	}
+
+	/**
+	 * 
+	 * @param rootpath
+	 */
+	private static void setRootPath(String rootpath) {
+		_root_path = rootpath;
+	}
 
 	@Override
 	public void init() throws ServletException {
 		try {
 			ServletConfig config = getServletConfig();
-			_context = config.getServletContext();
+			setContext(config.getServletContext());
 			if (_context != null) {
-				_root_path = _context.getRealPath("/");
-				_root_path = _root_path + "/uploads";
+				setWebInfPath(_context.getRealPath("/WEB-INF/"));
+				setRootPath(_web_inf_path + "/uploads");
 				File file = new File(_root_path);
-				file.mkdirs();
-				_context.setAttribute(FrameworkConstants.APP_DATA_TYPES_INFO, FrameworkConstants.Utils.DATA_TYPES_INFO);
-				_context.setAttribute(FrameworkConstants.HOSTNAME, InetAddress.getLocalHost().getHostName());
+				file.setExecutable(true, false);
+				file.setReadable(true, false);
+				file.setWritable(true, false);
+				if (file.mkdirs()) {
+					_LOGGER.log(Level.INFO, "Temporary path created. Path:" + _root_path);
+				} else {
+					_LOGGER.log(Level.WARNING, "Unable to create temporary path. Path:" + _root_path);
+				}
+				_context.setAttribute(Constants.APP_DATA_TYPES_INFO, Constants.Utils.DATA_TYPES_INFO);
+				_context.setAttribute(Constants.HOSTNAME, InetAddress.getLocalHost().getHostName());
 
 			}
 			// scan controllers
@@ -90,49 +146,29 @@ public class DefaultServlet extends HttpServlet {
 			new Thread() {
 				@Override
 				public void run() {
-					try {
-						MessageReader.read();
-						_LOGGER.log(Level.INFO, "Successfully Read all Messages.");
-					} catch (IOException e) {
-						_LOGGER.log(Level.WARNING, "Unable to Read Messages.", e);
-					}
+					MessageReader.read();
+					_LOGGER.log(Level.INFO, "Successfully Read all Messages.");
 				}
 			}.start();
 
-			String host = null;
-			String port = null;
-			String user = null;
-			String pass = null;
-			if (config.getInitParameter("host") != null) {
-				host = config.getInitParameter("host");
-			}
-			if (config.getInitParameter("port") != null) {
-				port = config.getInitParameter("port");
-			}
-			if (config.getInitParameter("user") != null) {
-				user = config.getInitParameter("user");
-			}
-			if (config.getInitParameter("password") != null) {
-				pass = config.getInitParameter("password");
-			}
-			_context.setAttribute("config", new Config(host, port, user, pass));
-		} catch (Exception e) {
+			ConnectionFactory.init();
+		} catch (UnknownHostException e) {
 		}
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
-		_doProcess(arg0, arg1);
+		_doProcess(arg0, arg1, ResolveType.POST);
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
-		_doProcess(arg0, arg1);
+		_doProcess(arg0, arg1, ResolveType.GET);
 	}
 
 	@Override
 	public void destroy() {
-		REQUEST_MAP.clear();
+		RequestAdaptor.REQUEST_MAP.clear();
 		try {
 			ControllerUtil.destroy();
 			MessageReader.remove();
@@ -150,51 +186,180 @@ public class DefaultServlet extends HttpServlet {
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-	private void _doProcess(HttpServletRequest request, HttpServletResponse response)
+	private void _doProcess(HttpServletRequest request, HttpServletResponse response, ResolveType resolveType)
 			throws ServletException, IOException {
 
-		request.setCharacterEncoding(FrameworkConstants.ENCODE_UTF8);
-		response.setCharacterEncoding(FrameworkConstants.ENCODE_UTF8);
-		String path = new String(request.getRequestURI().substring(request.getContextPath().length()));
-		REQUEST_MAP.put(Thread.currentThread().getId(), request);
+		request.setCharacterEncoding(Constants.ENCODE_UTF8);
+		response.setCharacterEncoding(Constants.ENCODE_UTF8);
+		String path = request.getRequestURI().substring(request.getContextPath().length());
+		RequestAdaptor.REQUEST_MAP.put(Thread.currentThread().getId(), request);
 		if (ControllerUtil.PATH_MAP.containsKey(path)) {
+
+			if (!ConnectionFactory.isConfigured() && !INSTALL_URL.equals(path)) {
+				response.sendRedirect(request.getContextPath() + INSTALL_URL);
+				RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
+				return;
+			}
+
+			if (ConnectionFactory.isConfigured() && INSTALL_URL.equals(path)) {
+				response.sendRedirect(request.getContextPath());
+				RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
+				return;
+			}
+
 			boolean isConfig = false;
-			ConnectionType connectionType = ConnectionTypeCheck.check();
-			switch (connectionType) {
-			case CONFIG:
-				if ("/login.html".equals(path)) {
-					response.sendRedirect(request.getContextPath() + "/home.html");
-					REQUEST_MAP.remove(Thread.currentThread().getId());
-					return;
+			if (ConnectionFactory.isConfigured()) {
+				ConnectionType connectionType = ConnectionTypeCheck.check();
+				switch (connectionType) {
+				case CONFIG:
+					if ("/login.html".equals(path)) {
+						response.sendRedirect(request.getContextPath() + "/home.html");
+						RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
+						return;
+					}
+					isConfig = true;
+					break;
+				default:
+					break;
 				}
-				isConfig = true;
+			}
+			EncodeHelper encodeObj = new EncodeHelperImpl();
+			_checkSession(request, encodeObj);
+			PathInfo pathInfo = ControllerUtil.PATH_MAP.get(path);
+			if (pathInfo.isAuthRequired() && !isConfig && !_isValidUser(request)) {
+				response.sendRedirect(request.getContextPath());
+				RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
+				return;
+			}
+
+			Method method = null;
+			switch (resolveType) {
+			case POST:
+				method = pathInfo.getPostMethod();
+				break;
+			case GET:
+				method = pathInfo.getGetMethod();
 				break;
 			default:
 				break;
 			}
-			_checkSession(request);
-			PathInfo pathInfo = ControllerUtil.PATH_MAP.get(path);
-			if (pathInfo.isAuthRequired() && !isConfig && !_isValidUser(request)) {
+			if (method == null) {
+				method = pathInfo.getAnyMethod();
+			}
+
+			if (method == null) {
 				response.sendRedirect(request.getContextPath());
-				REQUEST_MAP.remove(Thread.currentThread().getId());
+				RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
 				return;
 			}
+
+			HttpSession session = request.getSession();
+			View view = new ViewImpl(request, response);
+			RedirectParams redirectParams = _checkRedirectParams(request);
+			RequestAdaptorAbstract requestAdaptor = new RequestAdaptorImpl(encodeObj);
+			requestAdaptor.setRedirectParams(redirectParams);
+			requestAdaptor.setSession(session);
+
+			FrontController<Bean> frontController = new FrontController<Bean>();
+			frontController.setEncodeObj(encodeObj);
+			frontController.setRequestAdaptor(requestAdaptor);
+			frontController.setRequest(request);
+			frontController.setResponse(response);
+			frontController.setSession(session);
+			frontController.setRedirectParams(redirectParams);
+
 			try {
-				Controller<?> controller = (Controller<?>) pathInfo.getController().newInstance();
-				controller.setRequest(request);
-				controller.setResponse(response);
-				controller.setSession(request.getSession());
-				controller.setMessages(_getMessages(request));
-				controller.setRedirectParams(_checkRedirectParams(request));
-				Bean bean = (Bean) pathInfo.getBean().newInstance();
-				View view = new ActualView(request);
-				controller.service(bean, view, pathInfo);
-				_setNewAdd(request);
+				Object controller = pathInfo.getController().newInstance();
+				if (pathInfo.getDetectMap() != null) {
+					for (Entry<Field, DetectType> entry : pathInfo.getDetectMap().entrySet()) {
+						Field field = entry.getKey();
+						switch (entry.getValue()) {
+						case ENCODE_HELPER:
+							field.set(controller, encodeObj);
+							break;
+						case REQUEST_ADAPTOR:
+							field.set(controller, requestAdaptor);
+							break;
+						case REDIRECT_PARAMS:
+							field.set(controller, redirectParams);
+							break;
+						case REQUEST:
+							field.set(controller, request);
+							break;
+						case RESPONSE:
+							field.set(controller, response);
+							break;
+						case SESSION:
+							field.set(controller, request.getSession());
+							break;
+						case MESSAGES:
+							field.set(controller, _getMessages(request));
+							break;
+						case VIEW:
+							field.set(controller, view);
+							break;
+						}
+					}
+				}
+
+				Object model = null;
+				if (pathInfo.getModel() != null) {
+					Field field = pathInfo.getModel();
+					Class<?> fieldType = field.getType();
+					model = fieldType.newInstance();
+					field.set(controller, model);
+				}
+
+				if (frontController.preService(model, view, pathInfo, resolveType)) {
+					method.setAccessible(true);
+					Object body = null;
+					if (method.getReturnType() == Void.TYPE) {
+						method.invoke(controller);
+					} else {
+						body = method.invoke(controller);
+					}
+					frontController.postService(model, view, pathInfo, body, resolveType);
+					_setNewAdd(request, encodeObj);
+				}
 			} catch (InstantiationException e) {
+				response.sendRedirect(request.getContextPath());
 			} catch (IllegalAccessException e) {
+				response.sendRedirect(request.getContextPath());
+			} catch (IllegalArgumentException e) {
+				response.sendRedirect(request.getContextPath());
+			} catch (Exception e) {
+				if (session.getAttribute(Constants.SESSION_CONNECT) != null) {
+					if (ConnectionFactory.isConfigured()) {
+						ConnectionType connectionType = ConnectionTypeCheck.check();
+						switch (connectionType) {
+						case CONFIG:
+							session.setAttribute(Constants.SESSION_REDIRECT_PARAM, redirectParams);
+							response.sendRedirect(request.getContextPath() + "/connection_error.html");
+							break;
+						case HALF_CONFIG:
+						default:
+							session.invalidate();
+							response.sendRedirect(request.getContextPath());
+							break;
+						}
+					}
+				} else if (e instanceof SQLException) {
+					redirectParams.put(Constants.ERR, e.getMessage());
+					session.setAttribute(Constants.SESSION_REDIRECT_PARAM, redirectParams);
+					response.sendRedirect(request.getContextPath() + AppConstants.PATH_HOME);
+				} else if (e instanceof JSONException || e instanceof EncodingException) {
+					redirectParams.put(Constants.ERR_KEY, AppConstants.ERR_INVALID_ACCESS);
+					session.setAttribute(Constants.SESSION_REDIRECT_PARAM, redirectParams);
+					response.sendRedirect(request.getContextPath() + AppConstants.PATH_HOME);
+				} else {
+					response.sendRedirect(request.getContextPath());
+				}
 			}
+		} else {
+			response.sendRedirect(request.getContextPath());
 		}
-		REQUEST_MAP.remove(Thread.currentThread().getId());
+		RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
+
 	}
 
 	/**
@@ -207,7 +372,7 @@ public class DefaultServlet extends HttpServlet {
 		if (httpSession == null) {
 			return false;
 		}
-		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION);
+		Object temp = httpSession.getAttribute(Constants.SESSION);
 		if (temp == null || !((Boolean) temp)) {
 			return false;
 		}
@@ -217,32 +382,31 @@ public class DefaultServlet extends HttpServlet {
 	/**
 	 * 
 	 * @param request
+	 * @param encodeObj
 	 */
-	private void _checkSession(HttpServletRequest request) {
+	private void _checkSession(HttpServletRequest request, EncodeHelper encodeObj) {
 		HttpSession httpSession = request.getSession();
 		if (httpSession == null) {
 			httpSession = request.getSession(true);
 			httpSession.invalidate();
 			httpSession = request.getSession(true);
 		}
-		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_FONTSIZE);
+		Object temp = httpSession.getAttribute(Constants.SESSION_FONTSIZE);
 		if (temp == null) {
-			httpSession.setAttribute(FrameworkConstants.SESSION_FONTSIZE, 80);
+			httpSession.setAttribute(Constants.SESSION_FONTSIZE, 80);
 		}
 
-		temp = httpSession.getAttribute(FrameworkConstants.SESSION_LOCALE);
+		temp = httpSession.getAttribute(Constants.SESSION_LOCALE);
 		if (temp == null) {
-			if (FrameworkConstants.Utils.LANGUAGE_MAP.containsKey(request.getLocale().getLanguage())) {
-				httpSession.setAttribute(FrameworkConstants.SESSION_LOCALE, request.getLocale().getLanguage());
+			if (Constants.Utils.LANGUAGE_MAP.containsKey(request.getLocale().getLanguage())) {
+				httpSession.setAttribute(Constants.SESSION_LOCALE, request.getLocale().getLanguage());
 			} else {
-				httpSession.setAttribute(FrameworkConstants.SESSION_LOCALE, FrameworkConstants.DEFAULT_LOCALE);
+				httpSession.setAttribute(Constants.SESSION_LOCALE, Constants.DEFAULT_LOCALE);
 			}
 		}
-		temp = httpSession.getAttribute(FrameworkConstants.SESSION_KEY);
+		temp = httpSession.getAttribute(Constants.SESSION_KEY);
 		if (temp == null) {
-			EncDecLogic encDecLogic = new EncDecLogic();
-			encDecLogic.generateKey(httpSession);
-			encDecLogic = null;
+			encodeObj.generateKey(httpSession);
 		}
 
 	}
@@ -254,9 +418,9 @@ public class DefaultServlet extends HttpServlet {
 	 */
 	private RedirectParams _checkRedirectParams(HttpServletRequest request) {
 		HttpSession httpSession = request.getSession();
-		Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_REDIRECT_PARAM);
+		Object temp = httpSession.getAttribute(Constants.SESSION_REDIRECT_PARAM);
 		if (temp != null && temp instanceof RedirectParams) {
-			httpSession.removeAttribute(FrameworkConstants.SESSION_REDIRECT_PARAM);
+			httpSession.removeAttribute(Constants.SESSION_REDIRECT_PARAM);
 			return (RedirectParams) temp;
 		}
 		return new RedirectParamsImpl();
@@ -271,8 +435,8 @@ public class DefaultServlet extends HttpServlet {
 		HttpSession httpSession = request.getSession();
 		Messages messages = null;
 		if (httpSession != null) {
-			Object temp = httpSession.getAttribute(FrameworkConstants.SESSION_LOCALE);
-			if (temp != null && !FrameworkConstants.DEFAULT_LOCALE.equals(temp)) {
+			Object temp = httpSession.getAttribute(Constants.SESSION_LOCALE);
+			if (temp != null && !Constants.DEFAULT_LOCALE.equals(temp)) {
 				messages = new MessageReader(temp.toString());
 			} else {
 				messages = new MessageReader(null);
@@ -287,86 +451,14 @@ public class DefaultServlet extends HttpServlet {
 	 * 
 	 * @param request
 	 */
-	private void _setNewAdd(HttpServletRequest request) {
-		EncDecLogic encDecLogic = new EncDecLogic();
+	private void _setNewAdd(HttpServletRequest request, final EncodeHelper encodeObj) {
 		JSONObject jsonObject = new JSONObject();
 		try {
-			jsonObject.put(FrameworkConstants.NEW_ADD, FrameworkConstants.NEW_ADD);
-			request.setAttribute(FrameworkConstants.NEW_ADD, encDecLogic.encode(jsonObject.toString()));
-		} catch (Exception e) {
+			jsonObject.put(Constants.NEW_ADD, Constants.NEW_ADD);
+			request.setAttribute(Constants.NEW_ADD, encodeObj.encode(jsonObject.toString()));
+		} catch (JSONException e) {
+		} catch (EncodingException e) {
 		}
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static ConnectionType geConnectionType() {
-		try {
-			Config config = (Config) _context.getAttribute("config");
-			if (config.getHost() != null && config.getPort() != null && config.getUser() != null) {
-				return ConnectionType.CONFIG;
-			} else if (config.getHost() != null && config.getPort() != null) {
-				return ConnectionType.HALF_CONFIG;
-			}
-		} catch (Exception e) {
-		}
-		return ConnectionType.SESSION;
-	}
-
-	/**
-	 * 
-	 * @author Yugandhar Gangu
-	 * @created_at 2016/08/29
-	 *
-	 */
-	public static class Config {
-		private final String host;
-		private final String port;
-		private final String user;
-		private final String pass;
-
-		/**
-		 * 
-		 * @param host
-		 * @param port
-		 * @param user
-		 * @param pass
-		 */
-		public Config(String host, String port, String user, String pass) {
-			this.host = host;
-			this.port = port;
-			this.user = user;
-			this.pass = pass;
-		}
-
-		/**
-		 * @return the host
-		 */
-		public String getHost() {
-			return host;
-		}
-
-		/**
-		 * @return the port
-		 */
-		public String getPort() {
-			return port;
-		}
-
-		/**
-		 * @return the user
-		 */
-		public String getUser() {
-			return user;
-		}
-
-		/**
-		 * @return the pass
-		 */
-		public String getPass() {
-			return pass;
-		}
-
-	}
 }

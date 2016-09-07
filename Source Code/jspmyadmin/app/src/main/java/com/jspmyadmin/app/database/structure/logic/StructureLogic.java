@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,8 +25,8 @@ import com.jspmyadmin.app.database.structure.beans.StructureBean;
 import com.jspmyadmin.app.database.structure.beans.TableInfo;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 import com.jspmyadmin.framework.web.utils.Messages;
 
@@ -49,9 +50,12 @@ public class StructureLogic extends AbstractLogic {
 	/**
 	 * 
 	 * @param bean
+	 * @throws SQLException
+	 * @throws EncodingException
+	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean, final boolean onlyTables) throws Exception {
+	public void fillBean(Bean bean, final boolean onlyTables) throws SQLException, JSONException, EncodingException {
 		StructureBean structureBean = null;
 		List<TableInfo> tableInfoList = null;
 		TableInfo tableInfo = null;
@@ -63,7 +67,6 @@ public class StructureLogic extends AbstractLogic {
 		ResultSetMetaData resultSetMetaData = null;
 		StringBuilder builder = null;
 		JSONObject jsonObject = null;
-		EncDecLogic encDecLogic = null;
 		String orderBy = "TABLE_NAME";
 		boolean sort = false;
 		int count = 0;
@@ -73,15 +76,14 @@ public class StructureLogic extends AbstractLogic {
 		try {
 			structureBean = (StructureBean) bean;
 			apiConnection = getConnection(bean.getRequest_db());
-			encDecLogic = new EncDecLogic();
 			if (structureBean.getToken() != null) {
-				jsonObject = new JSONObject(encDecLogic.decode(structureBean.getToken()));
+				jsonObject = new JSONObject(encodeObj.decode(structureBean.getToken()));
 				if (jsonObject != null) {
-					if (jsonObject.has(FrameworkConstants.COLUMN)) {
-						orderBy = jsonObject.getString(FrameworkConstants.COLUMN);
+					if (jsonObject.has(Constants.COLUMN)) {
+						orderBy = jsonObject.getString(Constants.COLUMN);
 					}
-					if (jsonObject.has(FrameworkConstants.TYPE)) {
-						sort = jsonObject.getBoolean(FrameworkConstants.TYPE);
+					if (jsonObject.has(Constants.TYPE)) {
+						sort = jsonObject.getBoolean(Constants.TYPE);
 					}
 				}
 			}
@@ -100,9 +102,9 @@ public class StructureLogic extends AbstractLogic {
 			statement = apiConnection.getStmtSelect(builder.toString());
 			statement.setString(1, bean.getRequest_db());
 			if (onlyTables) {
-				statement.setString(2, FrameworkConstants.BASE_TABLE);
+				statement.setString(2, Constants.BASE_TABLE);
 			} else {
-				statement.setString(2, FrameworkConstants.VIEW.toUpperCase());
+				statement.setString(2, Constants.VIEW_UPPER_CASE);
 			}
 			resultSet = statement.executeQuery();
 
@@ -128,13 +130,13 @@ public class StructureLogic extends AbstractLogic {
 				tableInfo.setUpdate_date(resultSet.getString(9));
 				tableInfo.setComment(resultSet.getString(10));
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.DATABASE, bean.getRequest_db());
+				jsonObject.put(Constants.REQUEST_DB, bean.getRequest_db());
 				if (onlyTables) {
-					jsonObject.put(FrameworkConstants.TABLE, tableInfo.getName());
+					jsonObject.put(Constants.REQUEST_TABLE, tableInfo.getName());
 				} else {
-					jsonObject.put(FrameworkConstants.VIEW, tableInfo.getName());
+					jsonObject.put(Constants.REQUEST_VIEW, tableInfo.getName());
 				}
-				tableInfo.setAction(encDecLogic.encode(jsonObject.toString()));
+				tableInfo.setAction(encodeObj.encode(jsonObject.toString()));
 				tableInfoList.add(tableInfo);
 				count++;
 			}
@@ -151,16 +153,16 @@ public class StructureLogic extends AbstractLogic {
 			for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 				temp = resultSetMetaData.getColumnName(i + 1);
 				jsonObject = new JSONObject();
-				jsonObject.put(FrameworkConstants.REQUEST_DB, bean.getRequest_db());
-				jsonObject.put(FrameworkConstants.COLUMN, temp);
+				jsonObject.put(Constants.REQUEST_DB, bean.getRequest_db());
+				jsonObject.put(Constants.COLUMN, temp);
 				if (temp.equalsIgnoreCase(orderBy)) {
-					jsonObject.put(FrameworkConstants.TYPE, !sort);
+					jsonObject.put(Constants.TYPE, !sort);
 					structureBean.setSort(Integer.toString(i + 1));
 					structureBean.setType(Boolean.toString(sort));
 				} else {
-					jsonObject.put(FrameworkConstants.TYPE, false);
+					jsonObject.put(Constants.TYPE, false);
 				}
-				temp = encDecLogic.encode(jsonObject.toString());
+				temp = encodeObj.encode(jsonObject.toString());
 				switch (i) {
 				case 0:
 					tableInfo.setName(temp);
@@ -211,7 +213,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void dropTables(Bean bean, final boolean onlyTables) throws ClassNotFoundException, SQLException, Exception {
+	public void dropTables(Bean bean, final boolean onlyTables) throws SQLException {
 
 		StructureBean structureBean = null;
 		ApiConnection apiConnection = null;
@@ -223,7 +225,7 @@ public class StructureLogic extends AbstractLogic {
 			structureBean = (StructureBean) bean;
 			if (structureBean.getTables() != null) {
 				apiConnection = getConnection(bean.getRequest_db());
-				if (FrameworkConstants.YES.equalsIgnoreCase(structureBean.getEnable_checks())) {
+				if (Constants.YES.equalsIgnoreCase(structureBean.getEnable_checks())) {
 					withChecks = true;
 				}
 				if (!withChecks) {
@@ -236,11 +238,11 @@ public class StructureLogic extends AbstractLogic {
 				if (onlyTables) {
 					builder = new StringBuilder("DROP TABLE IF EXISTS ");
 					for (int i = 0; i < structureBean.getTables().length; i++) {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						if (structureBean.getTables().length != i + 1) {
-							builder.append(FrameworkConstants.SYMBOL_COMMA);
+							builder.append(Constants.SYMBOL_COMMA);
 						}
 					}
 					statement = apiConnection.getStmt(builder.toString());
@@ -250,11 +252,11 @@ public class StructureLogic extends AbstractLogic {
 				} else {
 					builder = new StringBuilder("DROP VIEW IF EXISTS ");
 					for (int i = 0; i < structureBean.getTables().length; i++) {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						if (structureBean.getTables().length != i + 1) {
-							builder.append(FrameworkConstants.SYMBOL_COMMA);
+							builder.append(Constants.SYMBOL_COMMA);
 						}
 					}
 					statement = apiConnection.getStmt(builder.toString());
@@ -271,8 +273,7 @@ public class StructureLogic extends AbstractLogic {
 				}
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
-
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -290,7 +291,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void truncateTables(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void truncateTables(Bean bean) throws SQLException {
 
 		StructureBean structureBean = null;
 		ApiConnection apiConnection = null;
@@ -301,7 +302,7 @@ public class StructureLogic extends AbstractLogic {
 			structureBean = (StructureBean) bean;
 			if (structureBean.getTables() != null) {
 				apiConnection = getConnection(bean.getRequest_db());
-				if (FrameworkConstants.YES.equalsIgnoreCase(structureBean.getEnable_checks())) {
+				if (Constants.YES.equalsIgnoreCase(structureBean.getEnable_checks())) {
 					withChecks = true;
 				}
 				if (!withChecks) {
@@ -312,8 +313,8 @@ public class StructureLogic extends AbstractLogic {
 					statement = null;
 				}
 				for (int i = 0; i < structureBean.getTables().length; i++) {
-					statement = apiConnection.getStmt(query + FrameworkConstants.SYMBOL_TEN
-							+ structureBean.getTables()[i] + FrameworkConstants.SYMBOL_TEN);
+					statement = apiConnection.getStmt(query + Constants.SYMBOL_TEN
+							+ structureBean.getTables()[i] + Constants.SYMBOL_TEN);
 					statement.execute();
 					statement.close();
 					statement = null;
@@ -328,7 +329,7 @@ public class StructureLogic extends AbstractLogic {
 				}
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -348,8 +349,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public String showCreate(Bean bean, final boolean onlyTables)
-			throws SQLException, ClassNotFoundException, JSONException, Exception {
+	public String showCreate(Bean bean, final boolean onlyTables) throws SQLException, JSONException {
 		StructureBean structureBean = null;
 
 		String result = null;
@@ -373,14 +373,14 @@ public class StructureLogic extends AbstractLogic {
 					} else {
 						builder.append(two);
 					}
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmtSelect(builder.toString());
 					resultSet = statement.executeQuery();
 					if (resultSet.next()) {
 						jsonObject.put(resultSet.getString(1),
-								resultSet.getString(2) + FrameworkConstants.SYMBOL_SEMI_COLON);
+								resultSet.getString(2) + Constants.SYMBOL_SEMI_COLON);
 					}
 				}
 				result = jsonObject.toString();
@@ -400,7 +400,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void copyTables(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void copyTables(Bean bean) throws SQLException {
 
 		StructureBean structureBean = null;
 		ApiConnection apiConnection = null;
@@ -426,11 +426,11 @@ public class StructureLogic extends AbstractLogic {
 				statement.execute();
 				statement.close();
 				statement = null;
-				if (FrameworkConstants.DATA.equalsIgnoreCase(structureBean.getType())) {
+				if (Constants.DATA.equalsIgnoreCase(structureBean.getType())) {
 					withData = true;
 				}
 
-				if (FrameworkConstants.YES.equalsIgnoreCase(structureBean.getDrop_checks())) {
+				if (Constants.YES.equalsIgnoreCase(structureBean.getDrop_checks())) {
 					withDrops = true;
 				}
 
@@ -439,9 +439,9 @@ public class StructureLogic extends AbstractLogic {
 					// drop tables
 					builder.delete(0, builder.length());
 					builder.append(temp1);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getDatabase_name());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -452,7 +452,7 @@ public class StructureLogic extends AbstractLogic {
 					for (int i = 0; i < structureBean.getTables().length; i++) {
 						builder.append(structureBean.getTables()[i]);
 						if (structureBean.getTables().length != i + 1) {
-							builder.append(FrameworkConstants.SYMBOL_COMMA);
+							builder.append(Constants.SYMBOL_COMMA);
 						}
 					}
 					statement = apiConnection.getStmt(builder.toString());
@@ -466,21 +466,21 @@ public class StructureLogic extends AbstractLogic {
 					// get table create statement
 					builder.delete(0, builder.length());
 					builder.append(temp3);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getDatabase_name());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_DOT);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_DOT);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(temp4);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(bean.getRequest_db());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_DOT);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_DOT);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -490,21 +490,21 @@ public class StructureLogic extends AbstractLogic {
 					if (withData) {
 						builder.delete(0, builder.length());
 						builder.append(temp5);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getDatabase_name());
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_DOT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_DOT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp6);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(bean.getRequest_db());
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_DOT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_DOT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						statement = apiConnection.getStmt(builder.toString());
 						statement.execute();
 						statement.close();
@@ -523,7 +523,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -542,7 +542,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void addPrefix(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void addPrefix(Bean bean) throws SQLException {
 		StructureBean structureBean = null;
 
 		List<String> newTableList = new ArrayList<String>();
@@ -567,18 +567,18 @@ public class StructureLogic extends AbstractLogic {
 				for (int i = 0; i < structureBean.getTables().length; i++) {
 					tableList.add(structureBean.getTables()[i]);
 					newTableList.add(structureBean.getPrefix() + structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(to);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getPrefix());
 					builder.append(structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_COMMA);
 				}
 				if (tableList.size() > 0) {
-					builder = builder.deleteCharAt(builder.lastIndexOf(FrameworkConstants.SYMBOL_COMMA));
+					builder = builder.deleteCharAt(builder.lastIndexOf(Constants.SYMBOL_COMMA));
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -594,7 +594,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -613,7 +613,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void addSuffix(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void addSuffix(Bean bean) throws SQLException {
 
 		List<String> newTableList = new ArrayList<String>();
 		List<String> tableList = new ArrayList<String>();
@@ -638,18 +638,18 @@ public class StructureLogic extends AbstractLogic {
 				for (int i = 0; i < structureBean.getTables().length; i++) {
 					tableList.add(structureBean.getTables()[i]);
 					newTableList.add(structureBean.getTables()[i] + structureBean.getPrefix());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getTables()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(to);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(structureBean.getTables()[i]);
 					builder.append(structureBean.getPrefix());
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SYMBOL_COMMA);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_COMMA);
 				}
 				if (tableList.size() > 0) {
-					builder = builder.deleteCharAt(builder.lastIndexOf(FrameworkConstants.SYMBOL_COMMA));
+					builder = builder.deleteCharAt(builder.lastIndexOf(Constants.SYMBOL_COMMA));
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -666,7 +666,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -685,7 +685,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void replacePrefix(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void replacePrefix(Bean bean) throws SQLException {
 
 		List<String> newTableList = new ArrayList<String>();
 		List<String> tableList = new ArrayList<String>();
@@ -714,19 +714,19 @@ public class StructureLogic extends AbstractLogic {
 						tableList.add(structureBean.getTables()[i]);
 						newTableList
 								.add(structureBean.getNew_prefix() + structureBean.getTables()[i].substring(length));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(to);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getNew_prefix());
 						builder.append(structureBean.getTables()[i].substring(length));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 				}
 				if (tableList.size() > 0) {
-					builder = builder.deleteCharAt(builder.lastIndexOf(FrameworkConstants.SYMBOL_COMMA));
+					builder = builder.deleteCharAt(builder.lastIndexOf(Constants.SYMBOL_COMMA));
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -743,7 +743,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -762,7 +762,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void replaceSuffix(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void replaceSuffix(Bean bean) throws SQLException {
 
 		List<String> newTableList = new ArrayList<String>();
 		List<String> tableList = new ArrayList<String>();
@@ -791,20 +791,20 @@ public class StructureLogic extends AbstractLogic {
 						tableList.add(structureBean.getTables()[i]);
 						newTableList.add(structureBean.getTables()[i].substring(0,
 								structureBean.getTables()[i].length() - length) + structureBean.getNew_prefix());
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(to);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i].substring(0,
 								structureBean.getTables()[i].length() - length));
 						builder.append(structureBean.getNew_prefix());
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 				}
 				if (tableList.size() > 0) {
-					builder = builder.deleteCharAt(builder.lastIndexOf(FrameworkConstants.SYMBOL_COMMA));
+					builder = builder.deleteCharAt(builder.lastIndexOf(Constants.SYMBOL_COMMA));
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -820,7 +820,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -839,7 +839,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void removePrefix(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void removePrefix(Bean bean) throws SQLException {
 
 		List<String> newTableList = new ArrayList<String>();
 		List<String> tableList = new ArrayList<String>();
@@ -867,18 +867,18 @@ public class StructureLogic extends AbstractLogic {
 					if (structureBean.getTables()[i].indexOf(structureBean.getPrefix()) == 0) {
 						tableList.add(structureBean.getTables()[i]);
 						newTableList.add(structureBean.getTables()[i].substring(length));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(to);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i].substring(length));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 				}
 				if (tableList.size() > 0) {
-					builder = builder.deleteCharAt(builder.lastIndexOf(FrameworkConstants.SYMBOL_COMMA));
+					builder = builder.deleteCharAt(builder.lastIndexOf(Constants.SYMBOL_COMMA));
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -895,7 +895,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -914,7 +914,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void removeSuffix(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void removeSuffix(Bean bean) throws SQLException {
 
 		List<String> newTableList = new ArrayList<String>();
 		List<String> tableList = new ArrayList<String>();
@@ -943,19 +943,19 @@ public class StructureLogic extends AbstractLogic {
 						tableList.add(structureBean.getTables()[i]);
 						newTableList.add(structureBean.getTables()[i].substring(0,
 								structureBean.getTables()[i].length() - length));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(to);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(structureBean.getTables()[i].substring(0,
 								structureBean.getTables()[i].length() - length));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 				}
 				if (tableList.size() > 0) {
-					builder = builder.deleteCharAt(builder.lastIndexOf(FrameworkConstants.SYMBOL_COMMA));
+					builder = builder.deleteCharAt(builder.lastIndexOf(Constants.SYMBOL_COMMA));
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
 					statement.close();
@@ -972,7 +972,7 @@ public class StructureLogic extends AbstractLogic {
 				statement = null;
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -991,7 +991,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void duplicateTable(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public void duplicateTable(Bean bean) throws SQLException {
 
 		StructureBean structureBean = null;
 		ApiConnection apiConnection = null;
@@ -1016,10 +1016,10 @@ public class StructureLogic extends AbstractLogic {
 		try {
 			structureBean = (StructureBean) bean;
 			if (structureBean.getTables() != null) {
-				if (FrameworkConstants.YES.equalsIgnoreCase(structureBean.getEnable_checks())) {
+				if (Constants.YES.equalsIgnoreCase(structureBean.getEnable_checks())) {
 					enableChecks = true;
 				}
-				if (FrameworkConstants.YES.equalsIgnoreCase(structureBean.getDrop_checks())) {
+				if (Constants.YES.equalsIgnoreCase(structureBean.getDrop_checks())) {
 					withData = true;
 				}
 				apiConnection = getConnection(bean.getRequest_db());
@@ -1047,14 +1047,14 @@ public class StructureLogic extends AbstractLogic {
 						if (!isExisted) {
 							builder.delete(0, builder.length());
 							builder.append(one);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(structureBean.getTables()[i]);
 							builder.append(duplicate);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(two);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(structureBean.getTables()[i]);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							statement = apiConnection.getStmt(builder.toString());
 							statement.execute();
 							statement.close();
@@ -1062,10 +1062,10 @@ public class StructureLogic extends AbstractLogic {
 
 							builder.delete(0, builder.length());
 							builder.append(eight);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(structureBean.getTables()[i]);
 							builder.append(duplicate);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							statement = apiConnection.getStmt(builder.toString());
 							statement.execute();
 							statement.close();
@@ -1082,31 +1082,31 @@ public class StructureLogic extends AbstractLogic {
 								while (resultSet.next()) {
 									builder.delete(0, builder.length());
 									builder.append(five);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(bean.getRequest_db());
-									builder.append(FrameworkConstants.SYMBOL_TEN);
-									builder.append(FrameworkConstants.SYMBOL_DOT);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_DOT);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(structureBean.getTables()[i]);
 									builder.append(duplicate);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(six);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(resultSet.getString(1));
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(seven);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(bean.getRequest_db());
-									builder.append(FrameworkConstants.SYMBOL_TEN);
-									builder.append(FrameworkConstants.SYMBOL_DOT);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_DOT);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(resultSet.getString(2));
-									builder.append(FrameworkConstants.SYMBOL_TEN);
-									builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-									builder.append(FrameworkConstants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_BRACKET_OPEN);
+									builder.append(Constants.SYMBOL_TEN);
 									builder.append(resultSet.getString(3));
-									builder.append(FrameworkConstants.SYMBOL_TEN);
-									builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+									builder.append(Constants.SYMBOL_TEN);
+									builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 									builder.append(nine);
 									innerStatement = apiConnection.getStmt(builder.toString());
 									innerStatement.execute();
@@ -1121,14 +1121,14 @@ public class StructureLogic extends AbstractLogic {
 							if (withData) {
 								builder.delete(0, builder.length());
 								builder.append(three);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(structureBean.getTables()[i]);
 								builder.append(duplicate);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(four);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								builder.append(structureBean.getTables()[i]);
-								builder.append(FrameworkConstants.SYMBOL_TEN);
+								builder.append(Constants.SYMBOL_TEN);
 								statement = apiConnection.getStmt(builder.toString());
 								statement.execute();
 								statement.close();
@@ -1146,7 +1146,7 @@ public class StructureLogic extends AbstractLogic {
 
 				apiConnection.commit();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (apiConnection != null) {
 				apiConnection.rollback();
 			}
@@ -1166,16 +1166,17 @@ public class StructureLogic extends AbstractLogic {
 	 * @param resultSet
 	 * @param tableName
 	 * @return
+	 * @throws SQLException
 	 * @throws Exception
 	 */
 	private int _getTableType(final ApiConnection apiConnection, PreparedStatement statement, ResultSet resultSet,
-			CharSequence tableName) throws Exception {
+			CharSequence tableName) throws SQLException {
 		try {
-			statement = apiConnection.getStmtSelect("show full tables LIKE ?");
+			statement = apiConnection.getStmtSelect("SHOW FULL TABLES LIKE ?");
 			statement.setString(1, tableName.toString());
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				if (FrameworkConstants.VIEW.equalsIgnoreCase(resultSet.getString(2))) {
+				if (Constants.VIEW.equalsIgnoreCase(resultSet.getString(2))) {
 					return -1;
 				}
 				return 1;
@@ -1196,10 +1197,10 @@ public class StructureLogic extends AbstractLogic {
 	 * @param resultSet
 	 * @param tableList
 	 * @param newTableList
-	 * @throws Exception
+	 * @throws SQLException
 	 */
 	private void _checkForeignKeys(String database, ApiConnection apiConnection, PreparedStatement statement,
-			ResultSet resultSet, List<String> tableList, List<String> newTableList) throws Exception {
+			ResultSet resultSet, List<String> tableList, List<String> newTableList) throws SQLException {
 
 		PreparedStatement innerStatement = null;
 		Iterator<String> tableIterator = null;
@@ -1231,13 +1232,13 @@ public class StructureLogic extends AbstractLogic {
 						if (tableList.contains(table)) {
 							builder.delete(0, builder.length());
 							builder.append(one);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(current);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(two);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(resultSet.getString(1));
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							innerStatement = apiConnection.getStmt(builder.toString());
 							innerStatement.execute();
 							innerStatement.close();
@@ -1245,22 +1246,22 @@ public class StructureLogic extends AbstractLogic {
 
 							builder.delete(0, builder.length());
 							builder.append(one);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(current);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(three);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(resultSet.getString(4));
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(four);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(resultSet.getString(2));
-							builder.append(FrameworkConstants.SYMBOL_TEN);
-							builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_BRACKET_OPEN);
+							builder.append(Constants.SYMBOL_TEN);
 							builder.append(resultSet.getString(3));
-							builder.append(FrameworkConstants.SYMBOL_TEN);
-							builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+							builder.append(Constants.SYMBOL_TEN);
+							builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 							builder.append(five);
 							innerStatement = apiConnection.getStmt(builder.toString());
 							innerStatement.execute();
@@ -1297,11 +1298,12 @@ public class StructureLogic extends AbstractLogic {
 	 * @param newTableList
 	 * @param oldDatabase
 	 * @param newDatabase
+	 * @throws SQLException
 	 * @throws Exception
 	 */
 	private void _checkForeignKeys(ApiConnection apiConnection, PreparedStatement statement, ResultSet resultSet,
 			List<String> tableList, List<String> newTableList, String oldDatabase, String newDatabase)
-					throws Exception {
+					throws SQLException {
 
 		PreparedStatement innerStatement = null;
 		Iterator<String> tableIterator = null;
@@ -1331,30 +1333,30 @@ public class StructureLogic extends AbstractLogic {
 
 						builder.delete(0, builder.length());
 						builder.append(temp2);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(newDatabase);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_DOT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_DOT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(current);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp3);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(resultSet.getString(4));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(four);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(newDatabase);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_DOT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_DOT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(resultSet.getString(2));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_BRACKET_OPEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(resultSet.getString(3));
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 						builder.append(five);
 						innerStatement = apiConnection.getStmt(builder.toString());
 						innerStatement.execute();
@@ -1376,9 +1378,10 @@ public class StructureLogic extends AbstractLogic {
 	 * 
 	 * @param bean
 	 * @return
+	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public String getNewColumn(Bean bean) throws Exception {
+	public String getNewColumn(Bean bean) throws SQLException {
 		StructureBean structureBean = (StructureBean) bean;
 		String temp = null;
 		String temp1 = "<td>";
@@ -1404,12 +1407,12 @@ public class StructureLogic extends AbstractLogic {
 		result.append(temp1);
 		result.append("<select name=\"datatypes\" class=\"form-control\" onchange=\"callApplyDatatype(this);\">");
 		Map<String, List<String>> data_types_map = new LinkedHashMap<String, List<String>>();
-		data_types_map.putAll(FrameworkConstants.Utils.DATA_TYPES_MAP);
-		for (String key : data_types_map.keySet()) {
+		data_types_map.putAll(Constants.Utils.DATA_TYPES_MAP);
+		for (Entry<String, List<String>> entry : data_types_map.entrySet()) {
 			result.append(temp4);
-			result.append(key);
+			result.append(entry.getKey());
 			result.append(temp3);
-			List<String> typeList = data_types_map.get(key);
+			List<String> typeList = entry.getValue();
 			Iterator<String> typeIterator = typeList.iterator();
 			while (typeIterator.hasNext()) {
 				temp = typeIterator.next();
@@ -1440,11 +1443,11 @@ public class StructureLogic extends AbstractLogic {
 		result.append(temp3);
 		result.append(structureBean.getPrefix());
 		result.append(temp7);
-		for (String key : collationMap.keySet()) {
+		for (Entry<String, List<String>> entry : collationMap.entrySet()) {
 			result.append(temp4);
-			result.append(key);
+			result.append(entry.getKey());
 			result.append(temp3);
-			List<String> typeList = collationMap.get(key);
+			List<String> typeList = entry.getValue();
 			Iterator<String> typeIterator = typeList.iterator();
 			while (typeIterator.hasNext()) {
 				temp = typeIterator.next();
@@ -1509,7 +1512,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public boolean isSupportsPartition() throws ClassNotFoundException, SQLException {
+	public boolean isSupportsPartition() throws SQLException {
 		boolean result = false;
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -1540,7 +1543,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public String createTable(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	public String createTable(Bean bean) throws SQLException {
 
 		String result = null;
 
@@ -1567,141 +1570,141 @@ public class StructureLogic extends AbstractLogic {
 			uniqueList = new ArrayList<String>();
 			builder = new StringBuilder();
 			builder.append("CREATE TABLE ");
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(createTableBean.getTable_name());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_BRACKET_OPEN);
 			for (int i = 0; i < createTableBean.getColumns().length; i++) {
 				if (!isEmpty(createTableBean.getColumns()[i])) {
 					if (alreadyEntered) {
-						builder.append(FrameworkConstants.SYMBOL_COMMA);
+						builder.append(Constants.SYMBOL_COMMA);
 					}
 					if (!alreadyEntered) {
 						alreadyEntered = true;
 					}
-					builder.append(FrameworkConstants.SYMBOL_TEN);
+					builder.append(Constants.SYMBOL_TEN);
 					builder.append(createTableBean.getColumns()[i]);
-					builder.append(FrameworkConstants.SYMBOL_TEN);
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SYMBOL_TEN);
+					builder.append(Constants.SPACE);
 					builder.append(createTableBean.getDatatypes()[i]);
 					if (!isEmpty(createTableBean.getLengths()[i])) {
-						builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+						builder.append(Constants.SYMBOL_BRACKET_OPEN);
 						builder.append(createTableBean.getLengths()[i]);
-						builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+						builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 					}
-					builder.append(FrameworkConstants.SPACE);
-					if (FrameworkConstants.ONE.equals(createTableBean.getZfs()[i])) {
+					builder.append(Constants.SPACE);
+					if (Constants.ONE.equals(createTableBean.getZfs()[i])) {
 						builder.append(zerofill);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
-					if (FrameworkConstants.ONE.equals(createTableBean.getUns()[i])) {
+					if (Constants.ONE.equals(createTableBean.getUns()[i])) {
 						builder.append(unsigned);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
-					if (FrameworkConstants.ONE.equals(createTableBean.getBins()[i])) {
+					if (Constants.ONE.equals(createTableBean.getBins()[i])) {
 						builder.append(binary);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
 					if (!isEmpty(createTableBean.getCollations()[i])) {
 						builder.append(collate);
-						builder.append(FrameworkConstants.SPACE);
-						builder.append(FrameworkConstants.SYMBOL_QUOTE);
+						builder.append(Constants.SPACE);
+						builder.append(Constants.SYMBOL_QUOTE);
 						builder.append(createTableBean.getCollations()[i]);
-						builder.append(FrameworkConstants.SYMBOL_QUOTE);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_QUOTE);
+						builder.append(Constants.SPACE);
 					}
-					if (FrameworkConstants.ONE.equals(createTableBean.getNns()[i])) {
+					if (Constants.ONE.equals(createTableBean.getNns()[i])) {
 						builder.append(not_null);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					} else {
 						builder.append(null_);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
 					if (!isEmpty(createTableBean.getDefaults()[i])) {
 						builder.append(default_);
-						builder.append(FrameworkConstants.SPACE);
-						if (FrameworkConstants.CURRENT_TIMESTAMP.equals(createTableBean.getDefaults()[i])) {
+						builder.append(Constants.SPACE);
+						if (Constants.CURRENT_TIMESTAMP.equals(createTableBean.getDefaults()[i])) {
 							builder.append(createTableBean.getDefaults()[i]);
 						} else {
-							builder.append(FrameworkConstants.SYMBOL_QUOTE);
+							builder.append(Constants.SYMBOL_QUOTE);
 							builder.append(createTableBean.getDefaults()[i]);
-							builder.append(FrameworkConstants.SYMBOL_QUOTE);
+							builder.append(Constants.SYMBOL_QUOTE);
 						}
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
-					if (FrameworkConstants.ONE.equals(createTableBean.getAis()[i])) {
+					if (Constants.ONE.equals(createTableBean.getAis()[i])) {
 						builder.append(auto_increment);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
 
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 					builder.append(comment);
-					builder.append(FrameworkConstants.SPACE);
-					builder.append(FrameworkConstants.SYMBOL_QUOTE);
+					builder.append(Constants.SPACE);
+					builder.append(Constants.SYMBOL_QUOTE);
 					if (!isEmpty(createTableBean.getComments()[i])) {
 						builder.append(createTableBean.getComments()[i]);
 					}
-					builder.append(FrameworkConstants.SYMBOL_QUOTE);
+					builder.append(Constants.SYMBOL_QUOTE);
 
-					if (FrameworkConstants.ONE.equals(createTableBean.getPks()[i])) {
+					if (Constants.ONE.equals(createTableBean.getPks()[i])) {
 						primary_key = createTableBean.getColumns()[i];
 					}
-					if (FrameworkConstants.ONE.equals(createTableBean.getUqs()[i])) {
+					if (Constants.ONE.equals(createTableBean.getUqs()[i])) {
 						uniqueList.add(createTableBean.getColumns()[i]);
 					}
 				}
 			}
 			if (primary_key != null) {
-				builder.append(FrameworkConstants.SYMBOL_COMMA);
+				builder.append(Constants.SYMBOL_COMMA);
 				builder.append("PRIMARY KEY");
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_BRACKET_OPEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(primary_key);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 			}
 
 			uniqueIterator = uniqueList.iterator();
 			while (uniqueIterator.hasNext()) {
-				builder.append(FrameworkConstants.SYMBOL_COMMA);
+				builder.append(Constants.SYMBOL_COMMA);
 				builder.append(unique_index);
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_BRACKET_OPEN);
+				builder.append(Constants.SYMBOL_TEN);
 				builder.append(uniqueIterator.next());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 			}
-			builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
+			builder.append(Constants.SYMBOL_BRACKET_CLOSE);
 
 			if (!isEmpty(createTableBean.getEngine())) {
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append("ENGINE =");
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append(createTableBean.getEngine());
 			}
-			builder.append(FrameworkConstants.SPACE);
+			builder.append(Constants.SPACE);
 			builder.append(comment);
-			builder.append(FrameworkConstants.SPACE);
-			builder.append(FrameworkConstants.SYMBOL_QUOTE);
+			builder.append(Constants.SPACE);
+			builder.append(Constants.SYMBOL_QUOTE);
 			if (!isEmpty(createTableBean.getComment())) {
 				builder.append(createTableBean.getComment());
 			}
-			builder.append(FrameworkConstants.SYMBOL_QUOTE);
+			builder.append(Constants.SYMBOL_QUOTE);
 
 			if (!isEmpty(createTableBean.getPartition())) {
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append("PARTITION BY");
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append(createTableBean.getPartition());
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_OPEN);
+				builder.append(Constants.SYMBOL_BRACKET_OPEN);
 				builder.append(createTableBean.getPartition_val());
-				builder.append(FrameworkConstants.SYMBOL_BRACKET_CLOSE);
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SYMBOL_BRACKET_CLOSE);
+				builder.append(Constants.SPACE);
 				builder.append("PARTITIONS ");
 				builder.append(createTableBean.getPartitions());
 			}
 
-			if (FrameworkConstants.YES.equalsIgnoreCase(createTableBean.getAction())) {
+			if (Constants.YES.equalsIgnoreCase(createTableBean.getAction())) {
 				apiConnection = getConnection(bean.getRequest_db());
 				statement = apiConnection.getStmt(builder.toString());
 				statement.execute();
@@ -1720,9 +1723,11 @@ public class StructureLogic extends AbstractLogic {
 	 * 
 	 * @param bean
 	 * @return
+	 * @throws SQLException
+	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public String validate(Bean bean) throws Exception {
+	public String validate(Bean bean) throws SQLException, JSONException {
 
 		String result = null;
 		CreateTableBean createTableBean = null;
@@ -1738,7 +1743,7 @@ public class StructureLogic extends AbstractLogic {
 				result = messages.getMessage("msg.table_already_existed");
 				return result;
 			}
-			jsonObject = new JSONObject(FrameworkConstants.Utils.DATA_TYPES_INFO);
+			jsonObject = new JSONObject(Constants.Utils.DATA_TYPES_INFO);
 			for (int i = 0; i < createTableBean.getColumns().length; i++) {
 				if (!isEmpty(createTableBean.getColumns()[i])) {
 					count++;
@@ -1760,7 +1765,7 @@ public class StructureLogic extends AbstractLogic {
 						}
 
 						// validate list values
-						tempArr = createTableBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+						tempArr = createTableBean.getLengths()[i].split(Constants.SYMBOL_COMMA);
 						boolean isInvalid = false;
 						for (int j = 0; j < tempArr.length; j++) {
 							if (!isValidSqlString(tempArr[j], true)) {
@@ -1795,7 +1800,7 @@ public class StructureLogic extends AbstractLogic {
 								isInvalid = true;
 								break;
 							}
-							tempArr = createTableBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+							tempArr = createTableBean.getLengths()[i].split(Constants.SYMBOL_COMMA);
 							if (tempArr == null || tempArr.length != 2) {
 								isInvalid = true;
 								break;
@@ -1815,7 +1820,7 @@ public class StructureLogic extends AbstractLogic {
 						case 3:
 							// length = 2 and not mandatory
 							if (!isEmpty(createTableBean.getLengths()[i])) {
-								tempArr = createTableBean.getLengths()[i].split(FrameworkConstants.SYMBOL_COMMA);
+								tempArr = createTableBean.getLengths()[i].split(Constants.SYMBOL_COMMA);
 								if (tempArr == null || tempArr.length != 2) {
 									isInvalid = true;
 									break;
@@ -1868,7 +1873,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean isColumnNameValid(String[] columns, String column) throws Exception {
+	public boolean isColumnNameValid(String[] columns, String column) {
 		int count = 0;
 		try {
 			for (int i = 0; i < columns.length; i++) {
@@ -1894,7 +1899,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public boolean isTableExisted(String name, String database) throws ClassNotFoundException, SQLException {
+	public boolean isTableExisted(String name, String database) throws SQLException {
 
 		ApiConnection apiConnection = null;
 		PreparedStatement statement = null;
@@ -1922,7 +1927,7 @@ public class StructureLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public String createView(Bean bean) throws ClassNotFoundException, SQLException {
+	public String createView(Bean bean) throws SQLException {
 		String result = null;
 
 		CreateViewBean createViewBean = null;
@@ -1934,78 +1939,79 @@ public class StructureLogic extends AbstractLogic {
 			createViewBean = (CreateViewBean) bean;
 			builder = new StringBuilder();
 			builder.append(createViewBean.getCreate_type());
-			builder.append(FrameworkConstants.SPACE);
+			builder.append(Constants.SPACE);
 			if (!isEmpty(createViewBean.getAlgorithm())) {
 				builder.append("ALGORITHM = ");
 				builder.append(createViewBean.getAlgorithm());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 			}
 			if (!isEmpty(createViewBean.getDefiner())) {
-				if (FrameworkConstants.CURRENT_USER.equals(createViewBean.getDefiner())) {
+				if (Constants.CURRENT_USER.equals(createViewBean.getDefiner())) {
 					builder.append("DEFINER = ");
 					builder.append(createViewBean.getDefiner());
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				} else if (!isEmpty(createViewBean.getDefiner_name())) {
-					temp = createViewBean.getDefiner_name().split(FrameworkConstants.SYMBOL_AT);
+					temp = createViewBean.getDefiner_name().split(Constants.SYMBOL_AT);
 					builder.append("DEFINER = ");
 					if (temp.length < 2) {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[0]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SPACE);
 					} else {
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[0]);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
-						builder.append(FrameworkConstants.SYMBOL_AT);
-						builder.append(FrameworkConstants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_TEN);
+						builder.append(Constants.SYMBOL_AT);
+						builder.append(Constants.SYMBOL_TEN);
 						builder.append(temp[1]);
-						if (!temp[1].endsWith(FrameworkConstants.SYMBOL_TEN)) {
-							builder.append(FrameworkConstants.SYMBOL_TEN);
+						if (!temp[1].endsWith(Constants.SYMBOL_TEN)) {
+							builder.append(Constants.SYMBOL_TEN);
 						}
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 					}
 				}
 			}
 			if (!isEmpty(createViewBean.getSql_security())) {
 				builder.append("SQL SECURITY ");
 				builder.append(createViewBean.getSql_security());
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 			}
 			builder.append("VIEW ");
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 			builder.append(createViewBean.getView_name());
-			builder.append(FrameworkConstants.SYMBOL_TEN);
-			builder.append(FrameworkConstants.SPACE);
+			builder.append(Constants.SYMBOL_TEN);
+			builder.append(Constants.SPACE);
 			if (createViewBean.getColumn_list() != null) {
-				String columns = FrameworkConstants.SYMBOL_BRACKET_OPEN;
+
+				StringBuilder columns = new StringBuilder(Constants.SYMBOL_BRACKET_OPEN);
 				boolean entered = false;
 				for (int i = 0; i < createViewBean.getColumn_list().length; i++) {
 					if (!isEmpty(createViewBean.getColumn_list()[i])) {
 						if (entered) {
-							columns += FrameworkConstants.SYMBOL_COMMA;
+							columns.append(Constants.SYMBOL_COMMA);
 						}
 						entered = true;
-						columns += FrameworkConstants.SYMBOL_TEN;
-						columns += createViewBean.getColumn_list()[i];
-						columns += FrameworkConstants.SYMBOL_TEN;
+						columns.append(Constants.SYMBOL_TEN);
+						columns.append(createViewBean.getColumn_list()[i]);
+						columns.append(Constants.SYMBOL_TEN);
 					}
 				}
-				columns += FrameworkConstants.SYMBOL_BRACKET_CLOSE;
+				columns.append(Constants.SYMBOL_BRACKET_CLOSE);
 				if (entered) {
 					builder.append(columns);
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				}
 			}
 			builder.append("AS ");
 			builder.append(createViewBean.getDefinition());
 			if (!isEmpty(createViewBean.getCheck())) {
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SPACE);
 				builder.append("WITH ");
 				builder.append(createViewBean.getCheck());
 				builder.append(" CHECK OPTION");
 			}
-			if (FrameworkConstants.YES.equalsIgnoreCase(createViewBean.getAction())) {
+			if (Constants.YES.equalsIgnoreCase(createViewBean.getAction())) {
 				apiConnection = super.getConnection(bean.getRequest_db());
 				statement = apiConnection.getStmt(builder.toString());
 				statement.execute();

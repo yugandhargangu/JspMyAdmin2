@@ -17,7 +17,7 @@ import com.jspmyadmin.app.server.export.beans.ImportBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
 import com.jspmyadmin.framework.connection.QuerySeparator;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -34,7 +34,7 @@ public class ImportLogic extends AbstractLogic {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public void importFile(Bean bean) throws SQLException, IOException, ClassNotFoundException {
+	public void importFile(Bean bean) throws SQLException, IOException {
 		ImportBean importBean = (ImportBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -63,17 +63,17 @@ public class ImportLogic extends AbstractLogic {
 				String line = null;
 				while ((line = bufferedReader.readLine()) != null) {
 					builder.append(line);
-					builder.append(FrameworkConstants.NEW_LINE);
+					builder.append(Constants.NEW_LINE);
 				}
 				if (builder.length() > 0) {
 
 					importBean.setQuery(builder.toString());
 
-					if (FrameworkConstants.ONE.equals(importBean.getContinue_errors())) {
+					if (Constants.ONE.equals(importBean.getContinue_errors())) {
 						continue_errors = true;
 					}
 
-					if (FrameworkConstants.ONE.equals(importBean.getDisable_fks())) {
+					if (Constants.ONE.equals(importBean.getDisable_fks())) {
 						statement = apiConnection.getStmt("SET foreign_key_checks = ?");
 						statement.setInt(1, 0);
 						statement.execute();
@@ -96,15 +96,15 @@ public class ImportLogic extends AbstractLogic {
 								}
 							} catch (SQLException e) {
 								if (continue_errors) {
-									errorBuilder.append(FrameworkConstants.SYMBOL_SQL_MULTI_START);
+									errorBuilder.append(Constants.SYMBOL_SQL_MULTI_START);
 									errorBuilder.append(e.getMessage());
-									errorBuilder.append(FrameworkConstants.SYMBOL_SQL_MULTI_END);
-									errorBuilder.append(FrameworkConstants.NEW_LINE);
+									errorBuilder.append(Constants.SYMBOL_SQL_MULTI_END);
+									errorBuilder.append(Constants.NEW_LINE);
 									errorBuilder.append(query);
-									errorBuilder.append(FrameworkConstants.SYMBOL_SEMI_COLON);
-									errorBuilder.append(FrameworkConstants.NEW_LINE);
-									errorBuilder.append(FrameworkConstants.NEW_LINE);
-									errorBuilder.append(FrameworkConstants.NEW_LINE);
+									errorBuilder.append(Constants.SYMBOL_SEMI_COLON);
+									errorBuilder.append(Constants.NEW_LINE);
+									errorBuilder.append(Constants.NEW_LINE);
+									errorBuilder.append(Constants.NEW_LINE);
 									error_count++;
 								} else {
 									throw e;
@@ -117,7 +117,7 @@ public class ImportLogic extends AbstractLogic {
 			}
 		} finally {
 			if (status) {
-				DecimalFormat decimalFormat = new DecimalFormat(FrameworkConstants.ZERO);
+				DecimalFormat decimalFormat = new DecimalFormat(Constants.ZERO);
 				long end_time = System.nanoTime();
 				long exec_time = end_time - start_time;
 				double final_exec_time = ((double) exec_time) / 1000000000.0;

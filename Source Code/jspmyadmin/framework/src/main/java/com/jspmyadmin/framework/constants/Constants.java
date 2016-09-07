@@ -18,9 +18,9 @@ import org.json.JSONObject;
  * @created_at 2016/01/27
  *
  */
-public final class FrameworkConstants {
+public final class Constants {
 
-	private FrameworkConstants() {
+	private Constants() {
 		// prevent from instantiation
 	}
 
@@ -30,6 +30,7 @@ public final class FrameworkConstants {
 	public static final String AUTO_INCREMENT = "auto_increment";
 	public static final String BLANK = "";
 	public static final String BASE_TABLE = "BASE TABLE";
+	public static final String BINARY = "BINARY";
 	public static final String BYTE_TYPE = byte[].class.getName();
 	public static final String CHARSET = "charset";
 	public static final String CHARACTER_SET_SERVER = "character_set_server";
@@ -39,6 +40,8 @@ public final class FrameworkConstants {
 	public static final String COMMAND = "command";
 	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
 	public static final String COPY = "copy";
+	public static final String COUNT = "count";
+	public static final String CSV = "CSV";
 	public static final String CURRENT_TIMESTAMP = "CURRENT_TIMESTAMP";
 	public static final String CURRENT_TIMESTAMP1 = "CURRENT_TIMESTA1MP";
 	public static final String CURRENT_USER = "CURRENT_USER";
@@ -56,13 +59,17 @@ public final class FrameworkConstants {
 	public static final String EVENT = "event";
 	public static final String EVERY = "EVERY";
 	public static final String FIELD = "field";
+	public static final String FILE_EXT_SQL = ".sql";
 	public static final String FK = "fk_";
 	public static final String FUNCTION = "FUNCTION";
 	public static final String GET = "get";
 	public static final String GRANT_OPTION = "GRANT OPTION";
 	public static final String HOSTNAME = "hostname";
+	public static final String JSON = "JSON";
+	public static final String JSPMYADMIN_EXPORT = "jspmyadmin_export";
 	public static final String JSP_ROOT = "/WEB-INF/views/";
 	public static final String LIMIT = "25";
+	public static final String METADATA = "metadata";
 	public static final String MSG = "msg";
 	public static final String MSG_KEY = "msg_key";
 	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
@@ -72,6 +79,7 @@ public final class FrameworkConstants {
 	public static final String NO = "No";
 	public static final String NON_ALPHA_NUM = "[^A-Za-z0-9 ]";
 	public static final String NULL = "NULL";
+	public static final String NUMBER = "NUMBER";
 	public static final String ONE = "1";
 	public static final String ONE_LINE_COMMENT = "--";
 	public static final String ONE_LINE_SEPARATOR = "-- ------------------------------------------------------------------";
@@ -90,8 +98,10 @@ public final class FrameworkConstants {
 	public static final String REQUEST_DB = "request_db";
 	public static final String REQUEST_VIEW = "request_view";
 	public static final String REQUEST_TABLE = "request_table";
+	public static final String ROW = "row";
 	public static final String SEARCH = "search";
 	public static final String SESSION = "session";
+	public static final String SESSION_CONNECT = "session_connect";
 	public static final String SESSION_FLASH_MAP = "flash_map";
 	public static final String SESSION_FONTSIZE = "fontsize";
 	public static final String SESSION_HOST = "session_host";
@@ -107,6 +117,7 @@ public final class FrameworkConstants {
 	public static final String SHOW_SEARCH = "show_search";
 	public static final String SPACE = " ";
 	public static final String SORT_BY = "sort_by";
+	public static final String STRING = "STRING";
 	public static final String SYMBOL_$$ = "$$";
 	public static final String SYMBOL_AT = "@";
 	public static final String SYMBOL_BACK_SLASH = "/";
@@ -117,6 +128,7 @@ public final class FrameworkConstants {
 	public static final String SYMBOL_DELIMETER = "//";
 	public static final String SYMBOL_DOT = ".";
 	public static final String SYMBOL_DOT_EXPR = "\\.";
+	public static final String SYMBOL_DOUBLE_QUOTE = "\"";
 	public static final String SYMBOL_HASH = "#";
 	public static final String SYMBOL_HIFEN = "-";
 	public static final String SYMBOL_HIFEN_HIFEN = "--";
@@ -128,6 +140,7 @@ public final class FrameworkConstants {
 	public static final String SYMBOL_TEN = "`";
 	public static final String SYMBOL_TOKEN = "?token=";
 	public static final String SYMBOL_UNDERSCORE = "_";
+	public static final String SYMBOL_HEX = "0x";
 	public static final String TABLE = "table";
 	public static final String TEMP_DIR = System.getProperty("java.io.tmpdir") + "/jspmyadmin/temp/";
 	public static final String THREE = "3";
@@ -140,6 +153,7 @@ public final class FrameworkConstants {
 	public static final String VERSION_COMMENT = "version_comment";
 	public static final String VIEW = "view";
 	public static final String VIEW_UPPER_CASE = "VIEW";
+	public static final String XML = "XML";
 	public static final String YES = "Yes";
 	public static final String ZERO = "0";
 
@@ -697,7 +711,7 @@ public final class FrameworkConstants {
 		public static final List<String> DEFINER_LIST = new ArrayList<String>(2);
 
 		static {
-			DEFINER_LIST.add(FrameworkConstants.CURRENT_USER);
+			DEFINER_LIST.add(Constants.CURRENT_USER);
 			DEFINER_LIST.add("OTHER");
 		}
 
@@ -762,6 +776,14 @@ public final class FrameworkConstants {
 			LIMIT_LIST.add("100");
 			LIMIT_LIST.add("500");
 			LIMIT_LIST.add("1000");
+		}
+
+		public static final List<String> EXPORT_TYPE_LIST = new ArrayList<String>(5);
+
+		static {
+			EXPORT_TYPE_LIST.add("CSV");
+			EXPORT_TYPE_LIST.add("XML");
+			EXPORT_TYPE_LIST.add("JSON");
 		}
 
 		public static final List<String> IGNORE_DATABASE_LIST = new CopyOnWriteArrayList<String>();

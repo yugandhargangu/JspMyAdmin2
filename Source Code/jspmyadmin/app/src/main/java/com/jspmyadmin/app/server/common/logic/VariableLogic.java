@@ -33,7 +33,7 @@ public class VariableLogic extends AbstractLogic {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException, JSONException, Exception {
+	public void fillBean(Bean bean) throws SQLException, JSONException {
 
 		CommonListBean variableBean = null;
 		List<String[]> variableInfoList = null;
@@ -81,7 +81,7 @@ public class VariableLogic extends AbstractLogic {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public String save(VariableBean bean) throws ClassNotFoundException, SQLException, Exception {
+	public String save(VariableBean bean) throws SQLException {
 
 		String result = null;
 		ApiConnection apiConnection = null;

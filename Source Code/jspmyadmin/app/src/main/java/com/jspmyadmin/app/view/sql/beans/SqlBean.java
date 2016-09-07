@@ -5,7 +5,7 @@ package com.jspmyadmin.app.view.sql.beans;
 
 import java.util.List;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -177,7 +177,7 @@ public class SqlBean extends Bean {
 	 */
 	public String getTotal_data_count() {
 		if (fetch_list == null) {
-			return FrameworkConstants.ZERO;
+			return Constants.ZERO;
 		}
 		return String.valueOf(fetch_list.size());
 	}
@@ -188,7 +188,7 @@ public class SqlBean extends Bean {
 	 */
 	public String getColumn_count() {
 		if (column_list == null) {
-			return FrameworkConstants.ZERO;
+			return Constants.ZERO;
 		}
 		return String.valueOf(column_list.size());
 	}

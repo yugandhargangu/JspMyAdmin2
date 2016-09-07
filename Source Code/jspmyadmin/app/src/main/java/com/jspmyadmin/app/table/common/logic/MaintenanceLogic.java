@@ -13,7 +13,7 @@ import java.util.List;
 import com.jspmyadmin.app.table.common.beans.MaintenanceBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import com.jspmyadmin.framework.constants.Constants;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -42,7 +42,7 @@ public class MaintenanceLogic extends AbstractLogic {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException {
+	public void fillBean(Bean bean) throws SQLException {
 		MaintenanceBean maintenanceBean = (MaintenanceBean) bean;
 
 		ApiConnection apiConnection = null;
@@ -57,19 +57,19 @@ public class MaintenanceLogic extends AbstractLogic {
 				builder.append("ANALYZE ");
 				if (!isEmpty(maintenanceBean.getOption())) {
 					builder.append(maintenanceBean.getOption());
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				}
 				builder.append("TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				break;
 			case 2:
 				// check
 				builder.append("CHECK TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				if (!isEmpty(maintenanceBean.getOption())) {
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 					builder.append(maintenanceBean.getOption());
 				}
 				break;
@@ -77,9 +77,9 @@ public class MaintenanceLogic extends AbstractLogic {
 				// checksum
 				builder.append("CHECKSUM TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				if (!isEmpty(maintenanceBean.getOption())) {
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 					builder.append(maintenanceBean.getOption());
 				}
 				break;
@@ -88,25 +88,25 @@ public class MaintenanceLogic extends AbstractLogic {
 				builder.append("OPTIMIZE ");
 				if (!isEmpty(maintenanceBean.getOption())) {
 					builder.append(maintenanceBean.getOption());
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				}
 				builder.append("TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				break;
 			case 5:
 				// repair
 				builder.append("REPAIR ");
 				if (!isEmpty(maintenanceBean.getOption())) {
 					builder.append(maintenanceBean.getOption());
-					builder.append(FrameworkConstants.SPACE);
+					builder.append(Constants.SPACE);
 				}
 				builder.append("TABLE `");
 				builder.append(_table);
-				builder.append(FrameworkConstants.SYMBOL_TEN);
+				builder.append(Constants.SYMBOL_TEN);
 				if (maintenanceBean.getRepair_options() != null) {
 					for (String opt : maintenanceBean.getRepair_options()) {
-						builder.append(FrameworkConstants.SPACE);
+						builder.append(Constants.SPACE);
 						builder.append(opt);
 					}
 				}

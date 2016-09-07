@@ -16,14 +16,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.app.view.data.beans.DataSelectBean;
 import com.jspmyadmin.framework.connection.AbstractLogic;
 import com.jspmyadmin.framework.connection.ApiConnection;
 import com.jspmyadmin.framework.constants.BeanConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.utils.Bean;
 
 /**
@@ -47,7 +48,15 @@ public class DataSelectLogic extends AbstractLogic {
 		_view = view;
 	}
 
-	public void fillBean(Bean bean) throws ClassNotFoundException, SQLException, Exception {
+	/**
+	 * 
+	 * @param bean
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws JSONException
+	 * @throws EncodingException
+	 */
+	public void fillBean(Bean bean) throws SQLException, JSONException, EncodingException {
 
 		DataSelectBean dataSelectBean = (DataSelectBean) bean;
 
@@ -59,44 +68,42 @@ public class DataSelectLogic extends AbstractLogic {
 		JSONObject jsonObject = null;
 		JSONObject tempJsonObject = null;
 		JSONObject maintainJsonObject = null;
-		EncDecLogic encDecLogic = null;
 
 		String sortType = "ASC";
 		int page = 1;
 		try {
 			apiConnection = getConnection(bean.getRequest_db());
 
-			encDecLogic = new EncDecLogic();
 			if (dataSelectBean.getToken() != null) {
 				try {
-					jsonObject = new JSONObject(encDecLogic.decode(dataSelectBean.getToken()));
-					if (jsonObject.has(FrameworkConstants.SORT_BY)) {
-						dataSelectBean.setSort_by(jsonObject.getString(FrameworkConstants.SORT_BY));
+					jsonObject = new JSONObject(encodeObj.decode(dataSelectBean.getToken()));
+					if (jsonObject.has(Constants.SORT_BY)) {
+						dataSelectBean.setSort_by(jsonObject.getString(Constants.SORT_BY));
 						if (maintainJsonObject == null) {
 							maintainJsonObject = new JSONObject();
 						}
-						maintainJsonObject.put(FrameworkConstants.SORT_BY, dataSelectBean.getSort_by());
+						maintainJsonObject.put(Constants.SORT_BY, dataSelectBean.getSort_by());
 					}
-					if (jsonObject.has(FrameworkConstants.LIMIT)) {
-						dataSelectBean.setLimit(jsonObject.getString(FrameworkConstants.LIMIT));
+					if (jsonObject.has(Constants.LIMIT)) {
+						dataSelectBean.setLimit(jsonObject.getString(Constants.LIMIT));
 					}
-					if (jsonObject.has(FrameworkConstants.TYPE)) {
-						sortType = jsonObject.getString(FrameworkConstants.TYPE);
+					if (jsonObject.has(Constants.TYPE)) {
+						sortType = jsonObject.getString(Constants.TYPE);
 						dataSelectBean.setSort_type(sortType);
 						if (maintainJsonObject == null) {
 							maintainJsonObject = new JSONObject();
 						}
-						maintainJsonObject.put(FrameworkConstants.TYPE, dataSelectBean.getSort_type());
+						maintainJsonObject.put(Constants.TYPE, dataSelectBean.getSort_type());
 					}
-					if (jsonObject.has(FrameworkConstants.PAGE)) {
-						String temp = jsonObject.getString(FrameworkConstants.PAGE);
+					if (jsonObject.has(Constants.PAGE)) {
+						String temp = jsonObject.getString(Constants.PAGE);
 						if (isInteger(temp)) {
 							page = Integer.parseInt(temp);
 						}
 					}
 
-					if (jsonObject.has(FrameworkConstants.COLUMN)) {
-						String column = jsonObject.getString(FrameworkConstants.COLUMN);
+					if (jsonObject.has(Constants.COLUMN)) {
+						String column = jsonObject.getString(Constants.COLUMN);
 						try {
 							tempJsonObject = new JSONObject(column);
 							Iterator<?> keyIterator = tempJsonObject.keys();
@@ -111,15 +118,15 @@ public class DataSelectLogic extends AbstractLogic {
 								search_list[key] = searchMap.get(key);
 							}
 							dataSelectBean.setSearch_columns(search_list);
-						} catch (Exception e) {
+						} catch (JSONException e) {
 						}
 						if (maintainJsonObject == null) {
 							maintainJsonObject = new JSONObject();
 						}
-						maintainJsonObject.put(FrameworkConstants.COLUMN, column);
+						maintainJsonObject.put(Constants.COLUMN, column);
 					}
-					if (jsonObject.has(FrameworkConstants.SEARCH)) {
-						String search = jsonObject.getString(FrameworkConstants.SEARCH);
+					if (jsonObject.has(Constants.SEARCH)) {
+						String search = jsonObject.getString(Constants.SEARCH);
 						try {
 							tempJsonObject = new JSONObject(search);
 							Iterator<?> keyIterator = tempJsonObject.keys();
@@ -134,17 +141,18 @@ public class DataSelectLogic extends AbstractLogic {
 								search_list[key] = searchMap.get(key);
 							}
 							dataSelectBean.setSearch_list(search_list);
-						} catch (Exception e) {
+						} catch (JSONException e) {
 						}
 						if (maintainJsonObject == null) {
 							maintainJsonObject = new JSONObject();
 						}
-						maintainJsonObject.put(FrameworkConstants.SEARCH, search);
+						maintainJsonObject.put(Constants.SEARCH, search);
 					}
-					if (jsonObject.has(FrameworkConstants.SHOW_SEARCH)) {
-						dataSelectBean.setShow_search(jsonObject.getString(FrameworkConstants.SHOW_SEARCH));
+					if (jsonObject.has(Constants.SHOW_SEARCH)) {
+						dataSelectBean.setShow_search(jsonObject.getString(Constants.SHOW_SEARCH));
 					}
-				} catch (Exception e) {
+				} catch (EncodingException e) {
+				} catch (JSONException e) {
 				}
 			}
 
@@ -171,21 +179,21 @@ public class DataSelectLogic extends AbstractLogic {
 						if (searchBuilder == null) {
 							searchBuilder = new StringBuilder(" WHERE `");
 							searchBuilder.append(dataSelectBean.getSearch_columns()[i]);
-							searchBuilder.append(FrameworkConstants.SYMBOL_TEN);
+							searchBuilder.append(Constants.SYMBOL_TEN);
 							searchBuilder.append(" LIKE '");
 							searchBuilder.append("%");
 							searchBuilder.append(dataSelectBean.getSearch_list()[i]);
 							searchBuilder.append("%");
-							searchBuilder.append(FrameworkConstants.SYMBOL_QUOTE);
+							searchBuilder.append(Constants.SYMBOL_QUOTE);
 						} else {
 							searchBuilder.append(" AND `");
 							searchBuilder.append(dataSelectBean.getSearch_columns()[i]);
-							searchBuilder.append(FrameworkConstants.SYMBOL_TEN);
+							searchBuilder.append(Constants.SYMBOL_TEN);
 							searchBuilder.append(" LIKE '");
 							searchBuilder.append("%");
 							searchBuilder.append(dataSelectBean.getSearch_list()[i]);
 							searchBuilder.append("%");
-							searchBuilder.append(FrameworkConstants.SYMBOL_QUOTE);
+							searchBuilder.append(Constants.SYMBOL_QUOTE);
 						}
 					}
 
@@ -194,8 +202,8 @@ public class DataSelectLogic extends AbstractLogic {
 					strSearch = searchBuilder.toString();
 				}
 				if (isNull) {
-					maintainJsonObject.put(FrameworkConstants.COLUMN, columnJsonObject.toString());
-					maintainJsonObject.put(FrameworkConstants.SEARCH, searchJsonObject.toString());
+					maintainJsonObject.put(Constants.COLUMN, columnJsonObject.toString());
+					maintainJsonObject.put(Constants.SEARCH, searchJsonObject.toString());
 				}
 			}
 
@@ -204,31 +212,31 @@ public class DataSelectLogic extends AbstractLogic {
 			}
 
 			dataSelectBean.setCurrent_page(String.valueOf(page));
-			maintainJsonObject.put(FrameworkConstants.LIMIT, dataSelectBean.getLimit());
-			maintainJsonObject.put(FrameworkConstants.SHOW_SEARCH, dataSelectBean.getShow_search());
-			maintainJsonObject.put(FrameworkConstants.PAGE, dataSelectBean.getCurrent_page());
-			maintainJsonObject.put(FrameworkConstants.REQUEST_DB, bean.getRequest_db());
-			maintainJsonObject.put(FrameworkConstants.REQUEST_VIEW, bean.getRequest_view());
+			maintainJsonObject.put(Constants.LIMIT, dataSelectBean.getLimit());
+			maintainJsonObject.put(Constants.SHOW_SEARCH, dataSelectBean.getShow_search());
+			maintainJsonObject.put(Constants.PAGE, dataSelectBean.getCurrent_page());
+			maintainJsonObject.put(Constants.REQUEST_DB, bean.getRequest_db());
+			maintainJsonObject.put(Constants.REQUEST_VIEW, bean.getRequest_view());
 			String strMaintain = maintainJsonObject.toString();
 
 			jsonObject = new JSONObject(strMaintain);
-			jsonObject.put(FrameworkConstants.PAGE, dataSelectBean.getCurrent_page());
-			dataSelectBean.setReload_page(encDecLogic.encode(jsonObject.toString()));
+			jsonObject.put(Constants.PAGE, dataSelectBean.getCurrent_page());
+			dataSelectBean.setReload_page(encodeObj.encode(jsonObject.toString()));
 
 			jsonObject = new JSONObject(strMaintain);
-			jsonObject.put(FrameworkConstants.PAGE, String.valueOf(page + 1));
-			dataSelectBean.setNext_page(encDecLogic.encode(jsonObject.toString()));
+			jsonObject.put(Constants.PAGE, String.valueOf(page + 1));
+			dataSelectBean.setNext_page(encodeObj.encode(jsonObject.toString()));
 
 			if (page > 1) {
 				jsonObject = new JSONObject(strMaintain);
-				jsonObject.put(FrameworkConstants.PAGE, String.valueOf(page - 1));
-				dataSelectBean.setPrevious_page(encDecLogic.encode(jsonObject.toString()));
+				jsonObject.put(Constants.PAGE, String.valueOf(page - 1));
+				dataSelectBean.setPrevious_page(encodeObj.encode(jsonObject.toString()));
 			}
 
 			builder = new StringBuilder();
 			builder.append("SELECT * FROM `");
 			builder.append(_view);
-			builder.append(FrameworkConstants.SYMBOL_TEN);
+			builder.append(Constants.SYMBOL_TEN);
 
 			if (!isEmpty(strSearch)) {
 				builder.append(strSearch);
@@ -237,16 +245,16 @@ public class DataSelectLogic extends AbstractLogic {
 			if (dataSelectBean.getSort_by() != null && !isEmpty(dataSelectBean.getSort_by())) {
 				builder.append(" ORDER BY `");
 				builder.append(dataSelectBean.getSort_by());
-				builder.append(FrameworkConstants.SYMBOL_TEN);
-				builder.append(FrameworkConstants.SPACE);
+				builder.append(Constants.SYMBOL_TEN);
+				builder.append(Constants.SPACE);
 				builder.append(sortType);
 			}
 			if (dataSelectBean.getLimit() != null && !isEmpty(dataSelectBean.getLimit())
-					&& !FrameworkConstants.ZERO.equals(dataSelectBean.getLimit())) {
+					&& !Constants.ZERO.equals(dataSelectBean.getLimit())) {
 				builder.append(" LIMIT ");
 				int limit = Integer.parseInt(dataSelectBean.getLimit());
 				builder.append((page - 1) * limit);
-				builder.append(FrameworkConstants.SYMBOL_COMMA);
+				builder.append(Constants.SYMBOL_COMMA);
 				builder.append(limit);
 			}
 			statement = apiConnection.getStmtSelect(builder.toString());
@@ -266,9 +274,9 @@ public class DataSelectLogic extends AbstractLogic {
 			int columnCount = resultSetMetaData.getColumnCount();
 			for (int i = 0; i < columnCount; i++) {
 				String className = resultSetMetaData.getColumnClassName(i + 1);
-				if (FrameworkConstants.BYTE_TYPE.equals(className)) {
+				if (Constants.BYTE_TYPE.equals(className)) {
 					String typeName = resultSetMetaData.getColumnTypeName(i + 1);
-					if (FrameworkConstants.Utils.BLOB_LIST.contains(typeName)) {
+					if (Constants.Utils.BLOB_LIST.contains(typeName)) {
 						blobList.add(i);
 					} else {
 						byteList.add(i);
@@ -276,13 +284,13 @@ public class DataSelectLogic extends AbstractLogic {
 				}
 				String columnName = resultSetMetaData.getColumnName(i + 1);
 				tempJsonObject = new JSONObject(strMaintain);
-				tempJsonObject.put(FrameworkConstants.SORT_BY, columnName);
+				tempJsonObject.put(Constants.SORT_BY, columnName);
 				if (columnName.equalsIgnoreCase(dataSelectBean.getSort_by()) && "ASC".equalsIgnoreCase(sortType)) {
-					tempJsonObject.put(FrameworkConstants.TYPE, "DESC");
+					tempJsonObject.put(Constants.TYPE, "DESC");
 				} else {
-					tempJsonObject.put(FrameworkConstants.TYPE, "ASC");
+					tempJsonObject.put(Constants.TYPE, "ASC");
 				}
-				column_name_map.put(columnName, encDecLogic.encode(tempJsonObject.toString()));
+				column_name_map.put(columnName, encodeObj.encode(tempJsonObject.toString()));
 			}
 			dataSelectBean.setColumn_name_map(column_name_map);
 
@@ -297,13 +305,13 @@ public class DataSelectLogic extends AbstractLogic {
 							double final_length = ((double) length) / 1000.0;
 							StringBuilder blobVal = new StringBuilder();
 							blobVal.append("<b class=\"blob-download\">");
-							blobVal.append(FrameworkConstants.DATABASE_BLOB);
+							blobVal.append(Constants.DATABASE_BLOB);
 							blobVal.append(final_length);
 							blobVal.append(BeanConstants._KIB);
 							blobVal.append("</b>");
 							rowList.add(blobVal.toString());
 						} else {
-							rowList.add(FrameworkConstants.DATABASE_NULL);
+							rowList.add(Constants.DATABASE_NULL);
 						}
 					} else if (byteList.contains(i)) {
 						byte[] bytes = resultSet.getBytes(i + 1);
@@ -314,12 +322,12 @@ public class DataSelectLogic extends AbstractLogic {
 							}
 							rowList.add(byteData.toString());
 						} else {
-							rowList.add(FrameworkConstants.DATABASE_NULL);
+							rowList.add(Constants.DATABASE_NULL);
 						}
 					} else {
 						String value = resultSet.getString(i + 1);
 						if (value == null) {
-							rowList.add(FrameworkConstants.DATABASE_NULL);
+							rowList.add(Constants.DATABASE_NULL);
 						} else {
 							rowList.add(value);
 						}

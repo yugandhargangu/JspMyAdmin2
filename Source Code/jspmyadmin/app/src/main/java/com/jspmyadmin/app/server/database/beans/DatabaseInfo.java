@@ -11,8 +11,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jspmyadmin.framework.constants.BeanConstants;
-import com.jspmyadmin.framework.constants.FrameworkConstants;
-import com.jspmyadmin.framework.web.logic.EncDecLogic;
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 
 /**
  * @author Yugandhar Gangu
@@ -220,7 +221,9 @@ public class DatabaseInfo implements Serializable {
 	 * @created_at 2016/02/09
 	 *
 	 */
-	public static class DatabaseInfoComparator implements Comparator<DatabaseInfo> {
+	public static class DatabaseInfoComparator implements Comparator<DatabaseInfo>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		private boolean _type = true;
 		private int _field = 0;
@@ -231,270 +234,270 @@ public class DatabaseInfo implements Serializable {
 		 * 
 		 * @return
 		 */
-		public DatabaseInfo getSortInfo() {
+		public DatabaseInfo getSortInfo(final EncodeHelper encodeObj) {
 			if (_sortInfo == null) {
 				_sortInfo = new DatabaseInfo();
-				EncDecLogic encDecLogic = new EncDecLogic();
 				JSONObject jsonObject = null;
 				try {
 					switch (_field) {
 					case 1:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					case 2:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					case 3:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					case 4:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					case 5:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					case 6:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					default:
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 1);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setCollation(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 1);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setCollation(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 2);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTables(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 2);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTables(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 3);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setRows(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 3);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setRows(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 4);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setData(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 4);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setData(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 5);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setIndexes(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 5);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setIndexes(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 6);
-						jsonObject.put(FrameworkConstants.TYPE, false);
-						_sortInfo.setTotal(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 6);
+						jsonObject.put(Constants.TYPE, false);
+						_sortInfo.setTotal(encodeObj.encode(jsonObject.toString()));
 
 						jsonObject = new JSONObject();
-						jsonObject.put(FrameworkConstants.NAME, 0);
-						jsonObject.put(FrameworkConstants.TYPE, !_type);
-						_sortInfo.setDatabase(encDecLogic.encode(jsonObject.toString()));
+						jsonObject.put(Constants.NAME, 0);
+						jsonObject.put(Constants.TYPE, !_type);
+						_sortInfo.setDatabase(encodeObj.encode(jsonObject.toString()));
 						break;
 					}
-				} catch (Exception e) {
+				} catch (JSONException e) {
+				} catch (EncodingException e) {
+				} finally {
 
 				}
-				encDecLogic = null;
 			}
 			return _sortInfo;
 		}
@@ -519,22 +522,20 @@ public class DatabaseInfo implements Serializable {
 		 * 
 		 * @param sort
 		 */
-		public DatabaseInfoComparator(String sort) {
+		public DatabaseInfoComparator(String sort, final EncodeHelper encodeObj) {
 			if (sort != null) {
-				EncDecLogic encDecLogic = new EncDecLogic();
 				try {
-					sort = encDecLogic.decode(sort);
+					sort = encodeObj.decode(sort);
 					JSONObject jsonObject = new JSONObject(sort);
-					if (jsonObject.has(FrameworkConstants.TYPE)) {
-						_type = jsonObject.getBoolean(FrameworkConstants.TYPE);
+					if (jsonObject.has(Constants.TYPE)) {
+						_type = jsonObject.getBoolean(Constants.TYPE);
 					}
-					if (jsonObject.has(FrameworkConstants.NAME)) {
-						_field = jsonObject.getInt(FrameworkConstants.NAME);
+					if (jsonObject.has(Constants.NAME)) {
+						_field = jsonObject.getInt(Constants.NAME);
 					}
 				} catch (JSONException e) {
 				} catch (Exception e) {
 				}
-				encDecLogic = null;
 			}
 		}
 

@@ -5,23 +5,33 @@ package com.jspmyadmin.framework.web.utils;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jspmyadmin.framework.constants.FrameworkConstants;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.web.annotations.Detect;
 import com.jspmyadmin.framework.web.annotations.Download;
-import com.jspmyadmin.framework.web.annotations.ResponseBody;
+import com.jspmyadmin.framework.web.annotations.HandleGetOrPost;
+import com.jspmyadmin.framework.web.annotations.HandleGet;
+import com.jspmyadmin.framework.web.annotations.HandlePost;
+import com.jspmyadmin.framework.web.annotations.Model;
+import com.jspmyadmin.framework.web.annotations.Rest;
 import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
+import com.jspmyadmin.framework.web.logic.EncodeHelper;
 
 /**
  * @author Yugandhar Gangu
@@ -38,7 +48,6 @@ class ControllerUtil {
 	static final Map<String, PathInfo> PATH_MAP = new ConcurrentHashMap<String, PathInfo>();
 
 	private static List<String> _classList = new ArrayList<String>();
-	private static Type _beanType = null;
 	private static ClassFileFilter _fileFilter = new ClassFileFilter();
 
 	/**
@@ -73,12 +82,12 @@ class ControllerUtil {
 		try {
 			classLoader = Thread.currentThread().getContextClassLoader();
 			packageURL = classLoader.getResource(
-					_APP_PACKAGE.replace(FrameworkConstants.SYMBOL_DOT, FrameworkConstants.SYMBOL_BACK_SLASH));
+					_APP_PACKAGE.replace(Constants.SYMBOL_DOT, Constants.SYMBOL_BACK_SLASH));
 			uri = new URI(packageURL.toString());
 			folder = new File(uri.getPath());
 			files = folder.listFiles(_fileFilter);
 			if (files != null) {
-				pkg = _APP_PACKAGE + FrameworkConstants.SYMBOL_DOT;
+				pkg = _APP_PACKAGE + Constants.SYMBOL_DOT;
 				for (File file : files) {
 					if (file.isDirectory()) {
 						_scanCurrent(pkg, file);
@@ -101,10 +110,10 @@ class ControllerUtil {
 	 * @param folder
 	 */
 	private static void _scanCurrent(String pkg, File folder) {
-		if (!pkg.endsWith(FrameworkConstants.SYMBOL_DOT)) {
-			pkg = pkg + FrameworkConstants.SYMBOL_DOT;
+		if (!pkg.endsWith(Constants.SYMBOL_DOT)) {
+			pkg = pkg + Constants.SYMBOL_DOT;
 		}
-		String currentPkg = pkg + folder.getName() + FrameworkConstants.SYMBOL_DOT;
+		String currentPkg = pkg + folder.getName() + Constants.SYMBOL_DOT;
 		File[] files = null;
 		try {
 			files = folder.listFiles(_fileFilter);
@@ -114,7 +123,7 @@ class ControllerUtil {
 						_scanCurrent(currentPkg, file);
 					} else {
 						pkg = file.getName();
-						pkg = currentPkg + new String(pkg.substring(0, pkg.length() - 6));
+						pkg = currentPkg + pkg.substring(0, pkg.length() - 6);
 						_classList.add(pkg);
 					}
 				}
@@ -140,96 +149,91 @@ class ControllerUtil {
 		String strClass = null;
 		Class<?> klass = null;
 		PathInfo pathInfo = null;
-		Method method = null;
 		WebController webController = null;
-		ValidateToken validateToken = null;
-		Download download = null;
-		ResponseBody responseBody = null;
-		String bean = null;
-		Class<?> beanClass = null;
 		try {
 			while (classIterator.hasNext()) {
 				strClass = classIterator.next();
 				klass = Class.forName(strClass);
 				webController = klass.getAnnotation(WebController.class);
 				if (webController != null) {
-					if (_isController(klass)) {
-						pathInfo = new PathInfo();
-						pathInfo.setController(klass);
-						pathInfo.setAuthRequired(webController.authentication());
-						pathInfo.setRequestLevel(webController.requestLevel());
-						try {
-							bean = _beanType.toString();
-							bean = new String(bean.substring(6, bean.length()));
-							beanClass = Class.forName(bean);
-							pathInfo.setBean(beanClass);
-							method = klass.getDeclaredMethod(HANDLEGET, beanClass, View.class);
-							validateToken = method.getAnnotation(ValidateToken.class);
-							if (validateToken != null) {
-								pathInfo.setGetValidateToken(true);
-							}
-							download = method.getAnnotation(Download.class);
-							if (download != null) {
-								pathInfo.setGetDownload(true);
-							}
-							responseBody = method.getAnnotation(ResponseBody.class);
-							if (responseBody != null) {
-								pathInfo.setGetResponseBody(true);
-							}
+					pathInfo = new PathInfo();
+					pathInfo.setController(klass);
+					pathInfo.setAuthRequired(webController.authentication());
+					pathInfo.setRequestLevel(webController.requestLevel());
+					if (klass.isAnnotationPresent(Rest.class)) {
+						pathInfo.setResponseBody(true);
+					}
 
-							method = klass.getDeclaredMethod(HANDLEPOST, beanClass, View.class);
-							validateToken = method.getAnnotation(ValidateToken.class);
-							if (validateToken != null) {
-								pathInfo.setPostValidateToken(true);
+					boolean isMapped = false;
+					for (Method method : klass.getDeclaredMethods()) {
+						if (method.isAnnotationPresent(HandleGetOrPost.class)) {
+							isMapped = true;
+							pathInfo.setAnyMethod(method);
+							if (method.isAnnotationPresent(Download.class)) {
+								pathInfo.setDownload(true);
 							}
-							download = method.getAnnotation(Download.class);
-							if (download != null) {
+							if (method.isAnnotationPresent(ValidateToken.class)) {
+								pathInfo.setValidateToken(true);
+							}
+						} else if (method.isAnnotationPresent(HandleGet.class)) {
+							isMapped = true;
+							pathInfo.setGetMethod(method);
+							if (method.isAnnotationPresent(Download.class)) {
+								pathInfo.setDownload(true);
+							}
+							if (method.isAnnotationPresent(ValidateToken.class)) {
+								pathInfo.setValidateToken(true);
+							}
+						} else if (method.isAnnotationPresent(HandlePost.class)) {
+							isMapped = true;
+							pathInfo.setPostMethod(method);
+							if (method.isAnnotationPresent(Download.class)) {
 								pathInfo.setPostDownload(true);
 							}
-							responseBody = method.getAnnotation(ResponseBody.class);
-							if (responseBody != null) {
-								pathInfo.setPostResponseBody(true);
+							if (method.isAnnotationPresent(ValidateToken.class)) {
+								pathInfo.setPostValidateToken(true);
 							}
-							PATH_MAP.put(webController.path(), pathInfo);
-						} catch (SecurityException e) {
-						} catch (NoSuchMethodException e) {
 						}
+					}
+					if (isMapped) {
 
+						Map<Field, DetectType> detectMap = new HashMap<Field, DetectType>();
+						for (Field field : klass.getDeclaredFields()) {
+							if (field.isAnnotationPresent(Detect.class)) {
+								Class<?> fieldType = field.getType();
+								field.setAccessible(true);
+								if (EncodeHelper.class == fieldType) {
+									detectMap.put(field, DetectType.ENCODE_HELPER);
+								} else if (RequestAdaptor.class == fieldType) {
+									detectMap.put(field, DetectType.REQUEST_ADAPTOR);
+								} else if (RedirectParams.class == fieldType) {
+									detectMap.put(field, DetectType.REDIRECT_PARAMS);
+								} else if (HttpServletRequest.class == fieldType) {
+									detectMap.put(field, DetectType.REQUEST);
+								} else if (HttpServletResponse.class == fieldType) {
+									detectMap.put(field, DetectType.RESPONSE);
+								} else if (HttpSession.class == fieldType) {
+									detectMap.put(field, DetectType.SESSION);
+								} else if (Messages.class == fieldType) {
+									detectMap.put(field, DetectType.MESSAGES);
+								} else if (View.class == fieldType) {
+									detectMap.put(field, DetectType.VIEW);
+								}
+							} else if (field.isAnnotationPresent(Model.class)) {
+								field.setAccessible(true);
+								pathInfo.setModel(field);
+							}
+
+						}
+						pathInfo.setDetectMap(detectMap);
+
+						PATH_MAP.put(webController.path(), pathInfo);
 					}
 				}
 			}
 		} finally {
-			beanClass = null;
-			bean = null;
-			download = null;
-			validateToken = null;
-			webController = null;
-			method = null;
-			pathInfo = null;
-			klass = null;
-			strClass = null;
-			classIterator = null;
 			_fileFilter = null;
-			_beanType = null;
 			_classList = null;
-		}
-	}
-
-	/**
-	 * 
-	 * @param klass
-	 * @return
-	 */
-	private static boolean _isController(Class<?> klass) {
-		Class<?> superClass = klass.getSuperclass();
-		if (Object.class.equals(superClass)) {
-			return false;
-		} else if (Controller.class.equals(superClass)) {
-			Type beanClass = ((ParameterizedType) klass.getGenericSuperclass()).getActualTypeArguments()[0];
-			_beanType = beanClass;
-			return true;
-		} else {
-			return _isController(superClass);
 		}
 	}
 
