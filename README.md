@@ -1,5 +1,9 @@
 <h1>JspMyAdmin 2 - A Java Web tool for MySql database administration</h1>
 
+[![Build Status](https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master)](https://travis-ci.org/yugandhargangu/JspMyAdmin2)
+
+[![Download JapMyAdmin2](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/japmyadmin2-0/files/latest/download)
+
 <p>Website: <a href="http://jspmyadmin.com">http://jspmyadmin.com</a></p>
 <p>JspMyAdmin 2 is the software for MySql database administration over Web.
 It provides a user friendly design to manage most of the MySql database administration.
@@ -7,8 +11,6 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 </p>
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ABkQWtCwhTA" target="_blank"><img src="http://img.youtube.com/vi/ABkQWtCwhTA/0.jpg" alt="IMAGE ALT TEXT HERE" width="320" height="250" border="10" /></a>
-
-https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master
 
 <h3>Requirements</h3>
 1. Java (>= 1.5 recommended)
@@ -59,8 +61,17 @@ https://travis-ci.org/yugandhargangu/JspMyAdmin2.svg?branch=master
 <h3>Author</h3>
 Name: Yugandhar Gangu<br>
 Email Id: <a href="mailto:yugandhar1210@gmail.com">yugandhar1210@gmail.com</a><br>
-Website: <a href="http://yugandhargangu.com">http://yugandhargangu.com</a><br>
 
 
 License: Please read LICENCE file
 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-83644127-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
