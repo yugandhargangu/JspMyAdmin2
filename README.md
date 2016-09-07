@@ -49,13 +49,9 @@ Create and Manage database objects (Databse, Table, View etc..) with simple mous
 <h4>Steps to Deploy JspMyAdmin</h4>
 <ul>
 <li>Download jspmyadmin.war file</li>
-<li>Change Default settings in web.xml file</li>
-<li>Comment configuration details in web.xml file to enable user login</li>
-<li>Conditions:<br>
-1. If "host", "port", "user", "password" params are present then login page will be deactivated.<br>
-2. If "host", "port" params are present then login will be activated with username and password.<br>
-3. If no params are present then login will be activated with all details 
-</li>
+<li>Deploy it in web server.</li>
+<li>Launch the jspmyadmin application.</li>
+<li>Input configuration settings.</li>
 </ul>
 
 <h3>Author</h3>
