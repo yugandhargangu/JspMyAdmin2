@@ -2,4 +2,4 @@ language: java
 before_install: cd Source\ Code/jspmyadmin/
 script: "mvn clean compile package"
 jdk:
-  - 7-jdk
+  - openjdk7
