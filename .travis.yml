@@ -1,5 +1,7 @@
 language: java
-before_install: cd Source\ Code/jspmyadmin/
-script: "mvn clean compile package"
+before_install:
+  - cd application/jspmyadmin/
+  - chmod +x gradlew
+script: "./gradlew clean build"
 jdk:
   - openjdk7
