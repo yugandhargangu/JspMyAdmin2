@@ -1,0 +1,48 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.5'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'com.bmuschko.tomcat'
+
+repositories {
+    jcenter()
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+dependencies {
+
+    compile "mysql:mysql-connector-java:5.1.39"
+    compile "commons-codec:commons-codec:1.9"
+    compile "com.fasterxml.jackson.core:jackson-core:2.8.5"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.8.5"
+    compile "com.fasterxml.jackson.core:jackson-annotations:2.8.5"
+
+    compileOnly "org.projectlombok:lombok:1.16.14"
+
+    providedCompile "javax.servlet:servlet-api:2.4"
+    providedCompile "javax.servlet:jsp-api:2.0"
+
+    testCompile 'junit:junit:4.12'
+
+    def tomcatVersion = '6.0.43'
+    tomcat "org.apache.tomcat:catalina:${tomcatVersion}",
+            "org.apache.tomcat:coyote:${tomcatVersion}",
+            "org.apache.tomcat:jasper:${tomcatVersion}"
+}
+
+tomcat {
+    httpPort = 8090
+    httpsPort = 8091
+    contextPath = 'jspmyadmin'
+}
