@@ -69,7 +69,7 @@ public class CreateViewPostController {
 			}
 		} catch (SQLException e) {
 			jsonObject.append(Constants.ERR, e.getMessage());
-		} 
+		}
 		jsonObject.put(Constants.TOKEN, requestAdaptor.generateToken());
 		return jsonObject;
 	}

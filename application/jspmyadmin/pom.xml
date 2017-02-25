@@ -17,7 +17,7 @@
 		<tomcat_url>http://localhost:8080/manager/html</tomcat_url>
 
 		<!-- For tomcat6, tomcat7 plugins -->
-		<tomcat_port>8000</tomcat_port>
+		<tomcat_port>8010</tomcat_port>
 		<project_path>/</project_path>
 	</properties>
 

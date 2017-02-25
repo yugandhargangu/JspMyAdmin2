@@ -309,7 +309,7 @@ input[readonly] {
 									</jma:notEmpty>
 									<jma:notEmpty name="#select_list" scope="command">
 										<a
-											href="${pageContext.request.contextPath}/table_data,html?token=${requestScope.command.next_page}"><button
+											href="${pageContext.request.contextPath}/table_data.html?token=${requestScope.command.next_page}"><button
 												type="button" class="btn" style="float: right;">
 												<m:print key="lbl.next" />
 												&gt;

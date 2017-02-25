@@ -62,7 +62,6 @@ public class InstallController {
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_HOME);
 		} catch (IOException e) {
-			e.printStackTrace();
 			redirectParams.put(Constants.ERR_KEY, AppConstants.ERR_UNABLE_TO_CONNECT_WITH_SERVER);
 			view.setType(ViewType.REDIRECT);
 			view.setPath(AppConstants.PATH_INSTALL);

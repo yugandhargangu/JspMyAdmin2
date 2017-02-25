@@ -244,7 +244,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-prefix-go"
-									value="${pageContext.request.contextPath}/database_structure_prefix.html?token=${requestScope.command.request_token}">
+									value="${pageContext.request.contextPath}/database_structure_prefix.html">
 									<m:print key="lbl.run" />
 								</button>
 							</div>
@@ -311,7 +311,7 @@
 							</div>
 							<div class="group-widget group-footer">
 								<button type="button" class="btn" id="btn-suffix-go"
-									value="${pageContext.request.contextPath}/database_structure_suffix.html?token=${requestScope.command.request_token}">
+									value="${pageContext.request.contextPath}/database_structure_suffix.html">
 									<m:print key="lbl.run" />
 								</button>
 							</div>

@@ -55,6 +55,7 @@ public class ExternalSqlController {
 			case 1:
 				// alter view
 				StructureBean structureBean = new StructureBean();
+				structureBean.setRequest_db(bean.getRequest_db());
 				structureBean.setTables(new String[] { bean.getEdit_name() });
 				StructureLogic structureLogic = new StructureLogic();
 				String result = structureLogic.showCreate(structureBean, false);
@@ -75,6 +76,7 @@ public class ExternalSqlController {
 			case 2:
 				// alter procedure
 				RoutineListBean routineListBean = new RoutineListBean();
+				routineListBean.setRequest_db(bean.getRequest_db());
 				routineListBean.setRoutines(new String[] { bean.getEdit_name() });
 				RoutineLogic routineLogic = new RoutineLogic();
 				result = routineLogic.showCreate(routineListBean, true);
@@ -109,6 +111,7 @@ public class ExternalSqlController {
 			case 4:
 				// alter function
 				routineListBean = new RoutineListBean();
+				routineListBean.setRequest_db(bean.getRequest_db());
 				routineListBean.setRoutines(new String[] { bean.getEdit_name() });
 				routineLogic = new RoutineLogic();
 				result = routineLogic.showCreate(routineListBean, false);
@@ -143,6 +146,7 @@ public class ExternalSqlController {
 			case 6:
 				// alter event
 				EventListBean eventListBean = new EventListBean();
+				eventListBean.setRequest_db(bean.getRequest_db());
 				eventListBean.setEvents(new String[] { bean.getEdit_name() });
 				EventLogic eventLogic = new EventLogic();
 				result = eventLogic.getShowCreate(eventListBean);

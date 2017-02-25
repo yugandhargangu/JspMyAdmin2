@@ -153,7 +153,6 @@ public class EventLogic extends AbstractLogic {
 					builder.append(enable);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
-					statement = null;
 					builder.delete(0, builder.length());
 				}
 				apiConnection.commit();
@@ -190,7 +189,6 @@ public class EventLogic extends AbstractLogic {
 					builder.append(Constants.SYMBOL_TEN);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
-					statement = null;
 					builder.delete(0, builder.length());
 				}
 				apiConnection.commit();
@@ -230,7 +228,6 @@ public class EventLogic extends AbstractLogic {
 					builder.append(disable);
 					statement = apiConnection.getStmt(builder.toString());
 					statement.execute();
-					statement = null;
 					builder.delete(0, builder.length());
 				}
 				apiConnection.commit();

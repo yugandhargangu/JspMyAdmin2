@@ -252,6 +252,7 @@ public class StructureLogic extends AbstractLogic {
 				alterColumnBean.setNew_comments(alterColumnBean.getOld_comments());
 			}
 			close(resultSet);
+			close(statement);
 
 			String uniqueQuery = "SHOW KEYS FROM `" + _table + "` WHERE key_name <> ? AND non_unique = ?";
 			statement = apiConnection.getStmtSelect(uniqueQuery);
@@ -263,6 +264,7 @@ public class StructureLogic extends AbstractLogic {
 				oldUniqueList.add(resultSet.getString("column_name"));
 			}
 			close(resultSet);
+			close(statement);
 
 			builder = new StringBuilder();
 			builder.append("SHOW FULL COLUMNS FROM `");
@@ -659,6 +661,7 @@ public class StructureLogic extends AbstractLogic {
 				old_primary_key = resultSet.getString("column_name");
 			}
 			close(resultSet);
+			close(statement);
 
 			boolean oldPKStatus = false;
 			for (int i = 0; i < alterColumnBean.getOld_columns().length; i++) {
