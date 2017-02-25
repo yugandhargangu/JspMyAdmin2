@@ -560,7 +560,7 @@
 					return;
 				}
 				$('#sql-form').find('input[name="edit_type"]').val('6');
-				$('#sql-form').find('input[name="edit_name"]').val($('input[name="tables"]:checked:first').val());
+				$('#sql-form').find('input[name="edit_name"]').val($('input[name="events"]:checked:first').val());
 				$('#sql-form').submit();
 			});
 		});

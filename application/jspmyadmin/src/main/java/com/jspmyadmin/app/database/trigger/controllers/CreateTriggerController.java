@@ -10,6 +10,7 @@ import com.jspmyadmin.app.database.trigger.beans.TriggerBean;
 import com.jspmyadmin.app.database.trigger.logic.TriggerLogic;
 import com.jspmyadmin.framework.constants.AppConstants;
 import com.jspmyadmin.framework.constants.Constants;
+import com.jspmyadmin.framework.exception.EncodingException;
 import com.jspmyadmin.framework.web.annotations.Detect;
 import com.jspmyadmin.framework.web.annotations.HandlePost;
 import com.jspmyadmin.framework.web.annotations.Model;
@@ -17,6 +18,7 @@ import com.jspmyadmin.framework.web.annotations.ValidateToken;
 import com.jspmyadmin.framework.web.annotations.WebController;
 import com.jspmyadmin.framework.web.utils.Messages;
 import com.jspmyadmin.framework.web.utils.RedirectParams;
+import com.jspmyadmin.framework.web.utils.RequestAdaptor;
 import com.jspmyadmin.framework.web.utils.RequestLevel;
 import com.jspmyadmin.framework.web.utils.View;
 import com.jspmyadmin.framework.web.utils.ViewType;
@@ -30,6 +32,8 @@ import com.jspmyadmin.framework.web.utils.ViewType;
 public class CreateTriggerController {
 
 	@Detect
+	private RequestAdaptor requestAdaptor;
+	@Detect
 	private RedirectParams redirectParams;
 	@Detect
 	private Messages messages;
@@ -40,7 +44,7 @@ public class CreateTriggerController {
 
 	@HandlePost
 	@ValidateToken
-	private void createTrigger() {
+	private void createTrigger() throws EncodingException {
 		try {
 			TriggerLogic triggerLogic = new TriggerLogic();
 			if (triggerLogic.isExisted(bean.getTrigger_name(), bean.getRequest_db())) {
@@ -54,6 +58,7 @@ public class CreateTriggerController {
 			bean.setDatabase_name(bean.getRequest_db());
 			DataLogic dataLogic = new DataLogic();
 			bean.setDatabase_name_list(dataLogic.getDatabaseList());
+			bean.setToken(requestAdaptor.generateToken());
 		} catch (SQLException e) {
 			redirectParams.put(Constants.ERR, e.getMessage());
 			view.setType(ViewType.REDIRECT);
