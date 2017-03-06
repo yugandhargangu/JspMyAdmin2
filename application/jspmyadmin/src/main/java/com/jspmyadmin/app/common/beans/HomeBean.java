@@ -42,7 +42,7 @@ public class HomeBean extends Bean {
 	private String servelt_version = null;
 	private String jsp_version = null;
 
-	private String jma_version = "2.0";
+	private String jma_version = "1.0.3";
 
 	private String action = null;
 

@@ -129,7 +129,7 @@ public class ExportLogic extends AbstractLogic {
 			file.setReadable(true, false);
 			file.setWritable(true, false);
 			fileOutputStream = new FileOutputStream(file);
-			outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+			outputStreamWriter = new OutputStreamWriter(fileOutputStream, Constants.ENCODE_UTF8);
 			bufferedWriter = new BufferedWriter(outputStreamWriter);
 			if (Constants.CSV.equalsIgnoreCase(exportBean.getExport_type())) {
 
