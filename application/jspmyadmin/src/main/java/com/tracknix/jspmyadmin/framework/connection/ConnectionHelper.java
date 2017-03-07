@@ -84,4 +84,11 @@ public interface ConnectionHelper {
      * @param closeable Closeable
      */
     void close(Closeable closeable);
+
+    /**
+     * @param apiConnection {@link ApiConnection}
+     * @param enable        boolean
+     * @throws SQLException e
+     */
+    void setForeignKeyChecks(ApiConnection apiConnection, boolean enable) throws SQLException;
 }

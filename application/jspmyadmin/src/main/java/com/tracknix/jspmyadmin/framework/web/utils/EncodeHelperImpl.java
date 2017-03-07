@@ -128,8 +128,7 @@ class EncodeHelperImpl implements EncodeHelper {
             for (int i = 0; i < _KEY_LENGTH; i++) {
                 builder.append(_ALPHABETS[random.nextInt(_ALPHABETS.length)]);
             }
-            Base64 base64 = new Base64();
-            session.setAttribute(Constants.SESSION_KEY, base64.encodeAsString(builder.toString().getBytes()));
+            session.setAttribute(Constants.SESSION_KEY, builder.toString());
         } catch (Exception ignored) {
         }
     }

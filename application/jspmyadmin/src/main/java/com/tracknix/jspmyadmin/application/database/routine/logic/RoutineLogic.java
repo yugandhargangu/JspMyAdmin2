@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tracknix.jspmyadmin.application.database.routine.beans.RoutineBean;
 import com.tracknix.jspmyadmin.application.database.routine.beans.RoutineInfo;
-import com.tracknix.jspmyadmin.application.database.routine.beans.RoutineListBean;
+import com.tracknix.jspmyadmin.application.database.routine.beans.RoutinesBean;
 import com.tracknix.jspmyadmin.framework.connection.ApiConnection;
 import com.tracknix.jspmyadmin.framework.connection.ConnectionHelper;
 import com.tracknix.jspmyadmin.framework.constants.Constants;
 import com.tracknix.jspmyadmin.framework.web.annotations.Detect;
 import com.tracknix.jspmyadmin.framework.web.annotations.LogicService;
-import com.tracknix.jspmyadmin.framework.web.utils.Bean;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,37 +32,27 @@ public class RoutineLogic {
     private ConnectionHelper connectionHelper;
 
     /**
-     * @param bean
-     * @param routine_type
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * @param routinesBean {@link RoutinesBean}
+     * @throws SQLException e
      */
-    public void fillListBean(Bean bean, String routine_type) throws SQLException {
-
-        RoutineListBean routineListBean = null;
+    public void fillListBean(RoutinesBean routinesBean) throws SQLException {
 
         ApiConnection apiConnection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-
-        StringBuilder builder = null;
-        List<RoutineInfo> routineInfoList = null;
-        RoutineInfo routineInfo = null;
-        int count = 0;
         try {
-            routineListBean = (RoutineListBean) bean;
-            apiConnection = connectionHelper.getConnection(bean.getRequest_db());
-            builder = new StringBuilder();
+            apiConnection = connectionHelper.getConnection(routinesBean.getRequest_db());
+            StringBuilder builder = new StringBuilder();
             builder.append("SELECT specific_name,data_type,routine_body,is_deterministic,");
             builder.append("sql_data_access,security_type,definer,routine_comment FROM ");
             builder.append("information_schema.routines WHERE routine_type = ? and routine_schema = ?");
             statement = apiConnection.getStmtSelect(builder.toString());
-            statement.setString(1, routine_type);
-            statement.setString(2, bean.getRequest_db());
+            statement.setString(1, routinesBean.getType());
+            statement.setString(2, routinesBean.getRequest_db());
             resultSet = statement.executeQuery();
-            routineInfoList = new ArrayList<RoutineInfo>();
+            List<RoutineInfo> routineInfoList = new ArrayList<RoutineInfo>();
             while (resultSet.next()) {
-                routineInfo = new RoutineInfo();
+                RoutineInfo routineInfo = new RoutineInfo();
                 routineInfo.setName(resultSet.getString(1));
                 routineInfo.setReturns(resultSet.getString(2));
                 routineInfo.setRoutine_body(resultSet.getString(3));
@@ -73,10 +62,8 @@ public class RoutineLogic {
                 routineInfo.setDefiner(resultSet.getString(7));
                 routineInfo.setComments(resultSet.getString(8));
                 routineInfoList.add(routineInfo);
-                count++;
             }
-            routineListBean.setRoutine_info_list(routineInfoList);
-            routineListBean.setTotal(Integer.toString(count));
+            routinesBean.setRoutine_info_list(routineInfoList);
         } finally {
             connectionHelper.close(resultSet);
             connectionHelper.close(statement);
@@ -85,12 +72,11 @@ public class RoutineLogic {
     }
 
     /**
-     * @param name
-     * @param type
-     * @param database
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * @param name     {@link String}
+     * @param type     {@link String}
+     * @param database {@link String}
+     * @return boolean
+     * @throws SQLException e
      */
     public boolean isExisted(String name, String type, String database) throws SQLException {
         ApiConnection apiConnection = null;
@@ -114,286 +100,244 @@ public class RoutineLogic {
     }
 
     /**
-     * @param bean
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * @param routineBean {@link RoutineBean}
+     * @return String
+     * @throws SQLException e
      */
-    public String saveProcedure(Bean bean) throws SQLException {
+    public String saveProcedure(RoutineBean routineBean) throws SQLException {
+        StringBuilder builder = this._createQuery(routineBean);
+        builder.append("PROCEDURE ");
+        builder.append(Constants.SYMBOL_TEN);
+        builder.append(routineBean.getName());
+        builder.append(Constants.SYMBOL_TEN);
+        builder.append(Constants.SPACE);
+        builder.append(Constants.SYMBOL_BRACKET_OPEN);
+        boolean isEntered = false;
+        if (routineBean.getParam_types() != null) {
+            for (int i = 0; i < routineBean.getParam_types().length; i++) {
+                if (!connectionHelper.isEmpty(routineBean.getParams()[i])) {
+                    if (isEntered) {
+                        builder.append(Constants.SYMBOL_COMMA);
+                        builder.append(Constants.SPACE);
+                    }
+                    isEntered = true;
+                    builder.append(routineBean.getParam_types()[i]);
+                    builder.append(Constants.SPACE);
+                    builder.append(routineBean.getParams()[i]);
+                    builder.append(Constants.SPACE);
+                    builder.append(routineBean.getParam_data_types()[i]);
+                    if (!connectionHelper.isEmpty(routineBean.getLengths()[i])) {
+                        builder.append(Constants.SYMBOL_BRACKET_OPEN);
+                        builder.append(routineBean.getLengths()[i]);
+                        builder.append(Constants.SYMBOL_BRACKET_CLOSE);
+                    }
+                }
+            }
+        }
+        builder.append(Constants.SYMBOL_BRACKET_CLOSE);
+        builder.append(Constants.SPACE);
+        builder = this._appendComment(builder, routineBean.getComment());
+        if (!connectionHelper.isEmpty(routineBean.getLang_sql())) {
+            builder.append(routineBean.getLang_sql());
+            builder.append(Constants.SPACE);
+        }
+        if (!connectionHelper.isEmpty(routineBean.getDeterministic())) {
+            builder.append(routineBean.getDeterministic());
+            builder.append(Constants.SPACE);
+        }
+        if (!connectionHelper.isEmpty(routineBean.getSql_type())) {
+            builder.append(routineBean.getSql_type());
+            builder.append(Constants.SPACE);
+        }
+        if (!connectionHelper.isEmpty(routineBean.getSql_security())) {
+            builder.append("SQL SECURITY ");
+            builder.append(routineBean.getSql_security());
+            builder.append(Constants.SPACE);
+        }
+        builder.append("BEGIN ");
+        builder.append(routineBean.getBody());
+        builder.append(" END");
 
-        String result = null;
-        RoutineBean routineBean = null;
+        return this._createExecuteOrReturn(routineBean.getAction(), routineBean.getRequest_db(), builder.toString());
+    }
+
+    /**
+     * @param routineBean {@link RoutineBean}
+     * @return String
+     * @throws SQLException e
+     */
+    public String saveFunction(RoutineBean routineBean) throws SQLException {
+        StringBuilder builder = this._createQuery(routineBean);
+        builder.append("FUNCTION ");
+        builder.append(Constants.SYMBOL_TEN);
+        builder.append(routineBean.getName());
+        builder.append(Constants.SYMBOL_TEN);
+        builder.append(Constants.SPACE);
+        builder.append(Constants.SYMBOL_BRACKET_OPEN);
+        boolean isEntered = false;
+        if (routineBean.getParam_types() != null) {
+            for (int i = 0; i < routineBean.getParam_types().length; i++) {
+                if (!connectionHelper.isEmpty(routineBean.getParams()[i])) {
+                    if (isEntered) {
+                        builder.append(Constants.SYMBOL_COMMA);
+                        builder.append(Constants.SPACE);
+                    }
+                    isEntered = true;
+
+                    // builder.append(routineBean.getParam_types()[i]);
+                    // builder.append(FrameworkConstants.SPACE);
+                    builder.append(routineBean.getParams()[i]);
+                    builder.append(Constants.SPACE);
+                    builder.append(routineBean.getParam_data_types()[i]);
+                    if (!connectionHelper.isEmpty(routineBean.getLengths()[i])) {
+                        builder.append(Constants.SYMBOL_BRACKET_OPEN);
+                        builder.append(routineBean.getLengths()[i]);
+                        builder.append(Constants.SYMBOL_BRACKET_CLOSE);
+                    }
+                }
+            }
+        }
+        builder.append(Constants.SYMBOL_BRACKET_CLOSE);
+        builder.append(Constants.SPACE);
+        builder.append("RETURNS ");
+        builder.append(routineBean.getReturn_type());
+        if (!connectionHelper.isEmpty(routineBean.getReturn_length())) {
+            builder.append(Constants.SYMBOL_TEN);
+            builder.append(routineBean.getReturn_length());
+            builder.append(Constants.SYMBOL_TEN);
+        }
+        builder.append(Constants.SPACE);
+        builder = this._appendComment(builder, routineBean.getComment());
+        if (!connectionHelper.isEmpty(routineBean.getLang_sql())) {
+            builder.append(routineBean.getLang_sql());
+            builder.append(Constants.SPACE);
+        }
+        if (!connectionHelper.isEmpty(routineBean.getDeterministic())) {
+            builder.append(routineBean.getDeterministic());
+            builder.append(Constants.SPACE);
+        }
+        if (!connectionHelper.isEmpty(routineBean.getSql_type())) {
+            builder.append(routineBean.getSql_type());
+            builder.append(Constants.SPACE);
+        }
+        if (!connectionHelper.isEmpty(routineBean.getSql_security())) {
+            builder.append("SQL SECURITY ");
+            builder.append(routineBean.getSql_security());
+            builder.append(Constants.SPACE);
+        }
+        builder.append("BEGIN ");
+        builder.append(routineBean.getBody());
+        builder.append(" END");
+
+        return this._createExecuteOrReturn(routineBean.getAction(), routineBean.getRequest_db(), builder.toString());
+    }
+
+    /**
+     * @param routineBean {@link RoutineBean}
+     * @return StringBuilder
+     */
+    private StringBuilder _createQuery(RoutineBean routineBean) {
+        StringBuilder builder = new StringBuilder("CREATE ");
+        if (!connectionHelper.isEmpty(routineBean.getDefiner())) {
+            if (Constants.CURRENT_USER.equalsIgnoreCase(routineBean.getDefiner())) {
+                builder.append("DEFINER = ");
+                builder.append(routineBean.getDefiner());
+                builder.append(Constants.SPACE);
+            } else if (!connectionHelper.isEmpty(routineBean.getDefiner_name())) {
+                String[] temp = routineBean.getDefiner_name().split(Constants.SYMBOL_AT);
+                builder.append("DEFINER = ");
+                if (temp.length < 2) {
+                    builder.append(Constants.SYMBOL_TEN);
+                    builder.append(temp[0]);
+                    builder.append(Constants.SYMBOL_TEN);
+                    builder.append(Constants.SPACE);
+                } else {
+                    builder.append(Constants.SYMBOL_TEN);
+                    builder.append(temp[0]);
+                    builder.append(Constants.SYMBOL_TEN);
+                    builder.append(Constants.SYMBOL_AT);
+                    builder.append(Constants.SYMBOL_TEN);
+                    builder.append(temp[1]);
+                    if (!temp[1].endsWith(Constants.SYMBOL_TEN)) {
+                        builder.append(Constants.SYMBOL_TEN);
+                    }
+                    builder.append(Constants.SPACE);
+                }
+            }
+        }
+        return builder;
+    }
+
+    /**
+     * @param builder {@link StringBuilder}
+     * @param comment {@link String}
+     * @return StringBuilder
+     */
+    private StringBuilder _appendComment(StringBuilder builder, String comment) {
+        if (!connectionHelper.isEmpty(comment)) {
+            builder.append("COMMENT ");
+            builder.append(Constants.SYMBOL_QUOTE);
+            builder.append(comment);
+            builder.append(Constants.SYMBOL_QUOTE);
+            builder.append(Constants.SPACE);
+        }
+        return builder;
+    }
+
+    /**
+     * @param action   {@link String}
+     * @param database {@link String}
+     * @param query    {@link String}
+     * @return String
+     * @throws SQLException e
+     */
+    private String _createExecuteOrReturn(String action, String database, String query) throws SQLException {
         ApiConnection apiConnection = null;
         PreparedStatement statement = null;
-        StringBuilder builder = null;
-        String[] temp = null;
-        boolean isEntered = false;
         try {
-
-            routineBean = (RoutineBean) bean;
-            apiConnection = connectionHelper.getConnection(bean.getRequest_db());
-            builder = new StringBuilder();
-            builder.append("CREATE ");
-            if (!connectionHelper.isEmpty(routineBean.getDefiner())) {
-                if (Constants.CURRENT_USER.equalsIgnoreCase(routineBean.getDefiner())) {
-                    builder.append("DEFINER = ");
-                    builder.append(routineBean.getDefiner());
-                    builder.append(Constants.SPACE);
-                } else if (!connectionHelper.isEmpty(routineBean.getDefiner_name())) {
-                    temp = routineBean.getDefiner_name().split(Constants.SYMBOL_AT);
-                    builder.append("DEFINER = ");
-                    if (temp.length < 2) {
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(temp[0]);
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(Constants.SPACE);
-                    } else {
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(temp[0]);
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(Constants.SYMBOL_AT);
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(temp[1]);
-                        if (!temp[1].endsWith(Constants.SYMBOL_TEN)) {
-                            builder.append(Constants.SYMBOL_TEN);
-                        }
-                        builder.append(Constants.SPACE);
-                    }
-                }
-            }
-            builder.append("PROCEDURE ");
-            builder.append(Constants.SYMBOL_TEN);
-            builder.append(routineBean.getName());
-            builder.append(Constants.SYMBOL_TEN);
-            builder.append(Constants.SPACE);
-            builder.append(Constants.SYMBOL_BRACKET_OPEN);
-            if (routineBean.getParam_types() != null) {
-                for (int i = 0; i < routineBean.getParam_types().length; i++) {
-                    if (!connectionHelper.isEmpty(routineBean.getParams()[i])) {
-                        if (isEntered) {
-                            builder.append(Constants.SYMBOL_COMMA);
-                            builder.append(Constants.SPACE);
-                        }
-                        isEntered = true;
-                        builder.append(routineBean.getParam_types()[i]);
-                        builder.append(Constants.SPACE);
-                        builder.append(routineBean.getParams()[i]);
-                        builder.append(Constants.SPACE);
-                        builder.append(routineBean.getParam_data_types()[i]);
-                        if (!connectionHelper.isEmpty(routineBean.getLengths()[i])) {
-                            builder.append(Constants.SYMBOL_BRACKET_OPEN);
-                            builder.append(routineBean.getLengths()[i]);
-                            builder.append(Constants.SYMBOL_BRACKET_CLOSE);
-                        }
-                    }
-                }
-            }
-            builder.append(Constants.SYMBOL_BRACKET_CLOSE);
-            builder.append(Constants.SPACE);
-            if (!connectionHelper.isEmpty(routineBean.getComment())) {
-                builder.append("COMMENT ");
-                builder.append(Constants.SYMBOL_QUOTE);
-                builder.append(routineBean.getComment());
-                builder.append(Constants.SYMBOL_QUOTE);
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getLang_sql())) {
-                builder.append(routineBean.getLang_sql());
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getDeterministic())) {
-                builder.append(routineBean.getDeterministic());
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getSql_type())) {
-                builder.append(routineBean.getSql_type());
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getSql_security())) {
-                builder.append("SQL SECURITY ");
-                builder.append(routineBean.getSql_security());
-                builder.append(Constants.SPACE);
-            }
-            builder.append("BEGIN ");
-            builder.append(routineBean.getBody());
-            builder.append(" END");
-
-            if (Constants.YES.equalsIgnoreCase(routineBean.getAction())) {
-                apiConnection = connectionHelper.getConnection(bean.getRequest_db());
-                statement = apiConnection.getStmt(builder.toString());
+            if (Constants.YES.equalsIgnoreCase(action)) {
+                apiConnection = connectionHelper.getConnection(database);
+                statement = apiConnection.getStmt(query);
                 statement.execute();
                 apiConnection.commit();
             } else {
-                result = builder.toString();
+                return query;
             }
         } finally {
             connectionHelper.close(statement);
             connectionHelper.close(apiConnection);
         }
-        return result;
+        return null;
     }
 
     /**
-     * @param bean
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * @param routinesBean {@link RoutinesBean}
+     * @return String
+     * @throws SQLException e
      */
-    public String saveFunction(Bean bean) throws SQLException {
-        String result = null;
-        RoutineBean routineBean = null;
-        ApiConnection apiConnection = null;
-        PreparedStatement statement = null;
-        StringBuilder builder = null;
-        String[] temp = null;
-        boolean isEntered = false;
-        try {
-
-            routineBean = (RoutineBean) bean;
-            apiConnection = connectionHelper.getConnection(bean.getRequest_db());
-            builder = new StringBuilder();
-            builder.append("CREATE ");
-            if (!connectionHelper.isEmpty(routineBean.getDefiner())) {
-                if (Constants.CURRENT_USER.equalsIgnoreCase(routineBean.getDefiner())) {
-                    builder.append("DEFINER = ");
-                    builder.append(routineBean.getDefiner());
-                    builder.append(Constants.SPACE);
-                } else if (!connectionHelper.isEmpty(routineBean.getDefiner_name())) {
-                    temp = routineBean.getDefiner_name().split(Constants.SYMBOL_AT);
-                    builder.append("DEFINER = ");
-                    if (temp.length < 2) {
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(temp[0]);
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(Constants.SPACE);
-                    } else {
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(temp[0]);
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(Constants.SYMBOL_AT);
-                        builder.append(Constants.SYMBOL_TEN);
-                        builder.append(temp[1]);
-                        if (!temp[1].endsWith(Constants.SYMBOL_TEN)) {
-                            builder.append(Constants.SYMBOL_TEN);
-                        }
-                        builder.append(Constants.SPACE);
-                    }
-                }
-            }
-            builder.append("FUNCTION ");
-            builder.append(Constants.SYMBOL_TEN);
-            builder.append(routineBean.getName());
-            builder.append(Constants.SYMBOL_TEN);
-            builder.append(Constants.SPACE);
-            builder.append(Constants.SYMBOL_BRACKET_OPEN);
-            if (routineBean.getParam_types() != null) {
-                for (int i = 0; i < routineBean.getParam_types().length; i++) {
-                    if (!connectionHelper.isEmpty(routineBean.getParams()[i])) {
-                        if (isEntered) {
-                            builder.append(Constants.SYMBOL_COMMA);
-                            builder.append(Constants.SPACE);
-                        }
-                        isEntered = true;
-
-                        // builder.append(routineBean.getParam_types()[i]);
-                        // builder.append(FrameworkConstants.SPACE);
-                        builder.append(routineBean.getParams()[i]);
-                        builder.append(Constants.SPACE);
-                        builder.append(routineBean.getParam_data_types()[i]);
-                        if (!connectionHelper.isEmpty(routineBean.getLengths()[i])) {
-                            builder.append(Constants.SYMBOL_BRACKET_OPEN);
-                            builder.append(routineBean.getLengths()[i]);
-                            builder.append(Constants.SYMBOL_BRACKET_CLOSE);
-                        }
-                    }
-                }
-            }
-            builder.append(Constants.SYMBOL_BRACKET_CLOSE);
-            builder.append(Constants.SPACE);
-            builder.append("RETURNS ");
-            builder.append(routineBean.getReturn_type());
-            if (!connectionHelper.isEmpty(routineBean.getReturn_length())) {
-                builder.append(Constants.SYMBOL_TEN);
-                builder.append(routineBean.getReturn_length());
-                builder.append(Constants.SYMBOL_TEN);
-            }
-            builder.append(Constants.SPACE);
-            if (!connectionHelper.isEmpty(routineBean.getComment())) {
-                builder.append("COMMENT ");
-                builder.append(Constants.SYMBOL_QUOTE);
-                builder.append(routineBean.getComment());
-                builder.append(Constants.SYMBOL_QUOTE);
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getLang_sql())) {
-                builder.append(routineBean.getLang_sql());
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getDeterministic())) {
-                builder.append(routineBean.getDeterministic());
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getSql_type())) {
-                builder.append(routineBean.getSql_type());
-                builder.append(Constants.SPACE);
-            }
-            if (!connectionHelper.isEmpty(routineBean.getSql_security())) {
-                builder.append("SQL SECURITY ");
-                builder.append(routineBean.getSql_security());
-                builder.append(Constants.SPACE);
-            }
-            builder.append("BEGIN ");
-            builder.append(routineBean.getBody());
-            builder.append(" END");
-
-            if (Constants.YES.equalsIgnoreCase(routineBean.getAction())) {
-                apiConnection = connectionHelper.getConnection(bean.getRequest_db());
-                statement = apiConnection.getStmt(builder.toString());
-                statement.execute();
-                apiConnection.commit();
-            } else {
-                result = builder.toString();
-            }
-        } finally {
-            connectionHelper.close(statement);
-            connectionHelper.close(apiConnection);
-        }
-        return result;
-    }
-
-    /**
-     * @param bean
-     * @param isProcedure
-     * @return
-     * @throws ClassNotFoundException
-     * @throws SQLException
-     */
-    public String showCreate(Bean bean, boolean isProcedure) throws SQLException {
-
-        String result = null;
-
-        RoutineListBean routineListBean = null;
+    public String showCreate(RoutinesBean routinesBean) throws SQLException {
+        String result;
         ApiConnection apiConnection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        String procedure = "SHOW CREATE PROCEDURE `";
-        String function = "SHOW CREATE FUNCTION `";
         try {
-            routineListBean = (RoutineListBean) bean;
-            apiConnection = connectionHelper.getConnection(bean.getRequest_db());
+            apiConnection = connectionHelper.getConnection(routinesBean.getRequest_db());
             ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
-            for (int i = 0; i < routineListBean.getRoutines().length; i++) {
-                if (isProcedure) {
-                    statement = apiConnection.getStmtSelect(
-                            procedure + routineListBean.getRoutines()[i] + Constants.SYMBOL_TEN);
-                } else {
-                    statement = apiConnection
-                            .getStmtSelect(function + routineListBean.getRoutines()[i] + Constants.SYMBOL_TEN);
-                }
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < routinesBean.getRoutines().length; i++) {
+                builder.append("SHOW CREATE ");
+                builder.append(routinesBean.getType());
+                builder.append(" `");
+                builder.append(routinesBean.getRoutines()[i]);
+                builder.append(Constants.SYMBOL_TEN);
+                statement = apiConnection.getStmtSelect(builder.toString());
                 resultSet = statement.executeQuery();
                 if (resultSet.next()) {
                     objectNode.put(resultSet.getString(1), resultSet.getString(3));
                 }
+                connectionHelper.close(resultSet);
+                connectionHelper.close(statement);
+                builder.delete(0, builder.length());
             }
             result = objectNode.toString();
         } finally {
@@ -405,30 +349,26 @@ public class RoutineLogic {
     }
 
     /**
-     * @param bean
-     * @param isProcedure
-     * @throws ClassNotFoundException
-     * @throws SQLException
+     * @param routinesBean {@link RoutinesBean}
+     * @param isProcedure  boolean
+     * @throws SQLException e
      */
-    public void dropRoutines(Bean bean, boolean isProcedure) throws SQLException {
-
-        RoutineListBean routineListBean = null;
+    public void dropRoutines(RoutinesBean routinesBean, boolean isProcedure) throws SQLException {
         ApiConnection apiConnection = null;
         PreparedStatement statement = null;
-        String procedure = "DROP PROCEDURE IF EXISTS `";
-        String function = "DROP FUNCTION IF EXISTS `";
         try {
-            routineListBean = (RoutineListBean) bean;
-            apiConnection = connectionHelper.getConnection(bean.getRequest_db());
-            for (int i = 0; i < routineListBean.getRoutines().length; i++) {
-                if (isProcedure) {
-                    statement = apiConnection
-                            .getStmt(procedure + routineListBean.getRoutines()[i] + Constants.SYMBOL_TEN);
-                } else {
-                    statement = apiConnection
-                            .getStmt(function + routineListBean.getRoutines()[i] + Constants.SYMBOL_TEN);
-                }
+            apiConnection = connectionHelper.getConnection(routinesBean.getRequest_db());
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < routinesBean.getRoutines().length; i++) {
+                builder.append("DROP ");
+                builder.append(routinesBean.getType());
+                builder.append(" IF EXISTS `");
+                builder.append(routinesBean.getRoutines()[i]);
+                builder.append(Constants.SYMBOL_TEN);
+                statement = apiConnection.getStmt(builder.toString());
                 statement.execute();
+                builder.delete(0, builder.length());
+                connectionHelper.close(statement);
             }
             apiConnection.commit();
         } finally {
@@ -438,41 +378,34 @@ public class RoutineLogic {
     }
 
     /**
-     * @param bean
-     * @param routineType
-     * @return
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     * @throws IOException
+     * @param routinesBean {@link RoutinesBean}
+     * @param routineType  boolean
+     * @return String
+     * @throws SQLException e
+     * @throws IOException  e
      */
-    public String getParamList(Bean bean, String routineType) throws SQLException, ClassNotFoundException, IOException {
+    public String getParamList(RoutinesBean routinesBean, String routineType) throws SQLException, IOException {
         String result = null;
-
-        RoutineListBean routineListBean = null;
         ApiConnection apiConnection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-
-        Blob blob = null;
-        StringBuilder blodDataBuilder = null;
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
         BufferedReader bufferedReader = null;
         try {
-            routineListBean = (RoutineListBean) bean;
-            apiConnection = connectionHelper.getConnection(bean.getRequest_db());
+            apiConnection = connectionHelper.getConnection(routinesBean.getRequest_db());
             statement = apiConnection
                     .getStmtSelect("SELECT param_list FROM mysql.proc WHERE type = ? AND db = ? AND name = ?");
             statement.setString(1, routineType);
-            statement.setString(2, bean.getRequest_db());
-            statement.setString(3, routineListBean.getRoutines()[0]);
+            statement.setString(2, routinesBean.getRequest_db());
+            statement.setString(3, routinesBean.getRoutines()[0]);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                blob = resultSet.getBlob(1);
+                Blob blob = resultSet.getBlob(1);
                 inputStream = blob.getBinaryStream();
                 inputStreamReader = new InputStreamReader(inputStream);
                 bufferedReader = new BufferedReader(inputStreamReader);
-                blodDataBuilder = new StringBuilder();
+                StringBuilder blodDataBuilder = new StringBuilder();
                 while ((result = bufferedReader.readLine()) != null) {
                     blodDataBuilder.append(result);
                 }
@@ -489,4 +422,11 @@ public class RoutineLogic {
         return result;
     }
 
+    /**
+     * @param value {@link String}
+     * @return boolean
+     */
+    public boolean isEmpty(String value) {
+        return connectionHelper.isEmpty(value);
+    }
 }

@@ -86,7 +86,7 @@
 				<tbody ng-show="page_data.count > 0">
 					<tr ng-repeat="(i, database_info) in page_data.database_list track by $index" ng-class="{true:'even',false:'odd'}[i % 2 === 0]">
 						<td><input type="checkbox" ng-true-value="'{{database_info.database}}'" ng-false-value="''" ng-model="temp_databases[i]" ng-change="checkOne(database_info.database)"></td>
-						<td>{{database_info.database}}</td>
+						<td ng-click="goToDatabase(database_info.database)" style="cursor:pointer;">{{database_info.database}}</td>
 						<td>{{database_info.collation}}</td>
 						<td>{{database_info.tables}}</td>
 						<td>{{database_info.rows}}</td>

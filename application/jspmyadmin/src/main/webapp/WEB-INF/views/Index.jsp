@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages"%>
-<%@ taglib prefix="jma" uri="http://jspmyadmin.com/taglib/jsp/jma"%>
 <m:open />
 <!DOCTYPE html>
 <html>
@@ -53,32 +52,27 @@
     	</div>
 	    <script type="text/javascript">
     	    var contextPath = '${pageContext.request.contextPath}';
+    	    var aaaaaaaa = '${sessionScope.session_key}';
     	</script>
-    	<script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/jma/jquery.min.js"></script>
-	    <script type="text/javascript"
-        	src="${pageContext.request.contextPath}/components/codemirror/lib/codemirror.js"></script>
-        <script type="text/javascript"
-        	src="${pageContext.request.contextPath}/components/codemirror/sql.js"></script>
-        <script type="text/javascript"
-        	src="${pageContext.request.contextPath}/components/codemirror/addon/hint/show-hint.js"></script>
-        <script type="text/javascript"
-        	src="${pageContext.request.contextPath}/components/codemirror/addon/hint/sql-hint.js"></script>
-        <script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/angular/angular.min.js"></script>
-        <script type="text/javascript"
-            src="${pageContext.request.contextPath}/components/angular/angular-resource.min.js"></script>
-        <script type="text/javascript"
-                    src="${pageContext.request.contextPath}/components/angular/angular-ui-router.min.js"></script>
-        <script type="text/javascript"
-    	    src="${pageContext.request.contextPath}/app/utils.js"></script>
-        <script type="text/javascript"
-        	src="${pageContext.request.contextPath}/app/config.js"></script>
-        <script type="text/javascript"
-            src="${pageContext.request.contextPath}/app/common/home.js"></script>
-        <script type="text/javascript"
-            src="${pageContext.request.contextPath}/app/server/databases.js"></script>
-        <script type="text/javascript"
-            src="${pageContext.request.contextPath}/app/server/common.js"></script>
+    	<script type="text/javascript" src="${pageContext.request.contextPath}/components/jma/jquery.min.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/components/jma/aes.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/components/jma/base64.min.js"></script>
+	    <script type="text/javascript" src="${pageContext.request.contextPath}/components/codemirror/lib/codemirror.js"></script>
+        <script type="text/javascript" 	src="${pageContext.request.contextPath}/components/codemirror/sql.js"></script>
+        <script type="text/javascript" 	src="${pageContext.request.contextPath}/components/codemirror/addon/hint/show-hint.js"></script>
+        <script type="text/javascript" 	src="${pageContext.request.contextPath}/components/codemirror/addon/hint/sql-hint.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/components/angular/angular.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/components/angular/angular-resource.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/components/angular/angular-ui-router.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/app/utils.js"></script>
+        <script type="text/javascript"	src="${pageContext.request.contextPath}/app/config.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/app/common/home.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/app/server/databases.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/app/server/common.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/app/database/structure.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/create_table.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/create_view.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/routines.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/create_routine.js"></script>
     </body>
 </html>

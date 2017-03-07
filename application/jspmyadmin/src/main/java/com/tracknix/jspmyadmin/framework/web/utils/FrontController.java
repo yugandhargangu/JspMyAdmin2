@@ -105,7 +105,7 @@ class FrontController implements Serializable {
             }
         }
         // fill request adaptor details
-        if (params != null) {
+        if (params != null && false) {
             for (Object object : params) {
                 if (object != null && object instanceof Bean) {
                     Bean bean = (Bean) object;

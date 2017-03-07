@@ -21,7 +21,7 @@ public class BasicConnection implements ConnectionHelper {
      */
     public ApiConnection getConnection() throws SQLException {
         return new ApiConnectionImpl();
-}
+    }
 
     /**
      * @param dbName database name
@@ -173,6 +173,22 @@ public class BasicConnection implements ConnectionHelper {
     private static synchronized String createTempFilePath() {
         File file = new File(DefaultServlet.getRoot_path(), System.currentTimeMillis() + ".tmp");
         return file.getAbsolutePath();
+    }
+
+    @Override
+    public void setForeignKeyChecks(ApiConnection apiConnection, boolean enable) throws SQLException {
+        PreparedStatement statement = null;
+        try {
+            statement = apiConnection.getStmt("SET foreign_key_checks = ?");
+            if (enable) {
+                statement.setInt(1, 1);
+            } else {
+                statement.setInt(1, 0);
+            }
+            statement.execute();
+        } finally {
+            close(statement);
+        }
     }
 
     /**

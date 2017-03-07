@@ -1,75 +1,84 @@
 'use strict';
-var AjaxHelper = {};
-var token = '';
-AjaxHelper.generateResponse = function(data, headers, status) {
-	var actualData = {};
-	if(data != null) {
-		actualData = angular.fromJson(data);
-	} 
-	if( actualData.token && actualData.token != ''){
-		token = actualData.token;
-	}
-	if (status == 200) {
-	    var error = false;
-	    if(actualData.err !== undefined && actualData.err !== null){
-	        $('#sidebar-error-msg').text(actualData.err);
-	    	$('#sidebar-error-dialog').show();
-	    	error = true;
-	    }
-	    if(actualData.msg !== undefined && actualData.msg !== null){
-	        $('#sidebar-success-msg').text(actualData.msg);
-	    	$('#sidebar-success-dialog').show();
-	    }
-		return {status : 0,error:error, data : actualData};
-	}
-	return {status : 1,headers : headers};
-};
 var IdHelper = {
-	id : 1,
-	name : 'jma_id_'
+    id: 1,
+    name: 'jma_id_'
 };
-IdHelper.generate = function() {
-	this.id++;
-	return this.name + this.id;
+IdHelper.generate = function () {
+    this.id++;
+    return this.name + this.id;
+};
+
+var EncryptionHelper = {
+    encode: function (string) {
+        var encode = CryptoJS.AES.encrypt(string, aaaaaaaa);
+        return Base64.encodeURI(encode.toString());
+    },
+    decode: function (string) {
+        var decode = CryptoJS.AES.decrypt(Base64.decode(string), aaaaaaaa);
+        return decode.toString(CryptoJS.enc.Utf8);
+    }
+};
+
+var ByteUtils = {
+    fromBytes: function (original) {
+        if (original > 1024) {
+            original = original / 1024;
+            if (original > 1024) {
+                original = original / 1024;
+                if (original > 1024) {
+                    return original.toFixed(2) + ' GB';
+                } else {
+                    return original.toFixed(2) + ' MB';
+                }
+            } else {
+                return original.toFixed(2) + ' KB';
+            }
+        } else {
+            return original + ' B';
+        }
+    }
 };
 
 function scrollTo(selector) {
-	$('#main-content').animate({
-		scrollTop : $(selector).offset().top
-	}, 'slow');
+    $('#main-content').animate({scrollTop: $(selector).offset().bottom}, 'slow');
+}
+
+function scrollToBottom() {
+    var content = $('#main-content');
+    content.animate({scrollTop: $(document).height()}, "slow");
 }
 
 function showWaiting() {
-	$('#sidebar-loading-dialog').show();
+    $('#sidebar-loading-dialog').show();
 }
 
 function hideWaiting() {
-	$('#sidebar-loading-dialog').hide();
+    $('#sidebar-loading-dialog').hide();
 }
 
-$(function() {
-	$('#sidebar-error-close').on('click', function() {
-		$('#sidebar-error-dialog').hide();
-		$('#sidebar-error-msg').text('');
-	});
+$(function () {
+    $('#sidebar-error-close').on('click', function () {
+        $('#sidebar-error-dialog').hide();
+        $('#sidebar-error-msg').text('');
+    });
 
-	$('#sidebar-success-close').on('click', function() {
-		$('#sidebar-success-dialog').hide();
-		$('#sidebar-success-msg').text('');
-	});
+    $('#sidebar-success-close').on('click', function () {
+        $('#sidebar-success-dialog').hide();
+        $('#sidebar-success-msg').text('');
+    });
 });
 
 var ErrorDialog = {
-    show:function(msg) {
+    show: function (msg) {
         $('#error-content').text(msg);
         $('#error-dialog').show();
     },
-    hide:function() {
+    hide: function () {
         $('#error-dialog').hide();
     }
 };
-$(function(){
-    $('#error-close').on('click', function(){
+$(function () {
+    $('#error-close').on('click', function () {
         ErrorDialog.hide();
     });
 });

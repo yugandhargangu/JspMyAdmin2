@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tracknix.jspmyadmin.application.database.event.beans.EventListBean;
 import com.tracknix.jspmyadmin.application.database.event.logic.EventLogic;
-import com.tracknix.jspmyadmin.application.database.routine.beans.RoutineListBean;
+import com.tracknix.jspmyadmin.application.database.routine.beans.RoutinesBean;
 import com.tracknix.jspmyadmin.application.database.routine.logic.RoutineLogic;
 import com.tracknix.jspmyadmin.application.database.sql.beans.ExternalSqlBean;
 import com.tracknix.jspmyadmin.application.database.sql.beans.SqlBean;
@@ -84,9 +84,9 @@ public class SQLController {
                     break;
                 case 2:
                     // alter procedure
-                    RoutineListBean routineListBean = new RoutineListBean();
-                    routineListBean.setRoutines(new String[]{bean.getEdit_name()});
-                    result = routineLogic.showCreate(routineListBean, true);
+                    RoutinesBean routinesBean = new RoutinesBean();
+                    routinesBean.setRoutines(new String[]{bean.getEdit_name()});
+                    result = routineLogic.showCreate(routinesBean);
                     jsonObject = objectMapper.readTree(result);
                     iterator = jsonObject.fieldNames();
                     if (iterator.hasNext()) {
@@ -117,9 +117,9 @@ public class SQLController {
                     break;
                 case 4:
                     // alter function
-                    routineListBean = new RoutineListBean();
-                    routineListBean.setRoutines(new String[]{bean.getEdit_name()});
-                    result = routineLogic.showCreate(routineListBean, false);
+                    routinesBean = new RoutinesBean();
+                    routinesBean.setRoutines(new String[]{bean.getEdit_name()});
+                    result = routineLogic.showCreate(routinesBean);
                     jsonObject = objectMapper.readTree(result);
                     iterator = jsonObject.fieldNames();
                     if (iterator.hasNext()) {
