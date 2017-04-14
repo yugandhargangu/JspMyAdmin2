@@ -1,6 +1,7 @@
 package com.tracknix.jspmyadmin.framework.connection.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tracknix.jspmyadmin.framework.constants.Constants;
 import lombok.Data;
 
 /**
@@ -46,7 +47,7 @@ public final class DataTypes {
             }
         } catch (NumberFormatException ignored) {
         }
-        return null;
+        return DataTypeInfo.DATA_TYPE_INFO;
     }
 
     /**
@@ -129,6 +130,9 @@ public final class DataTypes {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DataTypeInfo {
+
+        private static final DataTypeInfo DATA_TYPE_INFO = new DataTypeInfo(0, Constants.BLANK, null);
+
         private final int id;
         private final String datatype;
         private final DataTypeOptions datatype_options;

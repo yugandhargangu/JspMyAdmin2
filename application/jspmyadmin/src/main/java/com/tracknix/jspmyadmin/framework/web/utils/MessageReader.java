@@ -15,13 +15,13 @@ public class MessageReader implements Messages {
     private static String _properties = ".properties";
     private static final String _DEFAULT = "default";
     private static final String _ENCODE = "UTF-8";
-    private static final Map<String, Map<String, String>> _MESSAGEMAP = new ConcurrentHashMap<String, Map<String, String>>();
+    private static final Map<String, Map<String, String>> _MESSAGE_MAP = new ConcurrentHashMap<String, Map<String, String>>();
 
     /**
      *
      */
     static synchronized void read() {
-        if (_MESSAGEMAP.size() > 0) {
+        if (_MESSAGE_MAP.size() > 0) {
             return;
         }
         String dot = "\\.";
@@ -80,7 +80,7 @@ public class MessageReader implements Messages {
                     messageMap.put(data[0].trim(), data[1].trim());
                 }
             }
-            _MESSAGEMAP.put(locale, messageMap);
+            _MESSAGE_MAP.put(locale, messageMap);
         } finally {
             if (bufferedReader != null) {
                 bufferedReader.close();
@@ -98,10 +98,10 @@ public class MessageReader implements Messages {
      * @throws IOException e
      */
     public static synchronized void remove() throws IOException {
-        for (String key : _MESSAGEMAP.keySet()) {
-            _MESSAGEMAP.get(key).clear();
+        for (String key : _MESSAGE_MAP.keySet()) {
+            _MESSAGE_MAP.get(key).clear();
         }
-        _MESSAGEMAP.clear();
+        _MESSAGE_MAP.clear();
     }
 
     private final Map<String, String> _messageMap;
@@ -110,10 +110,10 @@ public class MessageReader implements Messages {
      * @param locale String
      */
     public MessageReader(String locale) {
-        if (locale != null && _MESSAGEMAP.containsKey(locale)) {
-            _messageMap = _MESSAGEMAP.get(locale);
+        if (locale != null && _MESSAGE_MAP.containsKey(locale)) {
+            _messageMap = _MESSAGE_MAP.get(locale);
         } else {
-            _messageMap = _MESSAGEMAP.get(_DEFAULT);
+            _messageMap = _MESSAGE_MAP.get(_DEFAULT);
         }
     }
 

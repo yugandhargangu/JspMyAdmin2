@@ -49,10 +49,6 @@ JspMyAdminApp.controller('DatabaseTableCreateController', ['$rootScope', '$scope
         zf: []
     };
     $scope.temp_input = {};
-    if (JspMyAdminContext.redirectParams.table_name) {
-        $scope.input_data.table_name = JspMyAdminContext.redirectParams.table_name;
-        $scope.redirectParams = {};
-    }
     $scope.row_count = [0];
     $scope.add_count = 1;
     $scope.row_increment = 1;
@@ -204,6 +200,7 @@ JspMyAdminApp.controller('DatabaseTableCreateController', ['$rootScope', '$scope
                     readOnly: true
                 });
             }
+            $scope.input_data.action = '';
             $scope.input_data.token = JspMyAdminContext.token;
             $scope.input_data.request_db = JspMyAdminContext.database;
             BB0Resource.save({}, $scope.input_data, function (response) {

@@ -27,10 +27,6 @@ JspMyAdminApp.controller('DatabaseViewCreateController', ['$rootScope', '$scope'
         definition: '',
         column_list: []
     };
-    if (JspMyAdminContext.redirectParams.view_name) {
-        $scope.input_data.view_name = JspMyAdminContext.redirectParams.view_name;
-        $scope.redirectParams = {};
-    }
     $scope.column_count = [];
     $scope.column_increment = 0;
     $scope.showCreate = false;

@@ -1,7 +1,7 @@
 package com.tracknix.jspmyadmin.application.common.controllers;
 
 import com.tracknix.jspmyadmin.application.common.beans.HomeBean;
-import com.tracknix.jspmyadmin.application.common.logic.HomeLogic;
+import com.tracknix.jspmyadmin.application.common.services.HomeLogic;
 import com.tracknix.jspmyadmin.framework.constants.AppConstants;
 import com.tracknix.jspmyadmin.framework.constants.Constants;
 import com.tracknix.jspmyadmin.framework.web.annotations.*;

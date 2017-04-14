@@ -1,11 +1,8 @@
 package com.tracknix.jspmyadmin.application.template;
 
 import com.tracknix.jspmyadmin.framework.constants.AppConstants;
-import com.tracknix.jspmyadmin.framework.web.annotations.Handle;
-import com.tracknix.jspmyadmin.framework.web.annotations.WebController;
-import com.tracknix.jspmyadmin.framework.web.utils.RequestLevel;
-import com.tracknix.jspmyadmin.framework.web.utils.View;
-import com.tracknix.jspmyadmin.framework.web.utils.ViewType;
+import com.tracknix.jspmyadmin.framework.web.annotations.*;
+import com.tracknix.jspmyadmin.framework.web.utils.*;
 
 import java.sql.SQLException;
 
@@ -65,4 +62,27 @@ public class DatabaseTemplateController {
         view.setPath(AppConstants.JSP_DATABASE_ROUTINE_CREATEFUNCTION);
     }
 
+    @Handle(path = "/database/structure/triggers.html")
+    public void triggers(View view) {
+        view.setType(ViewType.FORWARD);
+        view.setPath(AppConstants.JSP_DATABASE_TRIGGER_TRIGGERS);
+    }
+
+    @Handle(path = "/database/trigger/create.html")
+    public void triggerCreate(View view) {
+        view.setType(ViewType.FORWARD);
+        view.setPath(AppConstants.JSP_DATABASE_TRIGGER_CREATETRIGGER);
+    }
+
+    @Handle(path = "/database/structure/events.html")
+    public void events(View view) {
+        view.setType(ViewType.FORWARD);
+        view.setPath(AppConstants.JSP_DATABASE_EVENT_EVENTS);
+    }
+
+    @Handle(path = "/database/event/create.html")
+    public void createEvent(View view) {
+        view.setType(ViewType.FORWARD);
+        view.setPath(AppConstants.JSP_DATABASE_EVENT_CREATEEVENT);
+    }
 }
