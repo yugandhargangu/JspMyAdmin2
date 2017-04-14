@@ -229,6 +229,8 @@ class ControllerUtil {
                                     detectTypeMap.put(field, DetectType.VIEW);
                                 } else if (ConnectionHelper.class == field.getType()) {
                                     detectTypeMap.put(field, DetectType.CONNECTION);
+                                } else if (QueryHelper.class == field.getType()) {
+                                    detectTypeMap.put(field, DetectType.QUERY);
                                 } else {
                                     detectTypeMap.put(field, DetectType.UNKNOWN);
                                 }

@@ -94,7 +94,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="i in row_count" ng-init="$rowIndex = $index">
+                    <tr ng-repeat="item in row_count" ng-init="$rowIndex = item">
                         <td class="no-display">
                             <select ng-model="input_data.param_types[$rowIndex]"
                                     ng-init="input_data.param_types[$rowIndex] = 'IN'">
@@ -119,7 +119,7 @@
                         <td><input type="text" ng-model="input_data.lengths[$rowIndex]"
                                    ng-init="input_data.lengths[$rowIndex] = ''"></td>
                         <td style="text-align: center;">
-                            <img alt="" class="icon" ng-click="removeRow(i)"
+                            <img alt="" class="icon" ng-click="removeRow($rowIndex)"
                                  src="${pageContext.request.contextPath}/components/icons/minus-r.png">
                         </td>
                     </tr>
@@ -130,7 +130,7 @@
 
     </div>
     <div class="group-widget group-footer">
-        <button type="button" class="btn" ng-click="showCreate()"><m:print key="lbl.show_create"/></button>
+        <button type="button" class="btn" ng-click="showCreateClick()"><m:print key="lbl.show_create"/></button>
         <button type="button" class="btn" ng-click="runClick()"><m:print key="lbl.run"/></button>
     </div>
 </div>

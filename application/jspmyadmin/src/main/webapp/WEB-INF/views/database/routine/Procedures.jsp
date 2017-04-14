@@ -2,24 +2,13 @@
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages" %>
 <m:open/>
-<div class="page-head">
-    <h3><m:print key="lbl.procedures"/></h3>
-</div>
 <div class="group">
-    <div class="group-widget group-header"><m:print key="lbl.create_procedure"/></div>
     <div class="group-widget group-content">
-        <div class="form-input">
-            <label><m:print key="lbl.procedure_name"/></label>
-            <input type="text" ng-model="create_procedure.name" class="form-control">
+        <div class="page-head">
+            <h2><m:print key="lbl.procedures"/></h2>
+            <button type="button" class="btn btn-right" ng-click="runClick()">+ <m:print key="lbl.add_procedure"/></button>
         </div>
-    </div>
-    <div class="group-widget group-footer">
-        <button type="button" class="btn" ng-click="runClick()"><m:print key="lbl.run"/></button>
-    </div>
-</div>
-<div class="group">
-    <div class="group-widget group-header"><m:print key="lbl.procedure_list"/></div>
-    <div class="group-widget group-content">
+        <hr class="thin">
         <table class="tbl tbl-full">
             <thead>
             <tr>
@@ -68,7 +57,7 @@
     </div>
     <div class="group-widget group-footer">
         <button type="button" class="btn" ng-disabled="routines.length === 0"><m:print key="lbl.execute"/></button>
-        <button type="button" class="btn" ng-disabled="routines.length === 0"><m:print key="lbl.edit"/></button>
+        <button type="button" class="btn" ng-disabled="routines.length !== 1"><m:print key="lbl.edit"/></button>
         <button type="button" class="btn" ng-click="showCreateClick()" ng-disabled="routines.length === 0"><m:print
                 key="lbl.show_create"/></button>
         <button type="button" class="btn" ng-click="dropClick()" ng-disabled="routines.length === 0"><m:print
@@ -90,7 +79,7 @@
         <div class="close" ng-click="confirmCloseClick()">&#10005;</div>
         <div class="dialog-header"><m:print key="lbl.alert"/></div>
         <div class="dialog-content">
-            <p id="confirm-content"></p>
+            <p>{{confirm_content}}</p>
         </div>
         <div class="dialog-footer">
             <button type="button" class="btn" ng-click="confirmYesBtnClick()"><m:print key="lbl.yes"/></button>

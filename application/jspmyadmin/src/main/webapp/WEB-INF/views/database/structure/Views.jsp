@@ -2,24 +2,13 @@
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages" %>
 <m:open/>
-<div class="page-head">
-    <h3><m:print key="lbl.views"/></h3>
-</div>
 <div class="group">
-    <div class="group-widget group-header"><m:print key="lbl.create_view"/></div>
     <div class="group-widget group-content">
-        <div class="form-input">
-            <label><m:print key="lbl.view_name"/></label>
-            <input type="text" class="form-control" ng-model="create_view.view_name">
+        <div class="page-head">
+            <h2><m:print key="lbl.views"/></h2>
+            <button type="button" class="btn btn-right" ng-click="createViewBtnClick()">+ <m:print key="lbl.add_view"/></button>
         </div>
-    </div>
-    <div class="group-widget group-footer">
-        <button type="button" class="btn" ng-click="createViewBtnClick()"><m:print key="lbl.run"/></button>
-    </div>
-</div>
-<div class="group">
-    <div class="group-widget group-header"><m:print key="lbl.view_list"/></div>
-    <div class="group-widget group-content">
+        <hr class="thin">
         <table class="tbl">
             <thead>
             <tr>

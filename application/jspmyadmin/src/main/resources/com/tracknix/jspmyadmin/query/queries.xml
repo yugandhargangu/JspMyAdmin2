@@ -1,0 +1,970 @@
+<?xml version="1.0"?>
+<logics>
+    <logic class="com.tracknix.jspmyadmin.application.common.services.HomeLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SHOW
+    CHARACTER SET
+            ]]></value>
+            <methods>
+                public Map getCollationMap()
+            </methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SHOW
+   COLLATION
+WHERE
+    CHARSET = ?
+            ]]></value>
+            <methods>public Map getCollationMap()</methods>
+        </query>
+        <query index="3">
+            <value query="true"><![CDATA[
+SHOW
+    VARIABLES
+WHERE
+    VARIABLE_NAME = ?
+            ]]></value>
+            <columns>collation_server,hostname,version_comment,version,protocol_version,character_set_server</columns>
+            <methods>public void fillBean(HomeBean homeBean)</methods>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+SHOW
+    COLLATION
+WHERE
+    COLLATION = ?
+            ]]></value>
+            <methods>public void saveServerCollation(String collation)</methods>
+        </query>
+        <query index="5">
+            <value query="true"><![CDATA[
+SET character_set_server = ?
+            ]]></value>
+            <methods>public void saveServerCollation(String collation)</methods>
+        </query>
+        <query index="6">
+            <value query="true"><![CDATA[
+SET collation_server = ?
+            ]]></value>
+            <methods>public void saveServerCollation(String collation)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.common.services.DataLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SHOW
+    DATABASES
+            ]]></value>
+            <methods>public List getDatabaseList()</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SHOW
+    FULL TABLES
+WHERE
+    TABLE_TYPE LIKE ?
+            ]]></value>
+            <methods>public List getTableList(String database)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.common.services.SideBarLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SHOW
+    DATABASES
+            ]]></value>
+            <methods>public List getDatabaseList()</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.server.services.CharsetLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SELECT
+    a.character_set_name,
+    a.collation_name,
+    a.id, a.is_default,
+    a.is_compiled,
+    a.sortlen,
+    b.description,
+    b.maxlen
+FROM
+    (SELECT
+        *
+    FROM
+        information_schema.collations)
+    AS a
+LEFT JOIN
+    (SELECT
+        *
+    FROM
+        information_schema.character_sets)
+    AS b
+    ON a.character_set_name = b.character_set_name
+ORDER BY
+    a.character_set_name ASC,
+    a.collation_name ASC
+            ]]></value>
+            <methods>public void fillBean(CharsetBean charsetBean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.server.services.DatabaseLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SELECT
+    a.db_name,
+    a.db_collation,
+    CASE
+        WHEN b.db_table_count > 0
+            THEN b.db_table_count
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_rows_count > 0
+            THEN b.db_rows_count
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_data > 0
+            THEN b.db_data
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_index > 0
+            THEN b.db_index
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_total > 0
+            THEN b.db_total
+            ELSE 0
+    END
+FROM
+    (SELECT
+        schema_name AS db_name,
+        default_collation_name AS db_collation
+    FROM
+        information_schema.schemata
+    ) AS a
+LEFT JOIN
+    (SELECT
+        COUNT(table_name) AS db_table_count,
+        SUM(table_rows) AS db_rows_count,
+        SUM(data_length) AS db_data,
+        SUM(index_length) AS db_index,
+        SUM(data_length + index_length) AS db_total,
+        table_schema AS db_name
+    FROM
+        information_schema.tables
+    GROUP BY
+        table_schema
+    ) AS b
+    ON a.db_name = b.db_name
+GROUP BY
+    a.db_name,
+    a.db_collation
+            ]]></value>
+            <methods>public void fillBean(DatabaseListBean databaseListBean)</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SELECT
+    a.db_name,
+    a.db_collation,
+    CASE
+        WHEN b.db_table_count > 0
+            THEN b.db_table_count
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_rows_count > 0
+            THEN b.db_rows_count
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_data > 0
+            THEN b.db_data
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_index > 0
+            THEN b.db_index
+            ELSE 0
+    END,
+    CASE
+        WHEN b.db_total > 0
+            THEN b.db_total
+            ELSE 0
+    END
+FROM
+    (SELECT
+        schema_name AS db_name,
+        default_collation_name AS db_collation
+    FROM
+        information_schema.schemata
+    ) AS a
+LEFT JOIN
+    (SELECT
+        COUNT(table_name) AS db_table_count,
+        SUM(table_rows) AS db_rows_count,
+        SUM(data_length) AS db_data,
+        SUM(index_length) AS db_index,
+        SUM(data_length + index_length) AS db_total,
+        table_schema AS db_name
+    FROM
+        information_schema.tables
+    GROUP BY
+        table_schema
+    ) AS b
+    ON a.db_name = b.db_name
+GROUP BY
+    a.db_name,
+    a.db_collation
+ORDER BY
+    %s %s
+            ]]></value>
+            <methods>public void fillBean(DatabaseListBean databaseListBean)</methods>
+        </query>
+        <query index="3">
+            <value query="false">
+                <part index="1"><![CDATA[
+CREATE DATABASE `%s` %s
+                ]]></part>
+                <part index="2"><![CDATA[
+ COLLATE %s
+                ]]></part>
+            </value>
+            <methods>public void createDatabase(DatabaseCreateBean bean)</methods>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+DROP
+    DATABASE
+IF EXISTS
+    `%s`
+            ]]></value>
+            <methods>public void createDatabase(DatabaseCreateBean bean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.server.services.EngineLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SELECT
+    *
+FROM
+    information_schema.engines
+ORDER BY
+    engine ASC
+            ]]></value>
+            <methods>public void fillBean(CommonListBean engineBean)</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SELECT
+    engine
+FROM
+    information_schema.engines
+WHERE
+    support <> ?
+ORDER BY
+    support,engine ASC
+            ]]></value>
+            <methods>public List getEngineList()</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.server.services.PluginLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SELECT
+    *
+FROM
+    information_schema.plugins
+            ]]></value>
+            <methods>public void fillBean(CommonListBean pluginBean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.server.services.StatusLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SHOW STATUS
+            ]]></value>
+            <methods>public void fillBean(StatusBean statusBean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.server.services.VariableLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SHOW VARIABLES
+            ]]></value>
+            <methods>public void fillBean(CommonListBean variableBean)</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SHOW GLOBAL VARIABLES
+            ]]></value>
+            <methods>public void fillBean(CommonListBean variableBean)</methods>
+        </query>
+        <query index="3">
+            <value query="true"><![CDATA[
+SET %s %s = ?
+            ]]></value>
+            <methods>public void save(VariableBean bean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.database.services.EventLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SELECT
+    event_name,
+    definer,
+    event_type,
+    status,
+    created,
+    last_altered,
+    event_comment
+FROM
+    information_schema.events
+WHERE
+    event_schema = ?
+ORDER BY
+    event_name ASC
+            ]]></value>
+            <methods>public void fillListBean(EventsBean eventsBean)</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+ALTER EVENT `%s` RENAME TO `%s`
+            ]]></value>
+            <methods>public void renameEvent(EventsBean eventsBean)</methods>
+        </query>
+        <query index="3">
+            <value query="true"><![CDATA[
+ALTER EVENT `%s` ENABLE
+            ]]></value>
+            <methods>public void enableOrDisableEvent(EventsBean eventsBean, boolean enable)</methods>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+ALTER EVENT `%s` DISABLE
+            ]]></value>
+            <methods>public void enableOrDisableEvent(EventsBean eventsBean, boolean enable)</methods>
+        </query>
+        <query index="5">
+            <value query="true"><![CDATA[
+DROP EVENT IF EXISTS `%s`
+            ]]></value>
+            <methods>public void dropEvent(EventsBean eventsBean)</methods>
+        </query>
+        <query index="6">
+            <value query="true"><![CDATA[
+SHOW CREATE EVENT `%s`
+            ]]></value>
+            <methods>public String getShowCreate(EventsBean eventsBean)</methods>
+        </query>
+        <query index="7">
+            <value query="true"><![CDATA[
+SELECT
+    COUNT(event_name)
+FROM
+    information_schema.events
+WHERE
+    event_schema = ?
+    AND event_name = ?
+            ]]></value>
+            <methods>public boolean isExisted(String name, String database)</methods>
+        </query>
+        <query index="8">
+            <value query="false">
+                <part index="1"><![CDATA[
+CREATE %s EVENT %s `%s` ON SCHEDULE %s %s %s %s DO %s
+                ]]></part>
+                <part index="2"><![CDATA[
+DEFINER = CURRENT_USER
+                ]]></part>
+                <part index="3"><![CDATA[
+DEFINER = %s
+                ]]></part>
+                <part index="4"><![CDATA[
+`%s`
+                ]]></part>
+                <part index="5"><![CDATA[
+`%s`@`%s`
+                ]]></part>
+                <part index="6"><![CDATA[
+IF NOT EXISTS
+                ]]></part>
+                <part index="7"><![CDATA[
+%s %s %s %s %s
+                ]]></part>
+                <part index="8"><![CDATA[
+CURRENT_TIMESTAMP
+                ]]></part>
+                <part index="9"><![CDATA[
+'%s'
+                ]]></part>
+                <part index="10"><![CDATA[
++ INTERVAL %s %s
+                ]]></part>
+                <part index="11"><![CDATA[
++ INTERVAL '%s' %s
+                ]]></part>
+                <part index="12"><![CDATA[
+STARTS CURRENT_TIMESTAMP
+                ]]></part>
+                <part index="13"><![CDATA[
+STARTS '%s'
+                ]]></part>
+                <part index="14"><![CDATA[
+ENDS CURRENT_TIMESTAMP
+                ]]></part>
+                <part index="15"><![CDATA[
+ENDS '%s'
+                ]]></part>
+                <part index="16"><![CDATA[
+ON COMPLETION %s
+                ]]></part>
+            </value>
+            <methods>public String saveEvent(EventBean eventBean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.database.services.RoutineLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SELECT
+    specific_name,
+    data_type,
+    routine_body,
+    is_deterministic,
+    sql_data_access,
+    security_type,
+    definer,
+    routine_comment
+FROM
+    information_schema.routines
+WHERE
+    routine_type = ?
+    AND routine_schema = ?
+            ]]></value>
+            <methods>public void fillListBean(RoutinesBean routinesBean)</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SHOW
+    %s STATUS
+WHERE
+    name LIKE ?
+    AND db LIKE ?
+            ]]></value>
+            <methods>public boolean isExisted(String name, String type, String database)</methods>
+        </query>
+        <query index="3">
+            <value query="false">
+                <part index="1"><![CDATA[
+CREATE %s PROCEDURE `%s` (%s) COMMENT '%s' %s %s %s %s BEGIN %s END
+                ]]></part>
+                <part index="2"><![CDATA[
+CREATE %s FUNCTION `%s` (%s) RETURNS %s %s COMMENT '%s' %s %s %s %s BEGIN %s END
+                ]]></part>
+                <part index="3"><![CDATA[
+DEFINER = CURRENT_USER
+                ]]></part>
+                <part index="4"><![CDATA[
+DEFINER = %s
+                ]]></part>
+                <part index="5"><![CDATA[
+%s %s %s
+                ]]></part>
+                <part index="6"><![CDATA[
+%s %s %s(%s)
+                ]]></part>
+                <part index="7"><![CDATA[
+SQL SECURITY %s
+                ]]></part>
+                <part index="8"><![CDATA[
+`%s`
+                ]]></part>
+                <part index="9"><![CDATA[
+`%s`@`%s`
+                ]]></part>
+            </value>
+            <methods>
+                private StringBuilder _createQuery(RoutineBean routineBean),
+                private StringBuilder _appendComment(StringBuilder builder, String comment),
+                public String saveProcedure(RoutineBean routineBean),
+                public String saveFunction(RoutineBean routineBean)
+            </methods>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+SHOW CREATE %s `%s`
+            ]]></value>
+            <methods>public String showCreate(RoutinesBean routinesBean)</methods>
+        </query>
+        <query index="5">
+            <value query="true"><![CDATA[
+DROP %s IF EXISTS `%s`
+            ]]></value>
+            <methods>public void dropRoutines(RoutinesBean routinesBean)</methods>
+        </query>
+        <query index="6">
+            <value query="true"><![CDATA[
+SELECT
+    param_list
+FROM
+    mysql.proc
+WHERE
+    type = ?
+    AND db = ?
+    AND name = ?
+            ]]></value>
+            <methods>public String getParamList(RoutinesBean routinesBean, String routineType)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.database.services.StructureLogic">
+        <query index="1">
+            <value query="false">
+                <part index="1"><![CDATA[
+SELECT
+    table_name,
+    table_type,
+    engine,
+    table_rows,
+    table_collation,
+    (data_length + index_length) AS data_size,
+    auto_increment,
+    create_time,
+    update_time,
+    table_comment
+FROM
+    information_schema.tables
+WHERE
+    table_schema = ?
+    AND table_type = ?
+ORDER BY
+    table_name ASC
+                ]]></part>
+                <part index="2"><![CDATA[
+SELECT
+    table_name,
+    table_type,
+    engine,
+    table_rows,
+    table_collation,
+    (data_length + index_length) AS data_size,
+    auto_increment,
+    create_time,
+    update_time,
+    table_comment
+FROM
+    information_schema.tables
+WHERE
+    table_schema = ?
+    AND table_type = ?
+ORDER BY
+    table_name %s
+                ]]></part>
+                <part index="3"><![CDATA[
+SELECT
+    table_name,
+    table_type,
+    engine,
+    table_rows,
+    table_collation, (data_length + index_length) AS data_size,
+    auto_increment,
+    create_time,
+    update_time,
+    table_comment
+FROM
+    information_schema.tables
+WHERE
+    table_schema = ?
+    AND table_type = ?
+ORDER BY
+    %s %s
+                ]]></part>
+            </value>
+            <methods>public void fillBean(StructureListBean tableListBean, final boolean onlyTables)</methods>
+        </query>
+        <query index="2">
+            <value query="true">empty</value>
+        </query>
+        <query index="3">
+            <value query="true">empty</value>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+DROP TABLE IF EXISTS `%s`
+            ]]></value>
+            <methods>
+                public void dropTables(StructureBean structureBean, final boolean onlyTables),
+                public void copyTables(StructureBean structureBean)
+            </methods>
+        </query>
+        <query index="5">
+            <value query="true"><![CDATA[
+DROP VIEW IF EXISTS `%s`
+            ]]></value>
+            <methods>public void dropTables(StructureBean structureBean, final boolean onlyTables)</methods>
+        </query>
+        <query index="6">
+            <value query="true"><![CDATA[
+TRUNCATE TABLE `%s`
+            ]]></value>
+            <methods>
+                public void truncateTables(StructureBean structureBean),
+                public void duplicateTable(StructureBean structureBean)
+            </methods>
+        </query>
+        <query index="7">
+            <value query="true"><![CDATA[
+SHOW CREATE TABLE `%s`
+            ]]></value>
+            <methods>public String showCreate(StructureBean structureBean, final boolean onlyTables)</methods>
+        </query>
+        <query index="8">
+            <value query="true"><![CDATA[
+SHOW CREATE VIEW `%s`
+            ]]></value>
+            <methods>public String showCreate(StructureBean structureBean, final boolean onlyTables)</methods>
+        </query>
+        <query index="9">
+            <value query="true"><![CDATA[
+                USE `%s`
+            ]]></value>
+            <methods>public void copyTables(StructureBean structureBean)</methods>
+        </query>
+        <query index="10">
+            <value query="true"><![CDATA[
+CREATE
+    TABLE
+IF NOT EXISTS
+    `%s`.`%s`
+LIKE
+    `%s`.`%s`
+            ]]></value>
+            <methods>public void copyTables(StructureBean structureBean)</methods>
+        </query>
+        <query index="11">
+            <value query="true"><![CDATA[
+INSERT INTO
+    `%s`.`%s`
+SELECT
+    *
+FROM
+    `%s`.`%s`
+            ]]></value>
+            <methods>public void copyTables(StructureBean structureBean)</methods>
+        </query>
+        <query index="12">
+            <value query="true"><![CDATA[
+RENAME TABLE
+    `%s`
+TO
+    `%s`
+            ]]></value>
+            <methods>
+                public void addPrefix(StructureBean structureBean),
+                public void addSuffix(StructureBean structureBean),
+                public void replacePrefix(StructureBean structureBean),
+                public void replaceSuffix(StructureBean structureBean),
+                public void removePrefix(StructureBean structureBean),
+                public void removeSuffix(StructureBean structureBean)
+            </methods>
+        </query>
+        <query index="13">
+            <value query="true"><![CDATA[
+SHOW TABLES LIKE ?
+            ]]></value>
+            <methods>
+                public void duplicateTable(StructureBean structureBean),
+                public boolean isTableExisted(String name, String database)
+            </methods>
+        </query>
+        <query index="14">
+            <value query="true"><![CDATA[
+CREATE TABLE `%s` LIKE `%s`
+            ]]></value>
+            <methods>public void duplicateTable(StructureBean structureBean)</methods>
+        </query>
+        <query index="15">
+            <value query="true"><![CDATA[
+SELECT
+    column_name,
+    referenced_table_name,
+    referenced_column_name
+FROM
+    information_schema.key_column_usage
+WHERE
+    referenced_table_schema IS NOT NULL
+    AND constraint_schema = ?
+    AND table_name = ?
+            ]]></value>
+            <methods>public void duplicateTable(StructureBean structureBean)</methods>
+        </query>
+        <query index="16">
+            <value query="true"><![CDATA[
+ALTER TABLE
+    `%s`.`%s`
+ADD FOREIGN KEY (`%s`)
+    REFERENCES `%s`.`%s` (`%s`)
+ON DELETE
+    NO ACTION
+ON UPDATE
+    NO ACTION
+            ]]></value>
+            <methods>public void duplicateTable(StructureBean structureBean),
+                private void _checkForeignKeys(String database, ApiConnection apiConnection, List tableList,
+                List newTableList)
+            </methods>
+        </query>
+        <query index="17">
+            <value query="true"><![CDATA[
+INSERT
+    `%s`
+SELECT
+    *
+FROM
+    `%s`
+            ]]></value>
+            <methods>public void duplicateTable(StructureBean structureBean)</methods>
+        </query>
+        <query index="18">
+            <value query="true"><![CDATA[
+SHOW FULL TABLES LIKE ?
+            ]]></value>
+            <methods>private int _getTableType(final ApiConnection apiConnection, CharSequence tableName)</methods>
+        </query>
+        <query index="19">
+            <value query="true"><![CDATA[
+SELECT
+    constraint_name,
+    referenced_table_name,
+    referenced_column_name,
+    column_name
+FROM
+    information_schema.key_column_usage
+WHERE
+    referenced_table_name IS NOT NULL
+    AND constraint_schema = ?
+    AND table_name = ?
+            ]]></value>
+            <methods>private void _checkForeignKeys(String database, ApiConnection apiConnection, List tableList,
+                List newTableList)
+            </methods>
+        </query>
+        <query index="20">
+            <value query="true"><![CDATA[
+ALTER TABLE
+    `%s`
+DROP FOREIGN KEY
+    `%s`
+            ]]></value>
+            <methods>private void _checkForeignKeys(String database, ApiConnection apiConnection, List tableList,
+                List newTableList)
+            </methods>
+        </query>
+        <query index="21">
+            <value query="true"><![CDATA[
+SELECT
+    plugin_name
+FROM
+    information_schema.plugins
+WHERE
+    plugin_status = ?
+    AND plugin_name = ?
+            ]]></value>
+            <columns>Active,partition</columns>
+            <methods>public boolean isSupportsPartition()</methods>
+        </query>
+        <query index="22">
+            <value query="false">
+                <part index="1"><![CDATA[
+CREATE TABLE `%s` (%s %s %s) %s COMMENT '%s' %s
+                ]]></part>
+                <part index="2"><![CDATA[
+`%s` %s (%s) %s %s %s %s %s %s %s COMMENT '%s'
+                ]]></part>
+                <part index="3"><![CDATA[
+COLLATE '%s'
+                ]]></part>
+                <part index="4"><![CDATA[
+DEFAULT CURRENT_TIMESTAMP
+                ]]></part>
+                <part index="5"><![CDATA[
+DEFAULT '%s'
+                ]]></part>
+                <part index="6"><![CDATA[
+, PRIMARY KEY (`%s`)
+                ]]></part>
+                <part index="7"><![CDATA[
+, UNIQUE (`%s`)
+                ]]></part>
+                <part index="8"><![CDATA[
+ENGINE =%s
+                ]]></part>
+                <part index="9"><![CDATA[
+PARTITION BY %s(%s) PARTITIONS %s
+                ]]></part>
+                <part index="10"><![CDATA[
+`%s` %s
+                ]]></part>
+                <part index="11"><![CDATA[
+(%s)
+                ]]></part>
+                <part index="12"><![CDATA[
+ZEROFILL
+                ]]></part>
+                <part index="13"><![CDATA[
+UNSIGNED
+                ]]></part>
+                <part index="14"><![CDATA[
+BINARY
+                ]]></part>
+                <part index="15"><![CDATA[
+NOT NULL
+                ]]></part>
+                <part index="16"><![CDATA[
+NULL
+                ]]></part>
+                <part index="17"><![CDATA[
+AUTO_INCREMENT
+                ]]></part>
+                <part index="18"><![CDATA[
+COMMENT '%s'
+                ]]></part>
+            </value>
+            <methods>public String createTable(CreateTableBean createTableBean)</methods>
+        </query>
+        <query index="23">
+            <value query="false">
+                <part index="1"><![CDATA[
+%s %s %s %s VIEW `%s` AS %s %s
+                ]]></part>
+                <part index="2"><![CDATA[
+%s %s %s %s VIEW `%s` (%s) AS %s %s
+                ]]></part>
+                <part index="3"><![CDATA[
+ALGORITHM = %s
+                ]]></part>
+                <part index="4"><![CDATA[
+DEFINER = CURRENT_USER
+                ]]></part>
+                <part index="5"><![CDATA[
+DEFINER = %s
+                ]]></part>
+                <part index="6"><![CDATA[
+`%s`
+                ]]></part>
+                <part index="7"><![CDATA[
+`%s`@`%s`
+                ]]></part>
+                <part index="8"><![CDATA[
+SQL SECURITY %s
+                ]]></part>
+                <part index="9"><![CDATA[
+WITH %s CHECK OPTION
+                ]]></part>
+            </value>
+            <methods>public String createView(CreateViewBean createViewBean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.database.services.TriggerLogic">
+        <query index="1">
+            <value query="true"><![CDATA[
+SHOW TRIGGERS
+            ]]></value>
+            <columns>Trigger,Event,Table,Timing,Definer</columns>
+            <methods>public void fillListBean(TriggersBean triggersBean),
+                public List getTriggerList(String database)
+            </methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+SELECT
+    trigger_name
+FROM
+    information_schema.triggers
+WHERE
+    trigger_schema = ?
+    AND trigger_name = ?
+            ]]></value>
+            <methods>public boolean isExisted(String name, String database)</methods>
+        </query>
+        <query index="3">
+            <value query="true"><![CDATA[
+SHOW CREATE TRIGGER `%s`
+            ]]></value>
+            <methods>public String showCreate(TriggersBean triggersBean)</methods>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+DROP TRIGGER IF EXISTS `%s`
+            ]]></value>
+            <methods>public void drop(TriggersBean triggersBean)</methods>
+        </query>
+        <query index="5">
+            <value query="false">
+                <part index="1"><![CDATA[
+CREATE %s TRIGGER `%s` %s %s ON `%s`.`%s` FOR EACH ROW %s %s
+                ]]></part>
+                <part index="2"><![CDATA[
+DEFINER = CURRENT_USER
+                ]]></part>
+                <part index="3"><![CDATA[
+DEFINER = %s
+                ]]></part>
+                <part index="4"><![CDATA[
+`%s`
+                ]]></part>
+                <part index="5"><![CDATA[
+`%s`@`%s`
+                ]]></part>
+                <part index="6"><![CDATA[
+`%s` `%s`
+                ]]></part>
+            </value>
+            <methods>public String save(TriggerBean triggerBean)</methods>
+        </query>
+    </logic>
+    <logic class="com.tracknix.jspmyadmin.application.table.services.DataSelectLogic">
+        <query index="1">
+            <value query="false">
+                <part index="1"><![CDATA[
+SELECT * FROM `%s` %s %s %s
+                ]]></part>
+                <part index="2"><![CDATA[
+WHERE `%s` LIKE '%%s%'
+                ]]></part>
+                <part index="3"><![CDATA[
+ AND `%s` LIKE '%%s%'
+                ]]></part>
+                <part index="4"><![CDATA[
+ORDER BY `%s` %s
+                ]]></part>
+                <part index="5"><![CDATA[
+LIMIT %s, %s
+                ]]></part>
+            </value>
+            <methods>public void fillBean(DataSelectBean dataSelectBean)</methods>
+        </query>
+        <query index="2">
+            <value query="true"><![CDATA[
+DELETE FROM `%s` WHERE `%s` = ?
+             ]]></value>
+            <methods>public void delete(DataSelectBean dataSelectBean)</methods>
+        </query>
+        <query index="3">
+            <value query="true"><![CDATA[
+DELETE FROM `%s` WHERE `%s` IN (%s)
+             ]]></value>
+            <methods>public void delete(DataSelectBean dataSelectBean)</methods>
+        </query>
+        <query index="4">
+            <value query="true"><![CDATA[
+UPDATE `%s` SET `%s` = ? WHERE `%s` = ?
+             ]]></value>
+            <methods>public void delete(DataSelectBean dataSelectBean)</methods>
+        </query>
+    </logic>
+</logics>

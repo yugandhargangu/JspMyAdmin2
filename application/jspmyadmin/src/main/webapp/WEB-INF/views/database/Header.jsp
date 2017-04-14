@@ -30,15 +30,15 @@
 	</a>
 </li>
 <m:store name="lbl_events" key="lbl.events" />
-<li ng-show="menuIndex === 2">
-    <a href="${pageContext.request.contextPath}/database_events.html?token=${requestScope.command.request_token}">
+<li ng-show="menuIndex === 2" ng-class="{true:'active', false:''}[menuActiveIndex === 5]">
+    <a href="" ng-click="goToState('database_events', 2)">
         <img alt="${lbl_events}" class="icon" src="${pageContext.request.contextPath}/components/icons/time.png">
 		${lbl_events}
 	</a>
 </li>
 <m:store name="lbl_triggers" key="lbl.triggers" />
-<li ng-show="menuIndex === 2">
-    <a href="${pageContext.request.contextPath}/database_triggers.html?token=${requestScope.command.request_token}">
+<li ng-show="menuIndex === 2" ng-class="{true:'active', false:''}[menuActiveIndex === 6]">
+    <a href="" ng-click="goToState('database_triggers', 2)">
         <img alt="${lbl_triggers}" class="icon" src="${pageContext.request.contextPath}/components/icons/index.png">
 		${lbl_triggers}
 	</a>
