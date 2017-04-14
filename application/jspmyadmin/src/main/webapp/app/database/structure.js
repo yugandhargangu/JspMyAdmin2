@@ -132,7 +132,6 @@ JspMyAdminApp.controller('DatabaseTablesController', ['$rootScope', '$scope', '$
         name: 'table_name'
     };
     $scope.groupId = 0;
-    $scope.create_table = {};
     $scope.tables = [];
     $scope.temp_tables = [];
     $scope.allCheck = false;
@@ -175,16 +174,7 @@ JspMyAdminApp.controller('DatabaseTablesController', ['$rootScope', '$scope', '$
         return ByteUtils.fromBytes(original);
     };
     $scope.createTableBtnClick = function () {
-        BA2Resource.save({}, {
-            token: JspMyAdminContext.token,
-            request_db: JspMyAdminContext.database,
-            table_name: $scope.create_table.table_name
-        }, function (response) {
-            if (response.status === 0 && !response.error) {
-                JspMyAdminContext.redirectParams = {table_name: $scope.create_table.table_name};
-                $state.go('database_table_create', {request_db: EncryptionHelper.encode(JspMyAdminContext.database)});
-            }
-        });
+        $state.go('database_table_create', {request_db: EncryptionHelper.encode(JspMyAdminContext.database)});
     };
     $scope.checkAll = function () {
         $scope.tables = [];
@@ -396,7 +386,6 @@ JspMyAdminApp.controller('DatabaseViewsController', ['$rootScope', '$scope', '$s
     $scope.page_data = {};
     $scope.viewCount = 0;
     $scope.groupId = 0;
-    $scope.create_view = {};
     $scope.views = [];
     $scope.temp_views = [];
     $scope.allCheck = false;
@@ -417,16 +406,7 @@ JspMyAdminApp.controller('DatabaseViewsController', ['$rootScope', '$scope', '$s
         });
     };
     $scope.createViewBtnClick = function () {
-        BA12Resource.save({}, {
-            token: JspMyAdminContext.token,
-            request_db: JspMyAdminContext.database,
-            view_name: $scope.create_view.view_name
-        }, function (response) {
-            if (response.status === 0 && !response.error) {
-                JspMyAdminContext.redirectParams = {view_name: $scope.create_view.view_name};
-                $state.go('database_view_create', {request_db: EncryptionHelper.encode(JspMyAdminContext.database)});
-            }
-        });
+        $state.go('database_view_create', {request_db: EncryptionHelper.encode(JspMyAdminContext.database)});
     };
     $scope.checkAll = function () {
         $scope.views = [];

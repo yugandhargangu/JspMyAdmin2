@@ -2,24 +2,14 @@
          pageEncoding="UTF-8" %>
 <%@ taglib prefix="m" uri="http://jspmyadmin.com/taglib/jsp/messages" %>
 <m:open/>
-<div class="page-head">
-    <h3><m:print key="lbl.tables"/></h3>
-</div>
 <div class="group">
-    <div class="group-widget group-header"><m:print key="lbl.create_table"/></div>
     <div class="group-widget group-content">
-        <div class="form-input">
-            <label><m:print key="lbl.table_name"/></label>
-            <input type="text" class="form-control" ng-model="create_table.table_name">
+        <div class="page-head">
+            <h2><m:print key="lbl.tables"/></h2>
+            <button type="button" class="btn btn-right" ng-click="createTableBtnClick()">+ <m:print
+                    key="lbl.add_table"/></button>
         </div>
-    </div>
-    <div class="group-widget group-footer">
-        <button type="button" class="btn" ng-click="createTableBtnClick()"><m:print key="lbl.run"/></button>
-    </div>
-</div>
-<div class="group">
-    <div class="group-widget group-header"><m:print key="lbl.table_list"/></div>
-    <div class="group-widget group-content">
+        <hr class="thin">
         <table class="tbl tbl-full">
             <thead>
             <tr>
@@ -320,7 +310,8 @@
         </div>
     </div>
     <div class="group-widget group-footer">
-        <button type="button" class="btn" ng-click="copyClick()" ng-disabled="tables.length === 0 || copy_input.database_name === ''"><m:print
+        <button type="button" class="btn" ng-click="copyClick()"
+                ng-disabled="tables.length === 0 || copy_input.database_name === ''"><m:print
                 key="lbl.run"/></button>
     </div>
 </div>

@@ -230,6 +230,22 @@ JspMyAdminApp.config(['$stateProvider', '$urlRouterProvider', function ($statePr
         url: '/database/function/create/:request_db',
         templateUrl: contextPath + '/database/function/create.html',
         controller: 'DatabaseFunctionCreateController as ctrl'
+    }).state('database_triggers', {
+        url: '/database/triggers/:request_db',
+        templateUrl: contextPath + '/database/structure/triggers.html',
+        controller: 'DatabaseTriggersController as ctrl'
+    }).state('database_trigger_create', {
+        url: '/database/trigger/create/:request_db',
+        templateUrl: contextPath + '/database/trigger/create.html',
+        controller: 'DatabaseTriggerCreateController as ctrl'
+    }).state('database_events', {
+        url: '/database/events/:request_db',
+        templateUrl: contextPath + '/database/structure/events.html',
+        controller: 'DatabaseEventsController as ctrl'
+    }).state('database_event_create', {
+        url: '/database/event/create/:request_db',
+        templateUrl: contextPath + '/database/event/create.html',
+        controller: 'DatabaseEventCreateController as ctrl'
     });
 }]);
 

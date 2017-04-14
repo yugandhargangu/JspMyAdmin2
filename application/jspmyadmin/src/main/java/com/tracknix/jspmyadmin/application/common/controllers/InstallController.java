@@ -4,7 +4,7 @@
 package com.tracknix.jspmyadmin.application.common.controllers;
 
 import com.tracknix.jspmyadmin.application.common.beans.InstallBean;
-import com.tracknix.jspmyadmin.application.common.logic.InstallLogic;
+import com.tracknix.jspmyadmin.application.common.services.InstallLogic;
 import com.tracknix.jspmyadmin.framework.connection.ConnectionFactory;
 import com.tracknix.jspmyadmin.framework.constants.AppConstants;
 import com.tracknix.jspmyadmin.framework.exception.EncodingException;

@@ -1,7 +1,7 @@
 package com.tracknix.jspmyadmin.application.common.controllers;
 
 import com.tracknix.jspmyadmin.application.common.beans.LoginBean;
-import com.tracknix.jspmyadmin.application.common.logic.LoginLogic;
+import com.tracknix.jspmyadmin.application.common.services.LoginLogic;
 import com.tracknix.jspmyadmin.framework.connection.ConnectionType;
 import com.tracknix.jspmyadmin.framework.connection.ConnectionTypeCheck;
 import com.tracknix.jspmyadmin.framework.constants.AppConstants;

@@ -74,5 +74,7 @@
 		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/create_view.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/routines.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/create_routine.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/triggers.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/app/database/events.js"></script>
     </body>
 </html>

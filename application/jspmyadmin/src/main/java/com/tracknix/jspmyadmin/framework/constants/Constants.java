@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.tracknix.jspmyadmin.framework.constants;
 
 import java.util.ArrayList;
@@ -12,7 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Yugandhar Gangu
- * @created_at 2016/01/27
  */
 public final class Constants {
 
@@ -159,54 +155,6 @@ public final class Constants {
             // prevent from instantiation
         }
 
-        public static final Map<String, List<String>> DATA_TYPES_MAP = Collections
-                .synchronizedMap(new LinkedHashMap<String, List<String>>());
-
-        static {
-            List<String> dataTypeList = new ArrayList<String>(4);
-            dataTypeList.add("INT");
-            dataTypeList.add("VARCHAR");
-            dataTypeList.add("DECIMAL");
-            dataTypeList.add("TIMESTAMP");
-            DATA_TYPES_MAP.put("Common", dataTypeList);
-            dataTypeList = new ArrayList<String>();
-            dataTypeList.add("TINYINT");
-            dataTypeList.add("SMALLINT");
-            dataTypeList.add("MEDIUMINT");
-            dataTypeList.add("INT");
-            dataTypeList.add("BIGINT");
-            dataTypeList.add("FLOAT");
-            dataTypeList.add("DOUBLE");
-            dataTypeList.add("DECIMAL");
-            dataTypeList.add("FLOAT");
-            DATA_TYPES_MAP.put("Numeric", dataTypeList);
-            dataTypeList = new ArrayList<String>();
-            dataTypeList.add("BIT");
-            DATA_TYPES_MAP.put("Bit", dataTypeList);
-            dataTypeList = new ArrayList<String>();
-            dataTypeList.add("CHAR");
-            dataTypeList.add("VARCHAR");
-            dataTypeList.add("TINYTEXT");
-            dataTypeList.add("TEXT");
-            dataTypeList.add("MEDIUMTEXT");
-            dataTypeList.add("LONGTEXT");
-            dataTypeList.add("BINARY");
-            dataTypeList.add("VARBINARY");
-            dataTypeList.add("TINYBLOB");
-            dataTypeList.add("BLOB");
-            dataTypeList.add("MEDIUMBLOB");
-            dataTypeList.add("LONGBLOB");
-            dataTypeList.add("ENUM");
-            dataTypeList.add("SET");
-            DATA_TYPES_MAP.put("String", dataTypeList);
-            dataTypeList.add("DATE");
-            dataTypeList.add("DATETIME");
-            dataTypeList.add("TIME");
-            dataTypeList.add("TIMESTAMP");
-            dataTypeList.add("YEAR");
-            DATA_TYPES_MAP.put("Date & Time", dataTypeList);
-        }
-
         public static final String DEFAULT_JSON = "{}";
         public static final String ERROR_JSON = "{\"code\":1}";
 
@@ -335,65 +283,6 @@ public final class Constants {
 
         static {
             LANGUAGE_MAP.put("en", "English");
-        }
-
-        public static final List<String> EVENT_INTERVAL_LIST = new ArrayList<String>(15);
-
-        static {
-            EVENT_INTERVAL_LIST.add("DAY");
-            EVENT_INTERVAL_LIST.add("DAY_HOUR");
-            EVENT_INTERVAL_LIST.add("DAY_MINUTE");
-            EVENT_INTERVAL_LIST.add("DAY_SECOND");
-            EVENT_INTERVAL_LIST.add("HOUR");
-            EVENT_INTERVAL_LIST.add("HOUR_MINUTE");
-            EVENT_INTERVAL_LIST.add("HOUR_SECOND");
-            EVENT_INTERVAL_LIST.add("MINUTE");
-            EVENT_INTERVAL_LIST.add("MINUTE_SECOND");
-            EVENT_INTERVAL_LIST.add("MONTH");
-            EVENT_INTERVAL_LIST.add("QUARTER");
-            EVENT_INTERVAL_LIST.add("SECOND");
-            EVENT_INTERVAL_LIST.add("WEEK");
-            EVENT_INTERVAL_LIST.add("YEAR ");
-            EVENT_INTERVAL_LIST.add("YEAR_MONTH");
-        }
-
-        public static final List<String> DEFINER_LIST = new ArrayList<String>(2);
-
-        static {
-            DEFINER_LIST.add(Constants.CURRENT_USER);
-            DEFINER_LIST.add("OTHER");
-        }
-
-        public static final List<String> TRIGGER_TIME_LIST = new ArrayList<String>(2);
-
-        static {
-            TRIGGER_TIME_LIST.add("BEFORE");
-            TRIGGER_TIME_LIST.add("AFTER");
-        }
-
-        public static final List<String> TRIGGER_EVENT_LIST = new ArrayList<String>(3);
-
-        static {
-            TRIGGER_EVENT_LIST.add("INSERT");
-            TRIGGER_EVENT_LIST.add("UPDATE");
-            TRIGGER_EVENT_LIST.add("DELETE");
-        }
-
-        public static final List<String> TRIGGER_ORDER_LIST = new ArrayList<String>(2);
-
-        static {
-            TRIGGER_ORDER_LIST.add("FOLLOWS");
-            TRIGGER_ORDER_LIST.add("PRECEDES");
-        }
-
-        public static final List<String> LIMIT_LIST = new ArrayList<String>(5);
-
-        static {
-            LIMIT_LIST.add("25");
-            LIMIT_LIST.add("50");
-            LIMIT_LIST.add("100");
-            LIMIT_LIST.add("500");
-            LIMIT_LIST.add("1000");
         }
 
         public static final List<String> EXPORT_TYPE_LIST = new ArrayList<String>(5);
