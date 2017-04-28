@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="jspmyadmin:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="jspmyadmin.war">
-      <element id="artifact" artifact-name="jspmyadmin:war exploded" />
-    </root>
-  </artifact>
-</component>
