@@ -78,6 +78,9 @@ html {
 			<input type="hidden" name="token"
 				value="${requestScope.command.token}">
 			<div class="group-widget group-content">
+				<div style="color: red;">
+					<m:print key="note.uninstall"/>
+				</div>
 				<div class="form-input">
 					<label><m:print key="lbl.user" /> </label> <input type="text"
 						name="admin_name" id="admin_name" class="form-control"
@@ -95,6 +98,14 @@ html {
 				</button>
 			</div>
 		</form>
+	</div>
+	<div style="margin-left: auto;margin-right: auto;width: 400px;color:#ff8000;">
+        <div><b><m:print key="note.manual_remove"/></b></div>
+        <ol style="margin-left: 2em;">
+            <li><m:print key="note.manual_remove1"/></li>
+            <li><m:print key="note.manual_remove2"/></li>
+            <li><m:print key="note.manual_remove3"/></li>
+        </ol>
 	</div>
 
 	<jma:notEmpty name="#err_key" scope="command">

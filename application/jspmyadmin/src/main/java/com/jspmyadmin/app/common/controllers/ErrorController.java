@@ -1,10 +1,11 @@
 /**
- * 
+ *
  */
 package com.jspmyadmin.app.common.controllers;
 
 import java.sql.SQLException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.jspmyadmin.app.common.beans.InstallBean;
@@ -22,29 +23,35 @@ import com.jspmyadmin.framework.web.utils.ViewType;
 /**
  * @author Yugandhar Gangu
  * @created_at 2016/02/03
- *
  */
 @WebController(authentication = false, path = "/connection_error.html", requestLevel = RequestLevel.DEFAULT)
 public class ErrorController {
 
-	@Detect
-	private HttpSession session;
-	@Detect
-	private View view;
-	@Model
-	private InstallBean bean;
+    @Detect
+    private HttpSession session;
+    @Detect
+    private HttpServletRequest request;
+    @Detect
+    private View view;
+    @Model
+    private InstallBean bean;
 
-	@HandleGetOrPost
-	private void load() throws EncodingException, SQLException {
+    @HandleGetOrPost
+    private void load() throws EncodingException, SQLException {
 
-		if (session.getAttribute(Constants.SESSION_CONNECT) != null) {
-			session.invalidate();
-			view.setType(ViewType.FORWARD);
-			view.setPath(AppConstants.JSP_COMMON_ERROR);
-		} else {
-			view.setType(ViewType.REDIRECT);
-			view.setPath(AppConstants.PATH_HOME);
-		}
-	}
+        if (session.getAttribute(Constants.SESSION_CONNECT) != null) {
+            if (session.getAttribute(Constants.MYSQL_ERROR) != null) {
+                request.setAttribute(Constants.MYSQL_ERROR, session.getAttribute(Constants.MYSQL_ERROR));
+            } else {
+                request.setAttribute(Constants.MYSQL_ERROR, Constants.BLANK);
+            }
+            session.invalidate();
+            view.setType(ViewType.FORWARD);
+            view.setPath(AppConstants.JSP_COMMON_ERROR);
+        } else {
+            view.setType(ViewType.REDIRECT);
+            view.setPath(AppConstants.PATH_HOME);
+        }
+    }
 
 }
