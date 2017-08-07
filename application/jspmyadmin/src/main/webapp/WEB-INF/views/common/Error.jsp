@@ -35,6 +35,10 @@ html {
 				src="${pageContext.request.contextPath}/components/images/logo.png">
 		</div>
 	</div>
+	<div style="text-align: center;">
+		<b style="color: red;">MySql Error: </b>
+		<span>${requestScope.mysql_error}</span>
+	</div>
 	<h2 align="center" style="color: red;">
 		<m:print key="err.config1" />
 		<m:print key="err.config2" />

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.jspmyadmin.framework.connection;
 
@@ -29,7 +29,7 @@ class ApiConnectionImpl implements ApiConnection {
 	private final Connection _connection;
 
 	/**
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	public ApiConnectionImpl() throws SQLException {
@@ -38,13 +38,14 @@ class ApiConnectionImpl implements ApiConnection {
 			_connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			HttpSession session = RequestAdaptor.REQUEST_MAP.get(Thread.currentThread().getId()).getSession();
-			session.setAttribute(Constants.SESSION_CONNECT, true);
-			throw e;
+            session.setAttribute(Constants.SESSION_CONNECT, true);
+            session.setAttribute(Constants.MYSQL_ERROR, e.getMessage());
+            throw e;
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dbName
 	 * @throws SQLException
 	 */
@@ -60,7 +61,7 @@ class ApiConnectionImpl implements ApiConnection {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param host
 	 * @param port
 	 * @param user
@@ -120,7 +121,7 @@ class ApiConnectionImpl implements ApiConnection {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param host
 	 * @param port
 	 * @param user
@@ -146,7 +147,7 @@ class ApiConnectionImpl implements ApiConnection {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dbName
 	 * @return
 	 * @throws SQLException

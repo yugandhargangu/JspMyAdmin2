@@ -328,7 +328,8 @@ public class DefaultServlet extends HttpServlet {
 			} catch (IllegalArgumentException e) {
 				response.sendRedirect(request.getContextPath());
 			} catch (Exception e) {
-				if (session.getAttribute(Constants.SESSION_CONNECT) != null) {
+				session = request.getSession();
+				if (session != null && session.getAttribute(Constants.SESSION_CONNECT) != null) {
 					if (ConnectionFactory.isConfigured()) {
 						ConnectionType connectionType = ConnectionTypeCheck.check();
 						switch (connectionType) {

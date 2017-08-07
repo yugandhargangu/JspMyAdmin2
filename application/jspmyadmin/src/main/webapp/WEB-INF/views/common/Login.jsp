@@ -78,7 +78,9 @@ html {
 				value="${requestScope.command.token}"> <input type="hidden"
 				id="halfconfig" value="${requestScope.command.halfconfig}">
 			<div class="group-widget group-content">
-
+				<jma:notEmpty name="#mysql_error" scope="request">
+					<div style="color: red;">${requestScope.mysql_error}</div>
+				</jma:notEmpty>
 				<jma:switch>
 					<jma:case value="Yes" name="#halfconfig" scope="command,">
 						<input type="hidden" name="hostname" id="hostname">
@@ -114,6 +116,11 @@ html {
 				</button>
 			</div>
 		</form>
+	</div>
+	<div style="width: 400px;margin-left: auto;margin-right: auto;">
+		<a href="${pageContext.request.contextPath}/uninstall.html">
+			Click here to uninstall current configuration
+		</a>
 	</div>
 
 	<jma:notEmpty name="#err_key" scope="command">
