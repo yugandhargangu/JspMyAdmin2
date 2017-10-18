@@ -685,6 +685,7 @@ public final class Constants {
 
         static {
             LANGUAGE_MAP.put("en", "English");
+            LANGUAGE_MAP.put("ja", "Japanese");
         }
 
         public static final List<String> EVENT_INTERVAL_LIST = new ArrayList<String>(15);
