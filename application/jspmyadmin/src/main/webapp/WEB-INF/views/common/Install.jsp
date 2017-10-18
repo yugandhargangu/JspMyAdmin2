@@ -137,7 +137,7 @@ html {
 					<div class="form-input" id="host-div">
 						<label><m:print key="lbl.hostname" /> </label> <input type="text"
 							name="config_host" id="config_host" placeholder="Host Name"
-							class="form-control" maxlength="50"
+							class="form-control" maxlength="100"
 							value="${requestScope.command.config_host}">
 					</div>
 					<div class="form-input" id="port-div">
@@ -149,7 +149,7 @@ html {
 					<div class="form-input" id="mysql-user-div">
 						<label><m:print key="lbl.mysql_user" /> </label> <input
 							type="text" placeholder="User" name="config_username"
-							id="config_username" class="form-control" maxlength="50"
+							id="config_username" class="form-control" maxlength="100"
 							value="${requestScope.command.config_username}">
 					</div>
 					<div class="form-input" id="mysql-pass-div">
@@ -157,7 +157,7 @@ html {
 									key="msg.blank_password_alert" />)
 						</small></label> <input type="password" placeholder="Password"
 							name="config_password" id="config_password" class="form-control"
-							maxlength="50" value="${requestScope.command.config_password}">
+							maxlength="100" value="${requestScope.command.config_password}">
 					</div>
 				</div>
 			</div>
