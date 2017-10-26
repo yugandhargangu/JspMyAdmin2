@@ -50,9 +50,9 @@ html {
 				value="${requestScope.command.token}">
 			<div class="group-widget group-content">
 				<select name="language" id="language" style="width: 90%;">
+					<option value=""><m:print key="lbl.select_language" /></option>
 					<jma:forLoop items="#language_map" name="language"
 						key="languageKey" scope="command">
-						<option value=""><m:print key="lbl.select_language" /></option>
 						<jma:switch name="#languageKey" scope="page">
 							<jma:case value="#session_locale" scope="session">
 								<option value="${languageKey}" selected="selected">${language}</option>
