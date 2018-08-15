@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         id="jspmyadmin" version="2.4">
+    <display-name>JspMyAdmin</display-name>
+
+    <servlet>
+        <servlet-name>DefaultServlet</servlet-name>
+        <servlet-class>com.tracknix.jspmyadmin.framework.web.utils.DefaultServlet</servlet-class>
+
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+        <!-- init-param start                                               -->
+        <!-- These init params will be used to connect with database.       -->
+        <!-- 1. All are required to connect with database.                  -->
+        <!-- 2. Specific user login is also available for users.            -->
+        <!-- 3. Remove all init-params to activate user login with hostname.-->
+        <!-- 4. Remove user and password to activate user login.            -->
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+        <init-param>
+            <param-name>host</param-name>
+            <param-value>localhost</param-value>
+        </init-param>
+        <init-param>
+            <param-name>port</param-name>
+            <param-value>3306</param-value>
+        </init-param>
+        <init-param>
+            <param-name>user</param-name>
+            <param-value>root</param-value>
+        </init-param>
+        <init-param>
+            <param-name>password</param-name>
+            <param-value>root</param-value>
+        </init-param>
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+        <!-- init-param end                                                 -->
+        <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DefaultServlet</servlet-name>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DefaultServlet</servlet-name>
+        <url-pattern>*.text</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DefaultServlet</servlet-name>
+        <url-pattern>*.jma</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/</location>
+    </error-page>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>

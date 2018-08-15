@@ -1,0 +1,42 @@
+<div class="page-head">
+	<h3>Variableslist</h3>
+</div>
+<div class="group-widget group-content" *ngIf="isPageReady">
+	<div style="padding: 0.2em;">
+		<label>Server start date : <b>{{calculateDate(statistics.start_date)}}</b></label>
+		<label style="float: right;">Server running time : <b>{{calculateDays(statistics.run_time)}}</b></label>
+	</div>
+	<hr class="thin">
+	<div style="padding: 0.2em;">
+		<label>Received : <b>{{calculateBytes(statistics.received)}}</b></label>
+		|
+		<label>Sent : <b>{{calculateBytes(statistics.sent)}}</b></label>
+		<label style="float: right;">Total : <b>{{calculateBytes(statistics.sent + statistics.received)}}</b> </label>
+	</div>
+	<hr class="thin">
+	<div>
+		<label>Search : </label>
+		<input type="text" class="form-control" name="search" [(ngModel)]="search" (keyup)="filterVariables()">
+	</div>
+	<table class="tbl">
+		<thead>
+			<tr>
+	    		<th *ngFor="let columnName of status.column_info;">{{columnName}}</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th *ngFor="let columnName of status.column_info;">{{columnName}}</th>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr *ngFor="let variableData of variables;let i = index;" [ngClass]="{'even':i%2==0,'odd':i%2!=0}">
+				<td>{{variableData[0]}}</td>
+				<td>{{getFormattedValue(variableData[0], variableData[1])}}</td>
+			</tr>
+			<tr class="even" *ngIf="variables.length === 0">
+				<td colspan="2">No status variables found.</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

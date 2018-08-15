@@ -1,0 +1,105 @@
+<div style="padding: 0.2em 2em;">
+  <div class="page-head">
+    <h3>Database list</h3>
+  </div>
+  <div class="group">
+    <div class="group-widget group-header">Create database</div>
+    <div class="group-widget gorup-content">
+      <div class="form-input">
+        <label>Database name</label>
+        <input type="text" class="form-control" maxlength="50" name="database" [(ngModel)]="pageInputs.database">
+      </div>
+      <div class="form-input">
+        <label>Collation</label>
+        <select class="form-control" name="collation" [(ngModel)]="pageInputs.collation">
+          <option value="">Default collation</option>
+          <optgroup *ngFor="let charsetKey of getCollationsKeys();" [label]="charsetKey">
+            <option *ngFor="let collationName of collations[charsetKey]" [value]="collationName">{{collationName}}</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="group-widget group-footer">
+      <button type="button" class="btn" (click)="createDatabase()">Run</button>
+    </div>
+  </div>
+  <div class="group" *ngIf="isPageReady">
+    <div class="group-widget group-header">Database list</div>
+    <div class="group-widget group-content">
+      <table class="tbl tbl-full">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" [indeterminate]="databases.database_list.length!=selectedDbs.length&&selectedDbs.length>0" [checked]="databases.database_list.length==selectedDbs.length"
+                (click)="toggleAll()">
+            </th>
+            <th class="link" (click)="sortDatabases('database', sortInfo.type==1?0:1)">
+              Database name
+              <img *ngIf="sortInfo.column=='database'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+            <th class="link" (click)="sortDatabases('collation', sortInfo.type==1?0:1)">
+              Collation
+              <img *ngIf="sortInfo.column=='collation'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+            <th class="link" (click)="sortDatabases('tables', sortInfo.type==1?0:1)">
+              No of tables
+              <img *ngIf="sortInfo.column=='tables'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+            <th class="link" (click)="sortDatabases('rows', sortInfo.type==1?0:1)">
+              No of rows
+              <img *ngIf="sortInfo.column=='rows'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+            <th class="link" (click)="sortDatabases('data', sortInfo.type==1?0:1)">
+              Data size
+              <img *ngIf="sortInfo.column=='data'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+            <th class="link" (click)="sortDatabases('indexes', sortInfo.type==1?0:1)">
+              Index size
+              <img *ngIf="sortInfo.column=='indexes'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+            <th class="link" (click)="sortDatabases('total', sortInfo.type==1?0:1)">
+              Total size
+              <img *ngIf="sortInfo.column=='total'" alt="" class="icon" src="assets/icons/sort-{{sortInfo.type==0?'asc':'desc'}}-w.png">
+            </th>
+          </tr>
+        </thead>
+        <tfoot *ngIf="databases.database_list.length>0">
+          <tr>
+            <th></th>
+            <th>Total: {{databases.footer_info.database}}</th>
+            <th></th>
+            <th>{{databases.footer_info.tables}}</th>
+            <th>{{databases.footer_info.rows}}</th>
+            <th>{{calculateBytes(databases.footer_info.data)}}</th>
+            <th>{{calculateBytes(databases.footer_info.indexes)}}</th>
+            <th>{{calculateBytes(databases.footer_info.total)}}</th>
+          </tr>
+        </tfoot>
+        <tbody *ngIf="databases.database_list.length>0">
+          <tr *ngFor="let database_info of databases.database_list; let i = index;" [ngClass]="{'even':i%2==0,'odd':i%2!=0}">
+            <td>
+              <input type="checkbox" [checked]="selectedDbs.indexOf(database_info.database)>-1" (click)="toggleDb(database_info.database)">
+            </td>
+            <td ng-click="goToDatabase(database_info.database)" style="cursor:pointer;">{{database_info.database}}</td>
+            <td>{{database_info.collation}}</td>
+            <td>{{database_info.tables}}</td>
+            <td>{{database_info.rows}}</td>
+            <td>{{calculateBytes(database_info.data)}}</td>
+            <td>{{calculateBytes(database_info.indexes)}}</td>
+            <td>{{calculateBytes(database_info.total)}}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="databases.database_list.length==0">
+          <tr class="even">
+            <td colspan="8">No databases found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="group-widget group-footer">
+      <button type="button" class="btn" (click)="dropDatabases()">
+        <img alt="" class="icon" src="assets/icons/delete-database.png"> Drop
+      </button>
+    </div>
+  </div>
+</div>

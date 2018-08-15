@@ -1,0 +1,30 @@
+<div id="content">
+    <div id="sidebar" style="width: 20%;">
+        <app-sidebar></app-sidebar>
+    </div>
+    <div id="main-content" style="width: 80%;">
+        <div id="topbar">
+            <app-topbar></app-topbar>
+        </div>
+        <div id="header-div">
+            <div id="header-menu-container">
+                <ul id="header-menu">
+                    <app-header-server></app-header-server>
+                    <!--<app-header-db></app-header-db>
+                <app-header-table></app-header-table>
+                <app-header-view></app-header-view>-->
+                </ul>
+            </div>
+        </div>
+        <div id="main-body">
+            <div style="padding: 0.2em 2em;">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <div id="footer">
+            <div style="padding: 0.2em 2em;">
+                Footer
+            </div>
+        </div>
+    </div>
+</div>

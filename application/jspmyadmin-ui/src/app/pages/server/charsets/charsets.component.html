@@ -1,0 +1,34 @@
+<div class="page-head">
+  <h3>Charsets</h3>
+</div>
+<div class="group-widget group-content" *ngIf="isPageReady">
+  <table class="tbl tbl-full">
+    <thead>
+      <tr>
+        <th class="link" *ngFor="let columnName of columns;" ng-click="loadCharsets(columnName)">
+          {{columnName}}
+        </th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th class="link" *ngFor="let columnName of columns;" ng-click="loadCharsets(columnName)">
+          {{columnName}}
+        </th>
+      </tr>
+    </tfoot>
+    <tbody *ngFor="let charset of getKeys();">
+      <tr>
+        <th colspan="7">{{charset}}</th>
+      </tr>
+      <tr *ngFor="let collations of charsets[charset];let i = index;" [ngClass]="{'even':i%2==0,'odd':i%2!=0}">
+        <td *ngFor="let collation of collations;">{{collation}}</td>
+      </tr>
+    </tbody>
+    <tbody *ngIf="getKeys().length==0">
+      <tr class="even">
+        <td colspan="7">No collations found</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

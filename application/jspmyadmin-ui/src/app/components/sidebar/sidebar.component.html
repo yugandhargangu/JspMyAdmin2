@@ -1,0 +1,61 @@
+<div style="padding: 1em 0.5em;">
+	<div style="width: 100%; text-align: center;">
+		<img alt="Logo" id="site-logo" src="assets/images/logo.png">
+	</div>
+	<div style="width: 100%; text-align: center; margin-top: 0.5em;">
+		<div style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">
+			<a href="home.html">
+				<img alt="Home" class="icon-l" src="assets/icons/home.png">
+			</a>
+		</div>
+		<div style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">
+			<a href="http://jspmyadmin.com">
+				<img class="icon-l" alt="JspMyAdmin documentation" title="JspMyAdmin documentation" src="assets/icons/report-g.png">
+			</a>
+		</div>
+		<div style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">
+			<a href="https://dev.mysql.com/doc/" target="_blank">
+				<img class="icon-l" alt="MySql documentation" title="MySql documentation" src="assets/icons/mysql.png">
+			</a>
+		</div>
+		<div style="padding-left: 0.5em; padding-right: 0.5em; display: inline-block;">
+			<a href="javaScript:menubarMain();">
+				<img alt="Refresh" class="icon-l" title="Refresh" src="assets/icons/reload.png">
+			</a>
+		</div>
+	</div>
+	<div style="margin-left: 1em;" id="menubar-main"></div>
+</div>
+
+<div *ngIf="dialogBox.alertMsg!=null" class="dialog">
+	<div class="dialog-widget" [ngClass]="dialogBox.alertClass">
+		<div class="close" (click)="dialogBox.closeAlert()">&#10005;</div>
+		<div class="dialog-header">Alert</div>
+		<div class="dialog-content">
+			<p>{{dialogBox.alertMsg}}</p>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="dialogBox.showLoading" class="dialog">
+	<div class="dialog-widget dialog-normal">
+		<div class="dialog-header">&nbsp;</div>
+		<div class="dialog-content">
+			<p>Loading...</p>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="dialogBox.showConfirm" class="dialog">
+	<div class="dialog-widget dialog-normal">
+		<div class="close" (click)="dialogBox.closeConfirm()">&#10005;</div>
+		<div class="dialog-header">{{dialogBox.confirmObj.title}}</div>
+		<div class="dialog-content">
+			<p>{{dialogBox.confirmObj.message}}</p>
+		</div>
+		<div class="dialog-footer">
+			<button type="button" class="btn" (click)="confirmNegativeClick()">{{dialogBox.confirmObj.negativeText}}</button>
+			<button type="button" class="btn" (click)="confirmPositiveClick()">{{dialogBox.confirmObj.positiveText}}</button>
+		</div>
+	</div>
+</div>

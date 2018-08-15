@@ -1,0 +1,84 @@
+<div style="padding: 0.2em 1em;" *ngIf="isPageReady">
+	<div style="width: 58%; margin: 0; padding: 0; display: inline-block; -moz-box-sizing: border-box; box-sizing: border-box; vertical-align: top;">
+		<div class="group">
+			<div class="group-widget group-header">Database Server</div>
+			<div class="group-widget group-content">
+				<p>
+					<b>Server name:</b> {{homeInfo.db_server_name}}</p>
+				<p>
+					<b>Server type:</b> {{homeInfo.db_server_type}}</p>
+				<p>
+					<b>Server version:</b> {{homeInfo.db_server_version}}</p>
+				<p>
+					<b>Protocol:</b> {{homeInfo.db_server_protocol}}</p>
+				<p>
+					<b>Current user:</b> {{homeInfo.db_server_user}}</p>
+				<p>
+					<b>Charset:</b> {{homeInfo.db_server_charset}}</p>
+			</div>
+		</div>
+		<div class="group">
+			<div class="group-widget group-header">Web Server</div>
+			<div class="group-widget group-content">
+				<p>
+					<b>Server name:</b> {{homeInfo.web_server_name}}</p>
+				<p>
+					<b>JDBC version:</b> {{homeInfo.jdbc_version}}</p>
+				<p>
+					<b>JAVA version:</b> {{homeInfo.java_version}}</p>
+				<p>
+					<b>Servlet version:</b> {{homeInfo.servelt_version}}</p>
+				<p>
+					<b>JSP version:</b> {{homeInfo.jsp_version}}</p>
+			</div>
+		</div>
+		<div class="group">
+			<div class="group-widget group-header">
+				JspMyAdmin2
+			</div>
+			<div class="group-widget group-content">
+				<p>
+					<b>JspMyAdmin version:</b> {{homeInfo.jma_version}}</p>
+			</div>
+		</div>
+	</div>
+	<div style="width: 40%; margin: 0; padding: 0; display: inline-block; -moz-box-sizing: border-box; box-sizing: border-box; vertical-align: top;">
+		<div class="group">
+			<div class="group-widget group-header">About JspMyAdmin</div>
+			<div class="group-widget group-content">
+				<p>JspMyAdmin 2 is the software for MySql database administration over Web. It provides a user friendly design to manage
+					most of the MySql database administration. Create and Manage database objects (Database, Table, View, User etc..) with
+					simple mouse clicks.
+				</p>
+			</div>
+		</div>
+		<div class="group">
+			<div class="group-widget group-header">
+				Settings
+			</div>
+			<div class="group-widget group-content">
+				<div class="form-input" style="display: block;">
+					<label>Server collation</label>
+					<select class="form-control" name="collation" [(ngModel)]="pageInputs.collation" ng-change="saveCollation()">
+						<optgroup *ngFor="let charsetKey of getCollationsKeys();" [label]="charsetKey">
+							<option *ngFor="let collationName of collations[charsetKey]" [value]="collationName">{{collationName}}</option>
+						</optgroup>
+					</select>
+				</div>
+				<div class="form-input" style="display: block;">
+					<label>Language</label>
+					<select class="form-control">
+						<option value="">Select language</option>
+						<option value="en">English</option>
+					</select>
+				</div>
+				<div class="form-input">
+					<label>Font size</label>
+					<select class="form-control" ng-model="input_data.fontsize" ng-change="saveFontSize()">
+						<option ng-repeat="fontsize in homeInfo.fontsizes" value="{{fontsize}}">{{fontsize}}%</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

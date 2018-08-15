@@ -1,0 +1,67 @@
+<div class="page-head">
+	<h3>Variable list</h3>
+</div>
+<div class="group-widget group-content" *ngIf="isPageReady">
+	<div>
+		<label>Search : </label>
+		<input type="text"	class="form-control" name="search" [(ngModel)]="search" (keyup)="filterVariables()">
+	</div>
+	<table class="tbl tbl-full">
+		<thead>
+			<tr>
+        <th style="width:20%;">Variable name</th>
+        <th style="width:25%;">Value (SESSION)</th>
+        <th style="width:25%;">Value (GLOBAL)</th>
+				<th>Variable scope</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+        <th>Variable name</th>
+        <th>Value (SESSION)</th>
+        <th>Value (GLOBAL)</th>
+				<th>Variable scope</th>
+				<th>Action</th>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr *ngFor="let variableData of variables;let i = index;" [ngClass]="{'even':i%2==0,'odd':i%2!=0}">
+				<td *ngFor="let colData of variableData;" style="word-break:break-all;">{{colData}}</td>
+				<td>
+				  <button type="button" class="btn" (click)="showInfoDialog(i)">Edit</button>
+				</td>
+			</tr>
+			<tr class="even" *ngIf="variables.length==0">
+				<td colspan="5">No variables found</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="dialog" *ngIf="selectedIndex>-1">
+	<div class="dialog-widget dialog-normal">
+		<div class="close" (click)="closeInfoDialog()">&#10005;</div>
+		<div class="dialog-header">Update variable</div>
+		<div class="dialog-content">
+			<div class="form-input">
+			    <label>Variable Name</label>
+			    <input type="text" class="form-control" name="variable_name" [(ngModel)]="variable.name" readonly="readonly">
+			</div>
+			<div class="form-input">
+			    <label>Variable Value</label>
+			    <input type="text" class="form-control" name="variable_value" [(ngModel)]="variable.value">
+			</div>
+			<br>
+            <div class="form-input">
+			    <label>Variable Scope</label>
+			    <div *ngFor="let scope of scopes;">
+			      <input type="radio" name="variable_scope" [(ngModel)]="variable.scope[0]" [value]="scope"> {{scope}}
+			    </div>
+			</div>
+		</div>
+		<div class="dialog-footer">
+        	<button type="button" class="btn" (click)="saveVariable()">Save</button>
+        </div>
+	</div>
+</div>
+
