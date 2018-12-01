@@ -210,17 +210,13 @@ public class DefaultServlet extends HttpServlet {
 			boolean isConfig = false;
 			if (ConnectionFactory.isConfigured()) {
 				ConnectionType connectionType = ConnectionTypeCheck.check();
-				switch (connectionType) {
-				case CONFIG:
+				if (connectionType == ConnectionType.CONFIG) {
 					if ("/login.html".equals(path)) {
 						response.sendRedirect(request.getContextPath() + "/home.html");
 						RequestAdaptor.REQUEST_MAP.remove(Thread.currentThread().getId());
 						return;
 					}
 					isConfig = true;
-					break;
-				default:
-					break;
 				}
 			}
 			EncodeHelper encodeObj = new EncodeHelperImpl();

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.jspmyadmin.framework.web.utils;
 
 import java.io.IOException;
@@ -117,7 +114,7 @@ class FrontController<T extends Bean> implements Serializable {
 		case POST:
 			if (model != null) {
 				if (request.getContentType() != null && request.getContentType().toLowerCase()
-						.indexOf(Constants.MULTIPART_FORM_DATA) > -1) {
+						.contains(Constants.MULTIPART_FORM_DATA)) {
 					beanUtil.populateMultipart(request, model);
 				} else {
 					beanUtil.populate(request, model);
