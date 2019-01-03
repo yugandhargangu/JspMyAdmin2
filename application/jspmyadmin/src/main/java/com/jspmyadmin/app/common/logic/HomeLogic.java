@@ -162,7 +162,7 @@ public class HomeLogic extends AbstractLogic {
 			context = DefaultServlet.getContext();
 			homeBean.setWeb_server_name(context.getServerInfo());
 			homeBean.setJdbc_version(databaseMetaData.getDriverVersion());
-			homeBean.setJava_version(Runtime.class.getPackage().getImplementationVersion());
+			homeBean.setJava_version(System.getProperty("java.version"));
 			homeBean.setServelt_version(
 					context.getMajorVersion() + Constants.SYMBOL_DOT + context.getMinorVersion());
 			homeBean.setJsp_version(JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion());

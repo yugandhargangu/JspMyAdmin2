@@ -1,2 +1,3 @@
 /target/
-config.ser
+**/config.ser
+**/*.iml

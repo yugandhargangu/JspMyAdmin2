@@ -141,9 +141,9 @@
 									<div class="form-input" style="display: block;">
 										<label><m:print key="lbl.language" /></label> <select
 											name="language" id="server_language" class="form-control">
+											<option value=""><m:print key="lbl.select_language" /></option>
 											<jma:forLoop items="#language_map" name="language"
 												key="languageKey" scope="command">
-												<option value=""><m:print key="lbl.select_language" /></option>
 												<jma:switch name="#languageKey" scope="page">
 													<jma:case value="#language" scope="command">
 														<option value="${languageKey}" selected="selected">${language}</option>

@@ -4,7 +4,7 @@
 	<groupId>com.tracknix</groupId>
 	<artifactId>jspmyadmin</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<name>jspmyadmin</name>
 	<url>http://jspmyadmin.com</url>
 
